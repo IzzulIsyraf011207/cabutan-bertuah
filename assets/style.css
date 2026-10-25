@@ -92,6 +92,11 @@ a { color: var(--primary); }
   letter-spacing: -.02em;
 }
 .hero h1 span { color: var(--gold-2); }
+.hero-logo {
+  display: block; width: 88px; height: 88px; margin: 0 auto 16px;
+  border-radius: 22px;
+  box-shadow: 0 14px 30px -10px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .12);
+}
 .hero p { margin: 0 auto; max-width: 420px; opacity: .85; }
 
 /* ---------- Card ---------- */

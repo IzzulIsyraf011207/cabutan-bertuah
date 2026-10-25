@@ -6,6 +6,9 @@
   <meta name="theme-color" content="#041a14">
   <meta name="robots" content="noindex">
   <title>Roda Cabutan Bertuah</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -53,6 +56,9 @@
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
     .bar-btns { display: flex; gap: 8px; }
+    .title-wrap { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .bar-logo { width: 52px; height: 52px; border-radius: 14px; flex: none; box-shadow: 0 8px 20px -8px rgba(0,0,0,.6); }
+    @media (max-width: 520px) { .bar-logo { width: 44px; height: 44px; border-radius: 12px; } }
     .icon-btn {
       width: 44px; height: 44px; display: grid; place-items: center;
       border-radius: 14px; border: 1px solid var(--line);
@@ -323,9 +329,12 @@
   <canvas id="bintang" aria-hidden="true"></canvas>
   <div class="page">
     <header class="bar">
+      <div class="title-wrap">
+      <img class="bar-logo" src="assets/logo.svg" alt="Logo Cabutan Bertuah" width="52" height="52">
       <div class="title">
         <div class="eyebrow">✦ Pusingan Bertuah</div>
         <h1 id="namaAcara">Cabutan Bertuah</h1>
+      </div>
       </div>
       <div class="bar-btns">
         <button class="icon-btn" id="bunyi" aria-label="Matikan bunyi" title="Bunyi">

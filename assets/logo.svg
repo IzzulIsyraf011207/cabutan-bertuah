@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d5c45"/><stop offset=".55" stop-color="#0a4535"/><stop offset="1" stop-color="#062a20"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".55" r=".55">
+      <stop offset="0" stop-color="#f2c75c" stop-opacity=".35"/><stop offset="1" stop-color="#f2c75c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff3cf"/><stop offset=".35" stop-color="#f2c75c"/><stop offset=".7" stop-color="#b9821f"/><stop offset="1" stop-color="#f6d27a"/>
+    </linearGradient>
+    <radialGradient id="hub" cx=".38" cy=".32" r=".75">
+      <stop offset="0" stop-color="#fff6d8"/><stop offset=".45" stop-color="#ecb94a"/><stop offset="1" stop-color="#8a5c12"/>
+    </radialGradient>
+    <radialGradient id="shade" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#000" stop-opacity=".35"/><stop offset=".35" stop-color="#000" stop-opacity="0"/>
+      <stop offset=".9" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".25"/>
+    </radialGradient>
+    <radialGradient id="bulb" cx=".35" cy=".3" r=".8">
+      <stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#ffe7a6"/><stop offset="1" stop-color="#d79d2c"/>
+    </radialGradient>
+    <linearGradient id="pin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff6d8"/><stop offset=".45" stop-color="#f2c75c"/><stop offset="1" stop-color="#8a5c12"/>
+    </linearGradient>
+    <radialGradient id="gem" cx=".35" cy=".3" r=".8">
+      <stop offset="0" stop-color="#ff9b8f"/><stop offset=".5" stop-color="#d92d20"/><stop offset="1" stop-color="#7a1209"/>
+    </radialGradient>
+    <clipPath id="sq"><rect width="512" height="512" rx="112"/></clipPath>
+  </defs>
+  <g clip-path="url(#sq)">
+    <rect width="512" height="512" fill="url(#bg)"/>
+    <rect width="512" height="512" fill="url(#glow)"/>
+    <g fill="#f2c75c" opacity=".55">
+      <path d="M74 92l5 12 12 5-12 5-5 12-5-12-12-5 12-5z"/>
+      <path d="M440 110l4 9 9 4-9 4-4 9-4-9-9-4 9-4z"/>
+      <path d="M452 400l3.5 8 8 3.5-8 3.5-3.5 8-3.5-8-8-3.5 8-3.5z"/>
+      <path d="M62 420l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/>
+    </g>
+  </g>
+  <circle cx="256" cy="288" r="180" fill="#000" opacity=".28"/>
+  <circle cx="256" cy="280" r="176" fill="url(#gold)"/>
+  <circle cx="256" cy="280" r="153" fill="#5a3b05" opacity=".7"/>
+  <path d="M256 280 L256.00 130.00 A150 150 0 0 1 331.00 150.10 Z" fill="#11704f"/><path d="M256 280 L331.00 150.10 A150 150 0 0 1 385.90 205.00 Z" fill="#f4c95d"/><path d="M256 280 L385.90 205.00 A150 150 0 0 1 406.00 280.00 Z" fill="#0a4031"/><path d="M256 280 L406.00 280.00 A150 150 0 0 1 385.90 355.00 Z" fill="#fbeecb"/><path d="M256 280 L385.90 355.00 A150 150 0 0 1 331.00 409.90 Z" fill="#11704f"/><path d="M256 280 L331.00 409.90 A150 150 0 0 1 256.00 430.00 Z" fill="#f4c95d"/><path d="M256 280 L256.00 430.00 A150 150 0 0 1 181.00 409.90 Z" fill="#0a4031"/><path d="M256 280 L181.00 409.90 A150 150 0 0 1 126.10 355.00 Z" fill="#fbeecb"/><path d="M256 280 L126.10 355.00 A150 150 0 0 1 106.00 280.00 Z" fill="#11704f"/><path d="M256 280 L106.00 280.00 A150 150 0 0 1 126.10 205.00 Z" fill="#f4c95d"/><path d="M256 280 L126.10 205.00 A150 150 0 0 1 181.00 150.10 Z" fill="#0a4031"/><path d="M256 280 L181.00 150.10 A150 150 0 0 1 256.00 130.00 Z" fill="#fbeecb"/>
+  <line x1="256" y1="280" x2="256.00" y2="130.00" stroke="#e9b545" stroke-width="2.5" stroke-opacity=".85"/><line x1="256" y1="280" x2="331.00" y2="150.10" stroke="#e9b545" stroke-width="2.5" stroke-opacity=".85"/><line x1="256" y1="280" x2="385.90" y2="205.00" stroke="#e9b545" stroke-width="2.5" stroke-opacity=".85"/><line x1="256" y1="280" x2="406.00" y2="280.00" stroke="#e9b545" stroke-width="2.5" stroke-opacity=".85"/><line x1="256" y1="280" x2="385.90" y2="355.00" stroke="#e9b545" stroke-width="2.5" stroke-opacity=".85"/><line x1="256" y1="280" x2="331.00" y2="409.90" stroke="#e9b545" stroke-width="2.5" stroke-opacity=".85"/><line x1="256" y1="280" x2="256.00" y2="430.00" stroke="#e9b545" stroke-width="2.5" stroke-opacity=".85"/><line x1="256" y1="280" x2="181.00" y2="409.90" stroke="#e9b545" stroke-width="2.5" stroke-opacity=".85"/><line x1="256" y1="280" x2="126.10" y2="355.00" stroke="#e9b545" stroke-width="2.5" stroke-opacity=".85"/><line x1="256" y1="280" x2="106.00" y2="280.00" stroke="#e9b545" stroke-width="2.5" stroke-opacity=".85"/><line x1="256" y1="280" x2="126.10" y2="205.00" stroke="#e9b545" stroke-width="2.5" stroke-opacity=".85"/><line x1="256" y1="280" x2="181.00" y2="150.10" stroke="#e9b545" stroke-width="2.5" stroke-opacity=".85"/>
+  <circle cx="256" cy="280" r="150" fill="url(#shade)"/>
+  <circle cx="287.99" cy="119.15" r="5.2" fill="url(#bulb)"/><circle cx="347.11" cy="143.64" r="5.2" fill="url(#bulb)"/><circle cx="392.36" cy="188.89" r="5.2" fill="url(#bulb)"/><circle cx="416.85" cy="248.01" r="5.2" fill="url(#bulb)"/><circle cx="416.85" cy="311.99" r="5.2" fill="url(#bulb)"/><circle cx="392.36" cy="371.11" r="5.2" fill="url(#bulb)"/><circle cx="347.11" cy="416.36" r="5.2" fill="url(#bulb)"/><circle cx="287.99" cy="440.85" r="5.2" fill="url(#bulb)"/><circle cx="224.01" cy="440.85" r="5.2" fill="url(#bulb)"/><circle cx="164.89" cy="416.36" r="5.2" fill="url(#bulb)"/><circle cx="119.64" cy="371.11" r="5.2" fill="url(#bulb)"/><circle cx="95.15" cy="311.99" r="5.2" fill="url(#bulb)"/><circle cx="95.15" cy="248.01" r="5.2" fill="url(#bulb)"/><circle cx="119.64" cy="188.89" r="5.2" fill="url(#bulb)"/><circle cx="164.89" cy="143.64" r="5.2" fill="url(#bulb)"/><circle cx="224.01" cy="119.15" r="5.2" fill="url(#bulb)"/>
+  <circle cx="256" cy="280" r="50" fill="#062a20"/>
+  <circle cx="256" cy="280" r="44" fill="url(#hub)"/>
+  <path d="M256 254l7.6 15.6 17.2 2.4-12.4 12 3 17-15.4-8.2-15.4 8.2 3-17-12.4-12 17.2-2.4z" fill="#5a3b05"/>
+  <path d="M256 168 222 104a36 36 0 1 1 68 0z" fill="url(#pin)" stroke="#6e4a0c" stroke-width="4" stroke-linejoin="round"/>
+  <circle cx="256" cy="96" r="13" fill="url(#gem)" stroke="#6e4a0c" stroke-width="3"/>
+  <circle cx="251.5" cy="91.5" r="3.6" fill="#fff" opacity=".85"/>
+</svg>
