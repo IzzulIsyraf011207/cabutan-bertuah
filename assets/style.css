@@ -92,30 +92,61 @@ a { color: var(--primary); }
   letter-spacing: -.02em;
 }
 .hero h1 span { color: var(--gold-2); }
-.hero-top {
-  position: relative; z-index: 2;
-  display: flex; justify-content: flex-end;
-  max-width: 1100px; margin: -28px auto 12px; padding: 0 16px;
-}
-.roda-btn {
-  display: inline-flex; align-items: center; gap: 10px;
-  min-height: 46px; padding: 6px 18px 6px 8px;
-  border-radius: 999px; cursor: pointer;
-  border: 1.5px solid rgba(242, 199, 92, .6);
-  background: linear-gradient(180deg, rgba(255, 224, 138, .22), rgba(242, 199, 92, .12));
-  color: #fff; font-weight: 800; font-size: 15px; letter-spacing: .02em;
-  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, .6);
+/* ---------- Butang Pusingan Bertuah (bawah borang) ---------- */
+.roda-cta {
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; gap: 16px;
+  width: 100%; margin-top: 18px; padding: 16px 16px 16px 14px;
+  border: 0; border-radius: 22px; cursor: pointer; text-align: left;
+  color: #fff; font: inherit;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(242, 199, 92, .32), transparent 55%),
+    linear-gradient(135deg, #0d5c45, #0a4535 55%, #06281f);
+  box-shadow:
+    0 0 0 1.5px rgba(242, 199, 92, .55) inset,
+    0 18px 36px -18px rgba(6, 40, 31, .9);
+  -webkit-appearance: none; appearance: none;
   -webkit-tap-highlight-color: transparent;
-  transition: transform .08s, background .15s;
+  transition: transform .12s, box-shadow .2s;
 }
-.roda-btn:hover { background: linear-gradient(180deg, rgba(255, 224, 138, .34), rgba(242, 199, 92, .2)); }
-.roda-btn:active { transform: scale(.97); }
-.roda-btn img { width: 32px; height: 32px; border-radius: 9px; display: block; }
+.roda-cta::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -40%; width: 30%;
+  background: linear-gradient(100deg, transparent, rgba(255, 243, 207, .28), transparent);
+  transform: skewX(-18deg);
+  animation: kilau 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes kilau { 0%, 55% { left: -40%; } 100% { left: 130%; } }
+.roda-cta:hover { box-shadow: 0 0 0 2px rgba(242, 199, 92, .85) inset, 0 22px 40px -18px rgba(6, 40, 31, .95); }
+.roda-cta:active { transform: scale(.985); }
+.roda-cta-ikon {
+  flex: none; width: 60px; height: 60px; border-radius: 18px;
+  display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 40%, rgba(242, 199, 92, .28), rgba(0, 0, 0, .18));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12);
+}
+.roda-ikon { width: 46px; height: 46px; display: block; overflow: visible; }
+.roda-putar { transform-box: view-box; transform-origin: 24px 26px; animation: pusing 8s linear infinite; }
+@keyframes pusing { to { transform: rotate(360deg); } }
+.roda-cta-teks { flex: 1; min-width: 0; display: grid; gap: 1px; }
+.roda-cta-kecil { font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #f2c75c; }
+.roda-cta-tajuk { font-size: 19px; font-weight: 800; letter-spacing: -.01em; line-height: 1.2; }
+.roda-cta-sub { font-size: 13px; color: rgba(255, 255, 255, .72); font-weight: 500; }
+.roda-cta-anak {
+  flex: none; width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: linear-gradient(180deg, #ffe08a, #e2ad3f);
+  color: #3a2700;
+  box-shadow: 0 6px 14px -6px rgba(242, 199, 92, .9);
+}
+.roda-cta-anak svg { width: 20px; height: 20px; }
+@media (prefers-reduced-motion: reduce) { .roda-cta::after, .roda-putar { animation: none; } }
 .roda-layer {
   position: fixed; inset: 0; z-index: 80;
   background: #041a14;
-  animation: fade .2s ease-out;
+  animation: rodaMasuk .38s cubic-bezier(.2, .9, .3, 1);
 }
+@keyframes rodaMasuk { from { opacity: 0; transform: translateY(24px) scale(.98); } }
 .roda-layer iframe { width: 100%; height: 100%; border: 0; display: block; }
 .hero-logo {
   display: block; width: 88px; height: 88px; margin: 0 auto 16px;

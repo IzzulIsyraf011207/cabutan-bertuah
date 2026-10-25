@@ -29,12 +29,6 @@
 </head>
 <body>
   <header class="hero">
-    <div class="hero-top">
-      <button class="roda-btn" type="button" id="bukaRoda">
-        <img src="assets/logo.svg" alt="" width="26" height="26">
-        Pusingan Bertuah
-      </button>
-    </div>
     <div class="wrap">
       <img class="hero-logo" src="assets/logo.svg" alt="Logo Cabutan Bertuah" width="88" height="88">
       <div class="badge">🎁 BORANG PENYERTAAN</div>
@@ -86,6 +80,33 @@
         <span>Simpan &amp; Dapatkan Nombor</span>
       </button>
     </form>
+
+    <button class="roda-cta" type="button" id="bukaRoda">
+      <span class="roda-cta-ikon">
+          <svg class="roda-ikon" viewBox="0 0 48 48" aria-hidden="true">
+            <defs>
+              <linearGradient id="rgold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3cf"/><stop offset=".45" stop-color="#f2c75c"/><stop offset="1" stop-color="#a8711a"/></linearGradient>
+            </defs>
+            <g class="roda-putar">
+            <circle cx="24" cy="26" r="19" fill="url(#rgold)"/>
+            <circle cx="24" cy="26" r="15.5" fill="#0a4535"/>
+            <path d="M24 26V10.5A15.5 15.5 0 0 1 37.4 18.3Z M24 26 37.4 33.7A15.5 15.5 0 0 1 24 41.5Z M24 26 10.6 33.7A15.5 15.5 0 0 1 10.6 18.3Z" fill="#f2c75c"/>
+            <path d="M24 26 37.4 18.3A15.5 15.5 0 0 1 37.4 33.7Z M24 26V41.5A15.5 15.5 0 0 1 10.6 33.7Z M24 26 10.6 18.3A15.5 15.5 0 0 1 24 10.5Z" fill="#fbeecb"/>
+            <circle cx="24" cy="26" r="5" fill="url(#rgold)" stroke="#0a4535" stroke-width="1.6"/>
+            </g>
+            <path d="M24 13 19.6 4.6a5 5 0 1 1 8.8 0Z" fill="url(#rgold)" stroke="#6e4a0c" stroke-width="1.2"/>
+            <circle cx="24" cy="3.6" r="1.8" fill="#d92d20"/>
+          </svg>
+      </span>
+      <span class="roda-cta-teks">
+        <span class="roda-cta-kecil">✦ Untuk penganjur</span>
+        <span class="roda-cta-tajuk">Pusingan Bertuah</span>
+        <span class="roda-cta-sub">Buka roda cabutan bertuah</span>
+      </span>
+      <span class="roda-cta-anak" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+      </span>
+    </button>
 
     <div class="mine" id="mine">
       <span>Nombor bertuah anda di peranti ini</span>
