@@ -180,6 +180,7 @@
           <li><b>JANTINA</b>: <code>L</code> / <code>P</code> (atau LELAKI / PEREMPUAN). Jika tiada lajur ini, sistem teka dari nama (BIN / A/L = lelaki, BINTI / BT / A/P = perempuan).</li>
           <li><b>KELAS</b>: jika tiada lajur ini, nama <b>sheet</b> digunakan sebagai kelas (contoh satu sheet = satu kelas). Jika nama sheet "Sheet1", nama <b>fail</b> digunakan.</li>
           <li>Format lain yang juga diterima: dua lajur bertajuk <b>LELAKI</b> dan <b>PEREMPUAN</b> berisi nama.</li>
+          <li><b>Roda hanya papar nama pendek</b>: "BIN / BINTI / BT / A/L / A/P" dan nama bapa dibuang (contoh AHMAD FAIZ BIN ROSLAN → <b>AHMAD FAIZ</b>). Jika dua murid dalam kelas yang sama ada nama pendek sama, nama bapa ditambah dalam kurungan, contoh <b>AHMAD (ALI)</b>. Nama penuh tetap disimpan untuk rujukan admin.</li>
           <li>Lajur BIL dan lajur lain diabaikan. Nama yang sama dalam kelas yang sama tidak akan dimasukkan dua kali.</li>
         </ul>
       </div>
@@ -233,7 +234,7 @@
       </div>
       <div class="scroll" style="max-height:560px">
         <table class="t">
-          <thead><tr><th style="width:40px"><input type="checkbox" class="cb" id="pilihSemua" aria-label="Pilih semua"></th><th>Bil</th><th>Nama</th><th>Jantina</th><th>Kelas</th></tr></thead>
+          <thead><tr><th style="width:40px"><input type="checkbox" class="cb" id="pilihSemua" aria-label="Pilih semua"></th><th>Bil</th><th>Nama di Roda</th><th>Nama Penuh</th><th>Jantina</th><th>Kelas</th></tr></thead>
           <tbody id="tbody"></tbody>
         </table>
         <div class="empty" id="kosong" hidden>Tiada nama lagi. Import fail Excel di atas.</div>
@@ -316,7 +317,7 @@
       try {
         const out = [];
         for (let dari = 0; ; dari += 1000) {
-          const { data, error } = await sb.from("murid").select("id,nama,jantina,kelas").order("id").range(dari, dari + 999);
+          const { data, error } = await sb.from("murid").select("id,nama,nama_pendek,jantina,kelas").order("id").range(dari, dari + 999);
           if (error) throw error;
           out.push(...data);
           if (data.length < 1000) break;
@@ -336,7 +337,7 @@
     function tapis() {
       const q = $("cari").value.trim().toLowerCase();
       const j = $("tapisJ").value, k = $("tapisK").value;
-      return semua.filter((m) => (!j || m.jantina === j) && (!k || m.kelas === k) && (!q || m.nama.toLowerCase().includes(q)));
+      return semua.filter((m) => (!j || m.jantina === j) && (!k || m.kelas === k) && (!q || m.nama.toLowerCase().includes(q) || m.nama_pendek.toLowerCase().includes(q)));
     }
 
     function render() {
@@ -360,10 +361,10 @@
       $("tbody").innerHTML = rows.slice(0, 2000).map((m, i) => `
         <tr class="${dipilih.has(m.id) ? "dipilih" : ""}">
           <td><input type="checkbox" class="cb" data-id="${m.id}" ${dipilih.has(m.id) ? "checked" : ""}></td>
-          <td>${i + 1}</td><td>${esc(m.nama)}</td>
+          <td>${i + 1}</td><td><b>${esc(m.nama_pendek)}</b></td><td style="color:var(--muted)">${esc(m.nama)}</td>
           <td><span class="badge-j ${m.jantina}">${m.jantina}</span></td><td>${esc(m.kelas)}</td>
         </tr>`).join("") +
-        (rows.length > 2000 ? `<tr><td colspan="5" class="empty">+${(rows.length - 2000).toLocaleString("ms-MY")} lagi. Guna carian atau tapis kelas.</td></tr>` : "");
+        (rows.length > 2000 ? `<tr><td colspan="6" class="empty">+${(rows.length - 2000).toLocaleString("ms-MY")} lagi. Guna carian atau tapis kelas.</td></tr>` : "");
       kemasPilihan();
     }
 
@@ -422,7 +423,7 @@
       const { data, error } = await sb.rpc("import_murid", { p_senarai: [m] });
       if (error) { msg.className = "msg err"; msg.textContent = "Gagal: " + error.message; return; }
       msg.className = "msg ok";
-      msg.textContent = data[0].ditambah ? `✓ ${m.nama} (${m.kelas}) ditambah.` : "Nama ini sudah ada dalam kelas tersebut.";
+      msg.textContent = data[0].ditambah ? `✓ ${namaPendek(m.nama)} (${m.kelas}) ditambah.` : "Nama ini sudah ada dalam kelas tersebut.";
       $("tNama").value = ""; $("tNama").focus();
       muat();
     });
@@ -448,6 +449,8 @@
       if (/\s(BIN|B|A\/L)\s/.test(t)) return "L";
       return "";
     }
+    // Sama seperti public.nama_pendek() di Supabase: buang BIN/BINTI/BT/A/L/A/P dan nama bapa.
+    const namaPendek = (n) => n.replace(/\s+(BINTI|BINTE|BIN|BTE|BT\.?|B\.|B|A\s*\/\s*L|A\s*\/\s*P)(\s.*)?$/i, "").trim() || n;
     const namaSah = (s) => s.length >= 2 && /[A-Za-zÀ-ɏ؀-ۿ一-鿿]/.test(s) && !TAJUK_NAMA.test(s);
 
     function bacaSheet(aoa, kelasLalai, sumber) {
@@ -523,7 +526,7 @@
             if (!rows.length) continue;
             hasil.push(...rows);
             laporan.push({ sumber: `${f.name} › ${sn}`, n: rows.length, tiadaJ: rows.filter((r) => !r.jantina).length,
-              kelas: [...new Set(rows.map((r) => r.kelas))] });
+              contoh: rows.slice(0, 3), kelas: [...new Set(rows.map((r) => r.kelas))] });
           }
         } catch (err) {
           console.error(err);
@@ -542,7 +545,8 @@
         <div class="fail-item"><b>📄 ${esc(l.sumber)}</b><br>
         ${l.ralat ? `<span class="warn">${esc(l.ralat)}</span>` :
           `<span class="ok">${l.n} nama</span> · Kelas: ${l.kelas.map(esc).join(", ")}
-           ${l.tiadaJ ? ` · <span class="warn">${l.tiadaJ} tiada jantina</span>` : ""}`}
+           ${l.tiadaJ ? ` · <span class="warn">${l.tiadaJ} tiada jantina</span>` : ""}
+           <br>Di roda: ${l.contoh.map((r) => `${esc(r.nama)} → <b>${esc(namaPendek(r.nama))}</b>`).join(" · ")}…`}
         </div>`).join("") || `<div class="fail-item"><span class="warn">Tiada nama dijumpai dalam fail.</span></div>`;
       renderCalon();
       $("preview").hidden = false;

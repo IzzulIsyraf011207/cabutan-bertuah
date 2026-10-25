@@ -85,3 +85,38 @@ grant execute on function public.senarai_roda() to anon, authenticated;
 
 -- 5. Admin pertama.
 insert into public.admin (email) values ('izzulmedia01@gmail.com');
+
+-- 6. Nama pendek: roda hanya papar nama tanpa "BIN / BINTI / BT / BTE / B. / A/L / A/P" dan nama bapa.
+create or replace function public.nama_pendek(p_nama text)
+returns text language sql immutable set search_path = '' as $$
+  select coalesce(nullif(btrim(regexp_replace(
+    p_nama,
+    '\s+(BINTI|BINTE|BIN|BTE|BT\.?|B\.|B|A\s*/\s*L|A\s*/\s*P)(\s.*)?$',
+    '', 'i')), ''), btrim(p_nama));
+$$;
+
+-- Nama bapa (perkataan pertama selepas BIN/BINTI), untuk bezakan nama pendek yang sama.
+create or replace function public.nama_bapa(p_nama text)
+returns text language sql immutable set search_path = '' as $$
+  select (regexp_match(p_nama, '\s(?:BINTI|BINTE|BIN|BTE|BT\.?|B\.|B|A\s*/\s*L|A\s*/\s*P)\s+([^\s]+)', 'i'))[1];
+$$;
+
+alter table public.murid
+  add column nama_pendek text generated always as (public.nama_pendek(nama)) stored;
+
+-- Roda awam hanya terima nama pendek. Jika dua murid dalam kelas & jantina yang sama
+-- ada nama pendek yang sama, nama bapa ditambah dalam kurungan, contoh "AHMAD (ALI)".
+create or replace function public.senarai_roda()
+returns table (id bigint, nama text, jantina text, kelas text)
+language sql stable security definer set search_path = '' as $$
+  select m.id,
+    case when count(*) over (partition by m.jantina, m.kelas, upper(m.nama_pendek)) > 1
+              and public.nama_bapa(m.nama) is not null
+         then m.nama_pendek || ' (' || public.nama_bapa(m.nama) || ')'
+         else m.nama_pendek end,
+    m.jantina, m.kelas
+  from public.murid m
+  order by m.jantina, m.kelas, m.nama_pendek;
+$$;
+revoke execute on function public.senarai_roda() from public;
+grant execute on function public.senarai_roda() to anon, authenticated;

@@ -30,6 +30,10 @@ Baris pertama = tajuk lajur. Satu baris = satu murid.
   - Tiada lajur KELAS → nama **sheet** digunakan sebagai kelas (satu sheet = satu kelas).
     Jika sheet bernama "Sheet1", nama **fail** digunakan (contoh `5 AMANAH.xlsx`).
   - Dua lajur bertajuk **LELAKI** dan **PEREMPUAN** berisi nama.
+- **Roda hanya papar nama pendek.** "BIN / BINTI / BT / A/L / A/P" dan nama bapa dibuang secara
+  automatik, contoh `AHMAD FAIZ BIN ROSLAN` → **AHMAD FAIZ**. Jika dua murid dalam kelas & jantina
+  yang sama ada nama pendek sama, nama bapa ditambah: **AHMAD (ALI)** dan **AHMAD (ABU)**.
+  Nama penuh tetap disimpan (untuk teka jantina dan rujukan admin) tetapi tidak dihantar ke roda awam.
 - Nama kelas ditukar ke huruf besar supaya "5 Amanah" dan "5 AMANAH" dikira kelas yang sama.
 - Nama yang sama dalam kelas yang sama tidak dimasukkan dua kali.
 
