@@ -60,7 +60,14 @@ Baris pertama = tajuk lajur. Satu baris = satu murid.
 - Nama kelas ditukar ke huruf besar supaya "5 Amanah" dan "5 AMANAH" dikira kelas yang sama.
 - Nama yang sama dalam kelas yang sama tidak dimasukkan dua kali.
 
-## Cipta akaun admin (sekali sahaja)
+## Akaun admin
+
+Akaun admin projek **Cabutan Bertuah** (`izzulmedia01@gmail.com` dan `cabutanbertuah@gmail.com`)
+telah disalin ke projek Roda Bertuah dengan **emel dan kata laluan yang sama**. Kedua-duanya ada
+dalam jadual `admin`. Projek Supabase ini berasingan, jadi jika kata laluan ditukar di satu projek,
+ia tidak berubah di projek yang lain.
+
+### Tambah akaun admin baru
 
 1. Supabase → projek **Roda Bertuah** → **Authentication** → **Users** → **Add user** → **Create new user**.
 2. Emel: `izzulmedia01@gmail.com` (sudah ada dalam jadual `admin`), tetapkan kata laluan, tandakan **Auto Confirm User**.
