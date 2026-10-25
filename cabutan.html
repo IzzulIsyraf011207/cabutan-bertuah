@@ -11,7 +11,10 @@
   <meta property="og:url" content="https://izzulisyraf011207.github.io/cabutan-bertuah/cabutan.html">
   <meta property="og:title" content="Roda Cabutan Bertuah">
   <meta property="og:description" content="Tekan MULA, tekan BERHENTI. Pemenang dipilih secara rawak dan adil.">
+  <meta property="og:site_name" content="Cabutan Bertuah">
   <meta property="og:image" content="https://izzulisyraf011207.github.io/cabutan-bertuah/assets/thumbnail-roda.jpg">
+  <meta property="og:image:secure_url" content="https://izzulisyraf011207.github.io/cabutan-bertuah/assets/thumbnail-roda.jpg">
+  <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1080">
   <meta property="og:image:height" content="1080">
   <meta property="og:image:alt" content="Roda Cabutan Bertuah">
@@ -69,7 +72,15 @@
     .bar-btns { display: flex; gap: 8px; }
     .title-wrap { display: flex; align-items: center; gap: 14px; min-width: 0; }
     .bar-logo { width: 52px; height: 52px; border-radius: 14px; flex: none; box-shadow: 0 8px 20px -8px rgba(0,0,0,.6); }
-    @media (max-width: 520px) { .bar-logo { width: 44px; height: 44px; border-radius: 12px; } }
+    @media (max-width: 520px) {
+      .bar-logo { width: 40px; height: 40px; border-radius: 11px; }
+      .title-wrap { gap: 10px; }
+      .title .eyebrow { font-size: 9.5px; letter-spacing: .14em; white-space: nowrap; }
+      .title h1 { font-size: 19px; white-space: nowrap; }
+      .bar-btns { gap: 6px; }
+      .icon-btn { width: 40px; height: 40px; border-radius: 12px; }
+    }
+    @media (max-width: 360px) { .title .eyebrow { display: none; } }
     .icon-btn {
       width: 44px; height: 44px; display: grid; place-items: center;
       border-radius: 14px; border: 1px solid var(--line);
@@ -348,6 +359,9 @@
       </div>
       </div>
       <div class="bar-btns">
+        <button class="icon-btn" id="tutupEmbed" aria-label="Tutup Pusingan Bertuah" title="Tutup" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
         <button class="icon-btn" id="bunyi" aria-label="Matikan bunyi" title="Bunyi">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path id="gelombang" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
         </button>
@@ -461,6 +475,13 @@
     const TAU = Math.PI * 2;
     const KUNCI_MENANG = "cabutan_bertuah_pemenang_v1";
     $("namaAcara").textContent = C.NAMA_ACARA;
+
+    // Dibuka dari butang "Pusingan Bertuah" dalam borang: tunjuk butang tutup.
+    const terbenam = window.self !== window.top;
+    if (terbenam) {
+      $("tutupEmbed").hidden = false;
+      $("tutupEmbed").onclick = () => window.parent.postMessage({ type: "tutup-roda" }, location.origin);
+    }
 
     // ================= Data =================
     let peserta = [];   // { nombor_bertuah, nama } dari borang

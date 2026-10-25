@@ -5,7 +5,7 @@ Supabase (projek **Cabutan Bertuah**, `scxpyfvdhcjalsedasel`, region Singapura).
 
 | Fail | Untuk siapa | Fungsi |
 |---|---|---|
-| `index.html` | Orang awam | Borang (nama, IC, telefon). Lepas **Simpan**, pop up keluar nombor bertuah + nota "Sila screenshot atau simpan nombor ini untuk cabutan bertuah." Butang **Simpan Nombor** simpan gambar ke galeri, butang **Tutup** dan **✕** untuk tutup. |
+| `index.html` | Orang awam | Borang (nama, IC, telefon). Lepas **Simpan**, pop up keluar nombor bertuah + nota "Sila screenshot atau simpan nombor ini untuk cabutan bertuah." Butang **Simpan Nombor** simpan gambar ke galeri, butang **Tutup** dan **✕** untuk tutup. Butang **Pusingan Bertuah** di atas borang buka roda cabutan yang sama (database yang sama). |
 | `admin.html` | Admin sahaja | Log masuk, senarai semua peserta, cari, **cetak senarai penuh**, **cetak nombor sahaja**, muat turun Excel (CSV), **padam peserta** terus tanpa pengesahan (pilih satu-satu atau padam semua). |
 | `cabutan.html` | Sesiapa (tanpa log masuk) | Roda cabutan bertuah. Tekan **MULA** untuk pusing, tekan **BERHENTI** untuk hentikan (tiada berhenti automatik). Ada bunyi tik semasa berpusing. Pemenang dipilih rawak dan tidak berulang. |
 | `supabase/schema.sql` | Rujukan | Skema database (sudah dipasang di Supabase). |
