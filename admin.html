@@ -64,6 +64,28 @@
     td.alamat { min-width: 220px; max-width: 360px; }
     .empty { padding: 48px 16px; text-align: center; color: var(--muted); }
 
+    /* Padam peserta */
+    .delbar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 12px 14px; border-bottom: 1px solid var(--line); background: var(--surface-2);
+    }
+    .delbar .info { font-size: 14px; color: var(--muted); font-weight: 600; }
+    .delbar .info b { color: var(--ink); }
+    .delbar .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn-danger-solid { background: var(--danger); color: #fff; }
+    .btn-danger-solid:hover:not(:disabled) { filter: brightness(1.08); }
+    th.pilih, td.pilih { width: 44px; padding-right: 0; }
+    .cb { width: 20px; height: 20px; margin: 0; accent-color: var(--danger); cursor: pointer; vertical-align: middle; }
+    tr.dipilih td { background: var(--danger-soft); }
+    .pilih-mobile { display: none; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    @media (max-width: 720px) {
+      .delbar { display: grid; grid-template-columns: 1fr; }
+      .delbar .btns { display: grid; grid-template-columns: 1fr 1fr; }
+      .delbar .btns .btn { width: 100%; padding: 0 8px; }
+      .pilih-mobile { display: inline-flex; }
+      .delbar .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    }
+
     /* Mobile: jadual jadi kad */
     @media (max-width: 720px) {
       table, thead, tbody, tr, td { display: block; }
@@ -71,6 +93,9 @@
       tr { padding: 14px 16px; border-bottom: 1px solid var(--line); }
       td { border: 0; padding: 2px 0; }
       td.bil { display: none; }
+      tr { position: relative; }
+      td.pilih { position: absolute; top: 16px; right: 16px; width: auto; padding: 0; }
+      .cb { width: 24px; height: 24px; }
       td.no { font-size: 22px; }
       td[data-l]::before { content: attr(data-l) ": "; color: var(--muted); font-weight: 600; font-size: 12px; }
       td.alamat { max-width: none; min-width: 0; }
@@ -82,7 +107,7 @@
     @media print {
       @page { size: A4; margin: 14mm 12mm; }
       body { background: #fff; color: #000; font-size: 11px; }
-      .topbar, .stats, .toolbar, .actions, .footer, .no-print { display: none !important; }
+      .topbar, .stats, .toolbar, .actions, .footer, .no-print, .delbar, .pilih { display: none !important; }
       .wrap-wide { width: auto; max-width: none; padding: 0; }
       .card { box-shadow: none; border: 0; }
       .table-card, .table-scroll { overflow: visible; }
@@ -103,6 +128,7 @@
       td.bil { display: table-cell; }
       td.no { color: #000; font-size: 13px; }
       tr { page-break-inside: avoid; }
+      tr.dipilih td { background: none !important; }
 
       body.print-ringkas .table-card { display: none; }
       body.print-ringkas .print-grid {
@@ -166,10 +192,21 @@
     </div>
 
     <div class="card table-card">
+      <div class="delbar">
+        <div class="top">
+          <span class="info" id="infoPilih">Tandakan peserta untuk dipadam.</span>
+          <label class="pilih-mobile"><input type="checkbox" class="cb" id="pilihSemuaM"> Pilih semua</label>
+        </div>
+        <div class="btns">
+          <button class="btn btn-danger btn-sm" id="padamPilih" disabled>🗑️ Padam Dipilih</button>
+          <button class="btn btn-danger-solid btn-sm" id="padamSemua">🗑️ Padam Semua Peserta</button>
+        </div>
+      </div>
       <div class="table-scroll">
         <table>
           <thead>
             <tr>
+              <th class="pilih"><input type="checkbox" class="cb" id="pilihSemua" aria-label="Pilih semua"></th>
               <th>Bil</th><th>Nombor</th><th>Nama</th><th>No. IC</th>
               <th>No. Telefon</th><th>Alamat</th><th>Tarikh Daftar</th>
             </tr>
@@ -202,6 +239,7 @@
     $("namaAcara").textContent = C.NAMA_ACARA;
 
     let semua = [];
+    const dipilih = new Set();   // id peserta yang ditanda untuk dipadam
 
     function papar(view) {
       ["viewLogin", "viewAdmin", "viewBukanAdmin"].forEach((v) => ($(v).hidden = v !== view));
@@ -288,7 +326,27 @@
       });
     }
 
+    function kemasPilihan() {
+      const rows = senaraiTapis();
+      const n = dipilih.size;
+      $("padamPilih").disabled = n === 0;
+      $("padamPilih").textContent = n ? `🗑️ Padam Dipilih (${n})` : "🗑️ Padam Dipilih";
+      $("padamSemua").disabled = semua.length === 0;
+      $("infoPilih").innerHTML = n
+        ? `<b>${n}</b> peserta dipilih`
+        : "Tandakan peserta untuk dipadam.";
+      const semuaDipilih = rows.length > 0 && rows.every((p) => dipilih.has(p.id));
+      ["pilihSemua", "pilihSemuaM"].forEach((id) => {
+        $(id).checked = semuaDipilih;
+        $(id).indeterminate = !semuaDipilih && rows.some((p) => dipilih.has(p.id));
+      });
+    }
+
     function render() {
+      // Buang pilihan bagi peserta yang sudah tiada.
+      const ada = new Set(semua.map((p) => p.id));
+      [...dipilih].forEach((id) => { if (!ada.has(id)) dipilih.delete(id); });
+
       const hariIni = hariKL(Date.now());
       $("sJumlah").textContent = semua.length;
       $("sHariIni").textContent = semua.filter((p) => hariKL(p.created_at) === hariIni).length;
@@ -299,7 +357,8 @@
       $("kosong").hidden = rows.length > 0;
       $("kosong").textContent = semua.length ? "Tiada padanan." : "Tiada peserta lagi.";
       $("tbody").innerHTML = rows.map((p, i) => `
-        <tr>
+        <tr class="${dipilih.has(p.id) ? "dipilih" : ""}">
+          <td class="pilih"><input type="checkbox" class="cb" data-id="${p.id}" ${dipilih.has(p.id) ? "checked" : ""} aria-label="Pilih ${esc(p.nama)}"></td>
           <td class="bil">${i + 1}</td>
           <td class="no">${esc(p.nombor_bertuah)}</td>
           <td data-l="Nama"><b>${esc(p.nama)}</b></td>
@@ -315,7 +374,74 @@
       const kini = new Date().toLocaleString("ms-MY", { timeZone: "Asia/Kuala_Lumpur" });
       $("pTajuk").textContent = "Senarai Peserta " + C.NAMA_ACARA;
       $("pInfo").textContent = `Jumlah: ${rows.length} · Dicetak: ${kini}`;
+      kemasPilihan();
     }
+
+    $("tbody").addEventListener("change", (e) => {
+      const id = Number(e.target.dataset.id);
+      if (!id) return;
+      e.target.checked ? dipilih.add(id) : dipilih.delete(id);
+      e.target.closest("tr").classList.toggle("dipilih", e.target.checked);
+      kemasPilihan();
+    });
+
+    ["pilihSemua", "pilihSemuaM"].forEach((id) => $(id).addEventListener("change", (e) => {
+      senaraiTapis().forEach((p) => (e.target.checked ? dipilih.add(p.id) : dipilih.delete(p.id)));
+      render();
+    }));
+
+    $("padamPilih").onclick = async () => {
+      const ids = [...dipilih];
+      if (!ids.length) return;
+      const nama = semua.filter((p) => dipilih.has(p.id)).slice(0, 5)
+        .map((p) => `• ${p.nombor_bertuah} – ${p.nama}`).join("\n");
+      const lagi = ids.length > 5 ? `\n…dan ${ids.length - 5} lagi` : "";
+      if (!confirm(`Padam ${ids.length} peserta ini?\n\n${nama}${lagi}\n\nData akan dipadam terus dari database dan tidak boleh dikembalikan.`)) return;
+      const btn = $("padamPilih");
+      btn.disabled = true; btn.textContent = "Memadam…";
+      try {
+        for (let i = 0; i < ids.length; i += 200) {
+          const { error } = await sb.from("peserta").delete().in("id", ids.slice(i, i + 200));
+          if (error) throw error;
+        }
+        await muat();
+        const ada = new Set(semua.map((p) => p.id));
+        const jumlah = ids.filter((id) => !ada.has(id)).length;
+        ids.forEach((id) => dipilih.delete(id));
+        render();
+        alert(jumlah ? `${jumlah} peserta telah dipadam dari database.`
+          : "Tiada peserta dipadam. Pastikan akaun anda ialah admin.");
+      } catch (err) {
+        console.error(err);
+        alert("Gagal memadam: " + err.message);
+        await muat();
+      }
+    };
+
+    $("padamSemua").onclick = async () => {
+      if (!semua.length) return;
+      const jawapan = prompt(`AMARAN: Ini akan memadam SEMUA ${semua.length} peserta dari database dan tidak boleh dikembalikan.\n\nTip: muat turun Excel (CSV) dahulu sebagai simpanan.\n\nTaip PADAM SEMUA untuk sahkan:`);
+      if (jawapan === null) return;
+      if (jawapan.trim().toUpperCase() !== "PADAM SEMUA") { alert("Tidak dipadam. Teks pengesahan tidak sama."); return; }
+      const btn = $("padamSemua");
+      btn.disabled = true; btn.textContent = "Memadam…";
+      try {
+        const sebelum = semua.length;
+        const { error } = await sb.from("peserta").delete().gt("id", 0);
+        if (error) throw error;
+        dipilih.clear();
+        await muat();
+        alert(semua.length === 0
+          ? `Semua ${sebelum} peserta telah dipadam dari database. Senarai kini kosong.`
+          : `Tidak semua dipadam (${semua.length} masih ada). Pastikan akaun anda ialah admin, kemudian cuba lagi.`);
+      } catch (err) {
+        console.error(err);
+        alert("Gagal memadam: " + err.message);
+        await muat();
+      } finally {
+        btn.textContent = "🗑️ Padam Semua Peserta";
+      }
+    };
 
     $("cari").addEventListener("input", render);
     $("muatSemula").onclick = muat;

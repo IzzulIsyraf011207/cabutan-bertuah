@@ -173,3 +173,10 @@ $$;
 
 revoke execute on function public.senarai_roda() from public;
 grant execute on function public.senarai_roda() to anon, authenticated;
+
+-- 7. Admin boleh padam peserta (pilih satu-satu atau semua) dari admin.html.
+grant delete on public.peserta to authenticated;
+
+create policy "Admin boleh padam peserta"
+  on public.peserta for delete to authenticated
+  using ((select public.is_admin()));
