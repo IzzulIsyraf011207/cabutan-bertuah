@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#06231b">
+  <meta name="robots" content="noindex">
+  <title>Pusingan Cabutan Bertuah</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    :root {
+      --stage: #06231b;
+      --stage-2: #0b3a2c;
+      --stage-ink: #f2f7f4;
+      --stage-muted: #9cc0b1;
+      --stage-line: rgba(255, 255, 255, .12);
+    }
+    body {
+      background:
+        radial-gradient(70% 60% at 50% 35%, rgba(231, 184, 79, .16), transparent 70%),
+        radial-gradient(60% 50% at 100% 100%, rgba(38, 179, 134, .18), transparent 70%),
+        var(--stage);
+      color: var(--stage-ink);
+    }
+    .bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 14px 16px;
+      padding-top: max(14px, env(safe-area-inset-top));
+    }
+    .bar .title { font-weight: 800; font-size: clamp(18px, 3vw, 24px); letter-spacing: -.01em; }
+    .bar .title small { display: block; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-2); }
+    .bar-btns { display: flex; gap: 8px; }
+    .icon-btn {
+      width: 44px; height: 44px; display: grid; place-items: center;
+      border-radius: 12px; border: 1px solid var(--stage-line);
+      background: rgba(255, 255, 255, .06); color: var(--stage-ink);
+      cursor: pointer; text-decoration: none; font-size: 18px;
+    }
+    .icon-btn:hover { background: rgba(255, 255, 255, .12); }
+
+    .stage {
+      display: grid; gap: 20px;
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 1320px; margin: 0 auto; padding: 0 16px 32px;
+    }
+    @media (min-width: 980px) {
+      .stage { grid-template-columns: minmax(0, 1fr) 380px; align-items: center; min-height: calc(100dvh - 90px); }
+    }
+    .side { display: grid; gap: 16px; align-content: start; }
+
+    .wheel-col { display: flex; justify-content: center; }
+    .wheel-box {
+      position: relative;
+      width: min(100%, 560px);
+      aspect-ratio: 1;
+      margin-top: 18px;
+    }
+    @media (min-width: 980px) { .wheel-box { width: min(100%, calc(100dvh - 130px), 760px); margin-top: 22px; } }
+    .wheel-glow {
+      position: absolute; inset: -6%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(231, 184, 79, .35), transparent 65%);
+      filter: blur(10px);
+      opacity: .6;
+      transition: opacity .4s;
+    }
+    .spinning .wheel-glow { opacity: 1; }
+    #roda { position: absolute; inset: 0; width: 100%; height: 100%; will-change: transform; }
+    .pointer {
+      position: absolute; top: -18px; left: 50%;
+      width: 44px; height: 56px;
+      transform: translateX(-50%);
+      z-index: 3;
+      filter: drop-shadow(0 6px 8px rgba(0, 0, 0, .45));
+      transform-origin: 50% 20%;
+    }
+    .pointer.tick { animation: tick .12s ease-out; }
+    @keyframes tick { 40% { transform: translateX(-50%) rotate(-14deg); } }
+    .hub {
+      position: absolute; top: 50%; left: 50%;
+      width: 22%; aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      background: radial-gradient(circle at 35% 30%, #fff6dc, #e7b84f 45%, #a8761a);
+      box-shadow: 0 0 0 6px rgba(6, 35, 27, .85), 0 10px 30px rgba(0, 0, 0, .5), inset 0 -6px 12px rgba(0, 0, 0, .25);
+      z-index: 2;
+      font-size: clamp(22px, 5vw, 44px);
+    }
+
+    .ticker {
+      padding: 12px 24px;
+      border-radius: 20px;
+      text-align: center;
+      background: rgba(0, 0, 0, .28);
+      border: 1px solid var(--stage-line);
+    }
+    .ticker .k { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--stage-muted); font-weight: 700; }
+    .ticker .v {
+      font-size: clamp(44px, 9vw, 72px); font-weight: 800; line-height: 1.05;
+      color: var(--gold-2); letter-spacing: .08em; font-variant-numeric: tabular-nums;
+    }
+
+    .controls { display: grid; gap: 12px; }
+    .controls .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .controls .btn { min-height: 60px; font-size: 18px; letter-spacing: .04em; }
+    .controls .input {
+      background: rgba(255, 255, 255, .06); border-color: var(--stage-line); color: var(--stage-ink);
+    }
+    .controls .input::placeholder { color: var(--stage-muted); }
+    .opts { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; font-size: 14px; color: var(--stage-muted); }
+    .opts label { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
+    .opts input { width: 18px; height: 18px; accent-color: var(--gold); }
+
+    .panel {
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid var(--stage-line);
+      border-radius: 20px;
+      padding: 18px;
+    }
+    .panel h3 { margin: 0 0 12px; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .panel h3 span { font-size: 13px; color: var(--stage-muted); font-weight: 600; }
+    .winners { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; max-height: 38vh; overflow-y: auto; }
+    .winners li {
+      display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; align-items: center;
+      padding: 12px; border-radius: 14px; background: rgba(0, 0, 0, .25);
+    }
+    .winners .n { grid-row: span 2; font-size: 24px; font-weight: 800; color: var(--gold-2); letter-spacing: .05em; font-variant-numeric: tabular-nums; }
+    .winners .nm { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .winners .pz { font-size: 12px; color: var(--stage-muted); }
+    .muted { color: var(--stage-muted); font-size: 14px; }
+
+    .empty-wheel {
+      position: absolute; left: 50%; top: 68%; transform: translateX(-50%);
+      padding: 8px 16px; border-radius: 999px; white-space: nowrap;
+      background: rgba(6, 35, 27, .85); color: var(--stage-ink); z-index: 4; font-weight: 600; font-size: 14px;
+    }
+
+    /* Pop up pemenang */
+    .win-box {
+      max-width: 480px;
+      text-align: center;
+      background: linear-gradient(170deg, #0e5a43, #06231b);
+      color: #fff;
+      border: 1px solid rgba(231, 184, 79, .5);
+    }
+    .win-box .crown { font-size: 56px; margin-top: 26px; line-height: 1; }
+    .win-box .k { margin-top: 8px; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-2); font-weight: 700; }
+    .win-box .hadiah { margin-top: 4px; font-size: 15px; opacity: .85; }
+    .win-box .big {
+      font-size: clamp(72px, 22vw, 116px); font-weight: 800; line-height: 1; margin: 10px 0 6px;
+      color: var(--gold-2); letter-spacing: .06em; font-variant-numeric: tabular-nums;
+      text-shadow: 0 6px 30px rgba(231, 184, 79, .5);
+    }
+    .win-box .nm { font-size: clamp(20px, 5vw, 26px); font-weight: 800; padding: 0 20px; word-break: break-word; }
+    .win-box .ic { font-size: 14px; opacity: .7; margin-top: 4px; }
+    .win-box .modal-actions { padding: 22px; margin: 0; }
+    .win-box .btn-ghost { color: #fff; border-color: rgba(255, 255, 255, .3); }
+    .win-box .btn-ghost:hover { background: rgba(255, 255, 255, .08); }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 24px; z-index: 70;
+      transform: translateX(-50%) translateY(120px);
+      padding: 12px 18px; border-radius: 12px;
+      background: #fff; color: #17251f; font-weight: 600; font-size: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
+      opacity: 0; pointer-events: none;
+      transition: transform .3s, opacity .3s;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <div class="title"><small>Pusingan</small><span id="namaAcara">Cabutan Bertuah</span></div>
+    <div class="bar-btns">
+      <button class="icon-btn" id="bunyi" title="Bunyi">🔊</button>
+      <button class="icon-btn" id="skrinPenuh" title="Skrin penuh">⛶</button>
+      <a class="icon-btn" href="admin.html" title="Kembali ke admin">☰</a>
+    </div>
+  </header>
+
+  <main class="stage">
+    <section class="wheel-col">
+      <div class="wheel-box" id="wheelBox">
+        <div class="wheel-glow"></div>
+        <svg class="pointer" id="pointer" viewBox="0 0 44 56" aria-hidden="true">
+          <defs>
+            <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#fff6dc"/><stop offset=".5" stop-color="#e7b84f"/><stop offset="1" stop-color="#a8761a"/>
+            </linearGradient>
+          </defs>
+          <path d="M22 54 3 14a19 19 0 1 1 38 0Z" fill="url(#pg)" stroke="#5c3d00" stroke-width="2"/>
+          <circle cx="22" cy="15" r="6" fill="#06231b"/>
+        </svg>
+        <canvas id="roda"></canvas>
+        <div class="hub">🎁</div>
+        <div class="empty-wheel" id="kosong" hidden>Memuatkan peserta…</div>
+      </div>
+    </section>
+
+    <section class="side">
+      <div class="ticker">
+        <div class="k">Nombor</div>
+        <div class="v" id="ticker">----</div>
+      </div>
+
+      <div class="controls">
+        <input class="input" id="hadiah" maxlength="80" placeholder="Nama hadiah (cth: Hadiah Utama)">
+        <div class="row">
+          <button class="btn btn-primary" id="mula">▶ MULA</button>
+          <button class="btn btn-gold" id="cabut">🎯 CABUT</button>
+        </div>
+        <div class="opts">
+          <label><input type="checkbox" id="kecuali" checked> Kecualikan pemenang terdahulu</label>
+          <span id="bilPeserta">0 nombor dalam bulatan</span>
+        </div>
+      </div>
+      <aside class="panel">
+        <h3>🏆 Senarai Pemenang <span id="bilMenang">0</span></h3>
+        <ul class="winners" id="senaraiMenang"></ul>
+        <p class="muted" id="tiadaMenang">Belum ada pemenang.</p>
+      </aside>
+    </section>
+  </main>
+
+  <!-- Pop up pemenang -->
+  <div class="modal" id="modalMenang" role="dialog" aria-modal="true" aria-labelledby="wNombor">
+    <div class="modal-box win-box">
+      <div class="crown">🏆</div>
+      <div class="k">Tahniah! Nombor Bertuah</div>
+      <div class="hadiah" id="wHadiah"></div>
+      <div class="big" id="wNombor">0000</div>
+      <div class="nm" id="wNama"></div>
+      <div class="ic" id="wIC"></div>
+      <div class="modal-actions">
+        <button class="btn btn-gold btn-block" id="sahkan">✓ Sahkan &amp; Simpan Pemenang</button>
+        <button class="btn btn-ghost btn-block" id="cabutSemula">Cabut Semula (tidak disimpan)</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="assets/config.js"></script>
+  <script>
+  (function () {
+    const C = window.CABUTAN_CONFIG;
+    const $ = (id) => document.getElementById(id);
+    const esc = window.escapeHTML;
+    const TAU = Math.PI * 2;
+    $("namaAcara").textContent = C.NAMA_ACARA;
+
+    // ---------- Data ----------
+    let peserta = [];      // semua peserta dari DB
+    let roda = [];         // peserta dalam bulatan sekarang
+    let calon = null;      // pemenang yang baru dicabut (belum disahkan)
+
+    async function pastikanAdmin() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) { location.replace("admin.html?ke=cabutan"); return false; }
+      const { data: admin } = await sb.rpc("is_admin");
+      if (!admin) { location.replace("admin.html"); return false; }
+      return true;
+    }
+
+    async function muatPeserta() {
+      const out = [];
+      for (let dari = 0; ; dari += 1000) {
+        const { data, error } = await sb.from("peserta")
+          .select("id,nombor_bertuah,nama,no_ic,menang,hadiah,menang_pada")
+          .order("id").range(dari, dari + 999);
+        if (error) throw error;
+        out.push(...data);
+        if (data.length < 1000) break;
+      }
+      peserta = out.sort((a, b) => bandingNombor(a.nombor_bertuah, b.nombor_bertuah));
+      bina();
+    }
+
+    function bina() {
+      roda = $("kecuali").checked ? peserta.filter((p) => !p.menang) : peserta.slice();
+      $("bilPeserta").textContent = `${roda.length} nombor dalam bulatan`;
+      $("kosong").hidden = roda.length > 0;
+      $("kosong").textContent = peserta.length ? "Semua peserta sudah menang." : "Belum ada peserta.";
+      $("mula").disabled = $("cabut").disabled = roda.length === 0 || state !== "idle";
+      lukis();
+      kemasTicker(true);
+      senaraiPemenang();
+    }
+
+    function senaraiPemenang() {
+      const w = peserta.filter((p) => p.menang)
+        .sort((a, b) => new Date(b.menang_pada || 0) - new Date(a.menang_pada || 0));
+      $("bilMenang").textContent = w.length;
+      $("tiadaMenang").hidden = w.length > 0;
+      $("senaraiMenang").innerHTML = w.map((p) => `
+        <li><span class="n">${esc(p.nombor_bertuah)}</span>
+        <span class="nm">${esc(p.nama)}</span>
+        <span class="pz">${esc(p.hadiah || "Pemenang")}</span></li>`).join("");
+    }
+
+    // ---------- Lukis roda ----------
+    const canvas = $("roda");
+    const ctx = canvas.getContext("2d");
+    const WARNA = [
+      ["#0e5a43", "#ffffff"], ["#e7b84f", "#2a1c00"],
+      ["#137456", "#ffffff"], ["#f6e7c4", "#2a1c00"],
+    ];
+    let saizCss = 0;
+
+    function lukis() {
+      const rect = $("wheelBox").getBoundingClientRect();
+      saizCss = rect.width;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(saizCss * dpr);
+      canvas.height = Math.round(saizCss * dpr);
+      const S = canvas.width, cx = S / 2, R = S / 2;
+      ctx.clearRect(0, 0, S, S);
+
+      const rim = R * 0.06;
+      const r = R - rim;
+      const n = roda.length;
+
+      if (n === 0) {
+        ctx.fillStyle = "#0b3a2c";
+        ctx.beginPath(); ctx.arc(cx, cx, r, 0, TAU); ctx.fill();
+      } else {
+        const s = TAU / n;
+        for (let i = 0; i < n; i++) {
+          let w = i % 4;
+          if (n > 1 && i === n - 1 && w === 0) w = 2;
+          const a0 = -Math.PI / 2 + i * s;
+          ctx.beginPath();
+          ctx.moveTo(cx, cx);
+          ctx.arc(cx, cx, r, a0, a0 + s);
+          ctx.closePath();
+          ctx.fillStyle = WARNA[w][0];
+          ctx.fill();
+          if (n <= 400) {
+            ctx.strokeStyle = "rgba(6,35,27,.35)";
+            ctx.lineWidth = Math.max(1, S / 900);
+            ctx.stroke();
+          }
+        }
+        // Label nombor (jika muat)
+        const arc = s * r * 0.82;
+        const fs = Math.min(R * 0.085, arc * 0.62);
+        if (fs >= 9 * dpr) {
+          ctx.font = `800 ${fs}px 'Plus Jakarta Sans', sans-serif`;
+          ctx.textAlign = "right";
+          ctx.textBaseline = "middle";
+          for (let i = 0; i < n; i++) {
+            let w = i % 4;
+            if (n > 1 && i === n - 1 && w === 0) w = 2;
+            ctx.save();
+            ctx.translate(cx, cx);
+            ctx.rotate(-Math.PI / 2 + (i + 0.5) * s);
+            ctx.fillStyle = WARNA[w][1];
+            ctx.fillText(roda[i].nombor_bertuah, r * 0.93, 0);
+            ctx.restore();
+          }
+        }
+      }
+
+      // Bingkai emas + lampu
+      const g = ctx.createLinearGradient(0, 0, S, S);
+      g.addColorStop(0, "#fff1c9"); g.addColorStop(.5, "#d9a43c"); g.addColorStop(1, "#8a5f12");
+      ctx.lineWidth = rim;
+      ctx.strokeStyle = g;
+      ctx.beginPath(); ctx.arc(cx, cx, R - rim / 2, 0, TAU); ctx.stroke();
+      const lampu = 24;
+      for (let i = 0; i < lampu; i++) {
+        const a = (i / lampu) * TAU;
+        ctx.beginPath();
+        ctx.arc(cx + Math.cos(a) * (R - rim / 2), cx + Math.sin(a) * (R - rim / 2), rim * 0.22, 0, TAU);
+        ctx.fillStyle = i % 2 ? "#ffffff" : "#fff3c4";
+        ctx.shadowColor = "#ffe8a3"; ctx.shadowBlur = rim * 0.6;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    // ---------- Putaran ----------
+    const V_MAX = TAU * 2.2 / 1000; // rad / ms
+    let state = "idle";              // idle | spin | stop
+    let sudut = 0, laju = 0, tLepas = 0, minta = false;
+    let berhenti = null;             // { a0, d, T, t0, idx }
+    let idxLepas = -1;
+
+    function idxDiPenunjuk(a) {
+      const n = roda.length;
+      if (!n) return -1;
+      const local = ((-a % TAU) + TAU) % TAU;
+      return Math.min(n - 1, Math.floor(local / (TAU / n)));
+    }
+
+    function kemasTicker(paksa) {
+      const i = idxDiPenunjuk(sudut);
+      if (i === idxLepas && !paksa) return;
+      if (i !== idxLepas && state !== "idle") {
+        bunyiTik();
+        const p = $("pointer");
+        p.classList.remove("tick"); void p.offsetWidth; p.classList.add("tick");
+      }
+      idxLepas = i;
+      $("ticker").textContent = i >= 0 ? roda[i].nombor_bertuah : "----";
+    }
+
+    function rawak() {
+      const a = new Uint32Array(1);
+      crypto.getRandomValues(a);
+      return a[0] / 4294967296;
+    }
+
+    function frame(t) {
+      const dt = Math.min(50, t - tLepas || 16);
+      tLepas = t;
+      if (state === "spin") {
+        laju = Math.min(V_MAX, laju + V_MAX * dt / 900);
+        sudut += laju * dt;
+        if (minta && laju >= V_MAX) mulaBerhenti(t);
+      } else if (state === "stop") {
+        const u = Math.min(1, (t - berhenti.t0) / berhenti.T);
+        sudut = berhenti.a0 + berhenti.d * (1 - Math.pow(1 - u, 3));
+        if (u >= 1) {
+          state = "idle";
+          document.body.classList.remove("spinning");
+          kemasTicker(true);
+          umumkan(roda[berhenti.idx]);
+          return;
+        }
+      }
+      canvas.style.transform = `rotate(${sudut}rad)`;
+      kemasTicker(false);
+      requestAnimationFrame(frame);
+    }
+
+    function mula() {
+      if (state !== "idle" || !roda.length) return;
+      sediaAudio();
+      state = "spin"; laju = 0; minta = false; tLepas = performance.now();
+      document.body.classList.add("spinning");
+      $("mula").disabled = true;
+      $("cabut").disabled = false;
+      $("hadiah").disabled = $("kecuali").disabled = true;
+      requestAnimationFrame(frame);
+    }
+
+    function cabut() {
+      if (state === "idle") { mula(); setTimeout(() => (minta = true), 900); }
+      else if (state === "spin") minta = true;
+      $("cabut").disabled = true;
+    }
+
+    function mulaBerhenti(t) {
+      const n = roda.length, s = TAU / n;
+      const idx = Math.floor(rawak() * n);              // pemenang dipilih secara rawak kriptografi
+      const L = idx * s + (0.15 + 0.7 * rawak()) * s;   // titik dalam segmen pemenang
+      const base = sudut + TAU * (4 + rawak());
+      const sasaran = base + ((((-L - base) % TAU) + TAU) % TAU);
+      const d = sasaran - sudut;
+      berhenti = { a0: sudut, d, T: (3 * d) / laju, t0: t, idx };
+      state = "stop";
+    }
+
+    $("mula").onclick = mula;
+    $("cabut").onclick = cabut;
+    document.addEventListener("keydown", (e) => {
+      if (e.target.tagName === "INPUT" || $("modalMenang").classList.contains("show")) return;
+      if (e.code === "Space") { e.preventDefault(); state === "idle" ? mula() : cabut(); }
+      if (e.key === "Enter") { e.preventDefault(); cabut(); }
+    });
+
+    // ---------- Pemenang ----------
+    function umumkan(p) {
+      calon = p;
+      const hadiah = $("hadiah").value.trim();
+      $("wNombor").textContent = p.nombor_bertuah;
+      $("wNama").textContent = p.nama;
+      $("wIC").textContent = "No. IC: ******-**-" + p.no_ic.slice(-4);
+      $("wHadiah").textContent = hadiah;
+      $("modalMenang").classList.add("show");
+      bunyiMenang();
+      if (window.confetti) {
+        const end = Date.now() + 2600;
+        const col = ["#e7b84f", "#fff1c9", "#26b386", "#ffffff"];
+        (function f() {
+          confetti({ particleCount: 6, angle: 60, spread: 70, origin: { x: 0, y: .7 }, colors: col, zIndex: 60 });
+          confetti({ particleCount: 6, angle: 120, spread: 70, origin: { x: 1, y: .7 }, colors: col, zIndex: 60 });
+          if (Date.now() < end) requestAnimationFrame(f);
+        })();
+        confetti({ particleCount: 180, spread: 100, origin: { y: .4 }, colors: col, zIndex: 60 });
+      }
+    }
+
+    function selesai() {
+      $("modalMenang").classList.remove("show");
+      calon = null;
+      $("hadiah").disabled = $("kecuali").disabled = false;
+      bina();
+    }
+
+    $("sahkan").onclick = async () => {
+      if (!calon) return;
+      const btn = $("sahkan");
+      btn.disabled = true;
+      const data = { menang: true, hadiah: $("hadiah").value.trim() || null, menang_pada: new Date().toISOString() };
+      const { error } = await sb.from("peserta").update(data).eq("id", calon.id);
+      btn.disabled = false;
+      if (error) { toast("Gagal simpan: " + error.message); return; }
+      Object.assign(calon, data);
+      toast(`Pemenang ${calon.nombor_bertuah} disimpan ✓`);
+      selesai();
+    };
+    $("cabutSemula").onclick = selesai;
+
+    function toast(m) {
+      const t = $("toast");
+      t.textContent = m; t.classList.add("show");
+      clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove("show"), 2600);
+    }
+
+    $("kecuali").onchange = bina;
+
+    // ---------- Bunyi ----------
+    let audio = null, senyap = false;
+    function sediaAudio() {
+      if (audio || senyap) return;
+      try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) {}
+    }
+    let tikLepas = 0;
+    function bunyiTik() {
+      if (!audio || senyap) return;
+      const now = audio.currentTime;
+      if (now - tikLepas < 0.045) return;
+      tikLepas = now;
+      const o = audio.createOscillator(), g = audio.createGain();
+      o.type = "square"; o.frequency.value = 1400;
+      g.gain.setValueAtTime(0.06, now);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+      o.connect(g).connect(audio.destination);
+      o.start(now); o.stop(now + 0.05);
+    }
+    function bunyiMenang() {
+      if (!audio || senyap) return;
+      const now = audio.currentTime;
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+        const o = audio.createOscillator(), g = audio.createGain();
+        o.type = "triangle"; o.frequency.value = f;
+        const t = now + i * 0.13;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.2, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + (i === 3 ? 0.9 : 0.3));
+        o.connect(g).connect(audio.destination);
+        o.start(t); o.stop(t + 1);
+      });
+    }
+    $("bunyi").onclick = () => {
+      senyap = !senyap;
+      $("bunyi").textContent = senyap ? "🔇" : "🔊";
+    };
+
+    // ---------- Skrin penuh ----------
+    const fsOk = document.fullscreenEnabled || document.webkitFullscreenEnabled;
+    if (!fsOk) $("skrinPenuh").hidden = true;
+    $("skrinPenuh").onclick = () => {
+      const d = document;
+      if (d.fullscreenElement || d.webkitFullscreenElement) (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+      else { const e = d.documentElement; (e.requestFullscreen || e.webkitRequestFullscreen).call(e); }
+    };
+
+    let tResize;
+    window.addEventListener("resize", () => { clearTimeout(tResize); tResize = setTimeout(lukis, 120); });
+
+    // Muat semula peserta baru setiap 30 saat ketika roda tidak berpusing.
+    setInterval(() => {
+      if (state === "idle" && !calon && document.visibilityState === "visible") muatPeserta().catch(console.error);
+    }, 30000);
+
+    (async () => {
+      $("kosong").hidden = false;
+      lukis();
+      if (!(await pastikanAdmin())) return;
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      try { await muatPeserta(); }
+      catch (err) { $("kosong").textContent = "Gagal memuatkan peserta: " + err.message; }
+    })();
+  })();
+  </script>
+</body>
+</html>

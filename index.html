@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0e5a43">
+  <title>Borang Cabutan Bertuah</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="badge">🎁 BORANG PENYERTAAN</div>
+      <h1 id="tajuk">Cabutan <span>Bertuah</span></h1>
+      <p id="keterangan"></p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <form class="card form-card" id="borang" novalidate>
+      <h2>Maklumat Peserta</h2>
+      <p class="sub">Semua ruangan bertanda <span style="color:var(--danger)">*</span> wajib diisi.</p>
+
+      <div class="alert" id="alert" role="alert"></div>
+
+      <div class="field" data-field="nama">
+        <label for="nama">Nama Penuh <span class="req">*</span></label>
+        <input class="input" id="nama" name="nama" autocomplete="name" maxlength="120"
+               placeholder="Seperti dalam kad pengenalan" required>
+        <div class="err">Sila isi nama penuh anda.</div>
+      </div>
+
+      <div class="field" data-field="ic">
+        <label for="ic">No. Kad Pengenalan <span class="req">*</span></label>
+        <input class="input" id="ic" name="ic" inputmode="numeric" autocomplete="off"
+               maxlength="14" placeholder="900101-14-5678" required>
+        <div class="hint">12 digit. Sengkang (-) akan diletak secara automatik.</div>
+        <div class="err">No. IC mesti 12 digit.</div>
+      </div>
+
+      <div class="field" data-field="telefon">
+        <label for="telefon">No. Telefon <span class="req">*</span></label>
+        <input class="input" id="telefon" name="telefon" type="tel" inputmode="tel"
+               autocomplete="tel" maxlength="16" placeholder="012-345 6789" required>
+        <div class="hint">Untuk kami hubungi jika anda menang.</div>
+        <div class="err">Sila isi no. telefon yang sah.</div>
+      </div>
+
+      <div class="field" data-field="alamat">
+        <label for="alamat">Alamat <span class="req">*</span></label>
+        <textarea class="input" id="alamat" name="alamat" autocomplete="street-address"
+                  maxlength="500" placeholder="No. rumah, jalan, poskod, bandar, negeri" required></textarea>
+        <div class="err">Sila isi alamat lengkap.</div>
+      </div>
+
+      <div class="field" data-field="setuju">
+        <label class="check" for="setuju">
+          <input type="checkbox" id="setuju">
+          <span>Saya mengesahkan maklumat di atas adalah benar dan bersetuju maklumat ini
+          digunakan untuk tujuan cabutan bertuah sahaja.</span>
+        </label>
+        <div class="err">Sila tandakan persetujuan.</div>
+      </div>
+
+      <button class="btn btn-primary btn-block" type="submit" id="hantar">
+        <span>Simpan &amp; Dapatkan Nombor</span>
+      </button>
+    </form>
+
+    <div class="mine" id="mine">
+      <span>Nombor bertuah anda di peranti ini</span>
+      <button class="btn btn-ghost btn-sm" type="button" id="lihatSemula"><b id="mineNo"></b></button>
+    </div>
+  </main>
+
+  <footer class="footer">Maklumat anda disimpan dengan selamat dan tidak dikongsi.</footer>
+
+  <!-- Pop up nombor bertuah -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalLabel">
+    <div class="modal-box">
+      <div class="ticket-top">
+        <div class="ok-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <div class="label" id="modalLabel">Nombor Bertuah Anda</div>
+        <div class="lucky-number" id="nombor">0000</div>
+        <div class="who" id="namaPeserta"></div>
+        <div class="when" id="masaDaftar"></div>
+      </div>
+      <div class="ticket-sep"></div>
+      <div class="ticket-body">
+        <div class="note">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+          <span>Sila screenshot atau simpan nombor ini untuk cabutan bertuah.</span>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-gold btn-block" type="button" id="simpanGambar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+            Simpan Gambar Nombor
+          </button>
+          <button class="btn btn-ghost btn-block" type="button" id="tutup">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="assets/config.js"></script>
+  <script>
+  (function () {
+    const C = window.CABUTAN_CONFIG;
+    const $ = (id) => document.getElementById(id);
+    const STORE_KEY = "cabutan_bertuah_saya";
+
+    document.title = "Borang " + C.NAMA_ACARA;
+    $("keterangan").textContent = C.KETERANGAN;
+    if (C.NAMA_ACARA !== "Cabutan Bertuah") $("tajuk").textContent = C.NAMA_ACARA;
+
+    // Format IC: 900101-14-5678
+    $("ic").addEventListener("input", (e) => {
+      const d = e.target.value.replace(/\D/g, "").slice(0, 12);
+      let out = d.slice(0, 6);
+      if (d.length > 6) out += "-" + d.slice(6, 8);
+      if (d.length > 8) out += "-" + d.slice(8);
+      e.target.value = out;
+    });
+
+    const rules = {
+      nama: () => $("nama").value.trim().replace(/\s+/g, " ").length >= 2,
+      ic: () => $("ic").value.replace(/\D/g, "").length === 12,
+      telefon: () => /^\+?\d{9,14}$/.test($("telefon").value.replace(/[^\d+]/g, "")),
+      alamat: () => $("alamat").value.trim().length >= 5,
+      setuju: () => $("setuju").checked,
+    };
+    const setInvalid = (name, bad) =>
+      document.querySelector(`[data-field="${name}"]`).classList.toggle("invalid", bad);
+
+    Object.keys(rules).forEach((name) => {
+      const el = document.querySelector(`[data-field="${name}"] input, [data-field="${name}"] textarea`);
+      el.addEventListener(name === "setuju" ? "change" : "blur", () => {
+        if (el.value || name === "setuju") setInvalid(name, !rules[name]());
+      });
+      el.addEventListener("input", () => {
+        if (rules[name]()) setInvalid(name, false);
+      });
+    });
+
+    const MESEJ = {
+      IC_SUDAH_DAFTAR: "No. IC ini sudah didaftarkan. Setiap peserta hanya boleh mendaftar sekali.",
+      IC_TIDAK_SAH: "No. IC tidak sah. Sila semak semula (12 digit).",
+      TELEFON_TIDAK_SAH: "No. telefon tidak sah.",
+      NAMA_TIDAK_SAH: "Sila isi nama penuh.",
+      ALAMAT_TIDAK_SAH: "Sila isi alamat lengkap.",
+    };
+
+    function showAlert(msg) {
+      $("alert").textContent = msg;
+      $("alert").classList.add("show");
+      $("alert").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function setLoading(on) {
+      const b = $("hantar");
+      b.disabled = on;
+      b.innerHTML = on
+        ? '<span class="spinner"></span><span>Sedang menyimpan…</span>'
+        : "<span>Simpan &amp; Dapatkan Nombor</span>";
+    }
+
+    let semasa = null;
+
+    $("borang").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      $("alert").classList.remove("show");
+
+      let firstBad = null;
+      Object.keys(rules).forEach((name) => {
+        const bad = !rules[name]();
+        setInvalid(name, bad);
+        if (bad && !firstBad) firstBad = name;
+      });
+      if (firstBad) {
+        const el = document.querySelector(`[data-field="${firstBad}"] input, [data-field="${firstBad}"] textarea`);
+        el.focus({ preventScroll: true });
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const { data, error } = await sb.rpc("daftar_peserta", {
+          p_nama: $("nama").value,
+          p_no_ic: $("ic").value,
+          p_no_telefon: $("telefon").value,
+          p_alamat: $("alamat").value,
+        });
+        if (error) throw error;
+        const row = Array.isArray(data) ? data[0] : data;
+        if (!row || !row.nombor_bertuah) throw new Error("Tiada nombor diterima");
+
+        semasa = row;
+        try { localStorage.setItem(STORE_KEY, JSON.stringify(row)); } catch (_) {}
+        $("borang").reset();
+        showMine();
+        bukaModal(row, true);
+      } catch (err) {
+        console.error(err);
+        showAlert(MESEJ[err && err.message] ||
+          "Maaf, borang tidak dapat disimpan. Sila semak sambungan internet dan cuba lagi.");
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    function formatMasa(iso) {
+      return new Date(iso).toLocaleString("ms-MY", {
+        timeZone: "Asia/Kuala_Lumpur",
+        day: "2-digit", month: "short", year: "numeric",
+        hour: "2-digit", minute: "2-digit",
+      });
+    }
+
+    function bukaModal(row, raikan) {
+      semasa = row;
+      $("nombor").textContent = row.nombor_bertuah;
+      $("namaPeserta").textContent = row.nama;
+      $("masaDaftar").textContent = "Didaftarkan " + formatMasa(row.created_at);
+      $("modal").classList.add("show");
+      document.body.style.overflow = "hidden";
+      if (raikan && window.confetti) {
+        const opts = { zIndex: 60, colors: ["#e7b84f", "#c8932a", "#26b386", "#ffffff"] };
+        confetti({ ...opts, particleCount: 120, spread: 80, origin: { y: 0.35 } });
+        setTimeout(() => confetti({ ...opts, particleCount: 80, angle: 60, spread: 60, origin: { x: 0, y: 0.6 } }), 250);
+        setTimeout(() => confetti({ ...opts, particleCount: 80, angle: 120, spread: 60, origin: { x: 1, y: 0.6 } }), 400);
+      }
+      if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+    }
+
+    function tutupModal() {
+      $("modal").classList.remove("show");
+      document.body.style.overflow = "";
+    }
+    $("tutup").addEventListener("click", tutupModal);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") tutupModal(); });
+
+    function showMine() {
+      let row = null;
+      try { row = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); } catch (_) {}
+      if (!row) return;
+      semasa = semasa || row;
+      $("mineNo").textContent = row.nombor_bertuah;
+      $("mine").classList.add("show");
+      $("lihatSemula").onclick = () => bukaModal(row, false);
+    }
+    showMine();
+
+    // Jana gambar tiket untuk disimpan / dikongsi.
+    function janaGambar(row) {
+      const W = 1080, H = 1350;
+      const c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      const x = c.getContext("2d");
+      const g = x.createLinearGradient(0, 0, W, H);
+      g.addColorStop(0, "#0b4535"); g.addColorStop(.6, "#0e5a43"); g.addColorStop(1, "#0a3a2d");
+      x.fillStyle = g; x.fillRect(0, 0, W, H);
+      const r = x.createRadialGradient(W * .9, 0, 0, W * .9, 0, W * .8);
+      r.addColorStop(0, "rgba(231,184,79,.45)"); r.addColorStop(1, "rgba(231,184,79,0)");
+      x.fillStyle = r; x.fillRect(0, 0, W, H);
+
+      x.fillStyle = "rgba(255,255,255,.08)";
+      for (let i = 0; i < W; i += 36) for (let j = 0; j < 520; j += 36) {
+        x.beginPath(); x.arc(i, j, 2, 0, Math.PI * 2); x.fill();
+      }
+
+      x.textAlign = "center";
+      x.fillStyle = "#ffffff";
+      x.font = "700 44px 'Plus Jakarta Sans', sans-serif";
+      x.fillText(C.NAMA_ACARA.toUpperCase(), W / 2, 170);
+      x.globalAlpha = .8;
+      x.font = "600 34px 'Plus Jakarta Sans', sans-serif";
+      x.fillText("NOMBOR BERTUAH ANDA", W / 2, 360);
+      x.globalAlpha = 1;
+
+      x.fillStyle = "#e7b84f";
+      x.shadowColor = "rgba(231,184,79,.5)"; x.shadowBlur = 40;
+      x.font = "800 260px 'Plus Jakarta Sans', sans-serif";
+      x.fillText(row.nombor_bertuah, W / 2, 620);
+      x.shadowBlur = 0;
+
+      // kotak putih maklumat
+      const bx = 90, by = 760, bw = W - 180, bh = 440;
+      x.fillStyle = "#ffffff";
+      x.beginPath(); x.roundRect(bx, by, bw, bh, 40); x.fill();
+      x.fillStyle = "#5d6b64";
+      x.font = "600 30px 'Plus Jakarta Sans', sans-serif";
+      x.fillText("NAMA", W / 2, by + 80);
+      x.fillStyle = "#17251f";
+      x.font = "700 46px 'Plus Jakarta Sans', sans-serif";
+      let nama = row.nama;
+      while (x.measureText(nama).width > bw - 80 && nama.length > 4) nama = nama.slice(0, -2);
+      if (nama !== row.nama) nama = nama.trim() + "…";
+      x.fillText(nama, W / 2, by + 140);
+      x.fillStyle = "#5d6b64";
+      x.font = "500 30px 'Plus Jakarta Sans', sans-serif";
+      x.fillText("Didaftarkan " + formatMasa(row.created_at), W / 2, by + 200);
+
+      x.fillStyle = "#f7ecd2";
+      x.beginPath(); x.roundRect(bx + 40, by + 250, bw - 80, 140, 24); x.fill();
+      x.fillStyle = "#6b4a00";
+      x.font = "700 32px 'Plus Jakarta Sans', sans-serif";
+      x.fillText("Sila screenshot atau simpan nombor ini", W / 2, by + 312);
+      x.fillText("untuk cabutan bertuah.", W / 2, by + 356);
+      return c;
+    }
+
+    $("simpanGambar").addEventListener("click", async () => {
+      if (!semasa) return;
+      const canvas = janaGambar(semasa);
+      const blob = await new Promise((res) => canvas.toBlob(res, "image/png"));
+      const fail = `nombor-bertuah-${semasa.nombor_bertuah}.png`;
+      const file = new File([blob], fail, { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: "Nombor Bertuah " + semasa.nombor_bertuah });
+          return;
+        } catch (err) {
+          if (err && err.name === "AbortError") return;
+        }
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = fail;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    });
+  })();
+  </script>
+</body>
+</html>
