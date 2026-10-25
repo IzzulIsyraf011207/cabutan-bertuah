@@ -56,6 +56,8 @@
     .title .eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--gold-2); }
     .title h1 { margin: 2px 0 0; font-size: clamp(20px, 3.2vw, 30px); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .bar-btns { display: flex; gap: 8px; }
+    .title .eyebrow { white-space: nowrap; }
+    @media (max-width: 440px) { .title .eyebrow { display: none; } }
     .icon-btn {
       width: 44px; height: 44px; display: grid; place-items: center;
       border-radius: 14px; border: 1px solid var(--line);
@@ -292,6 +294,79 @@
     .win-card .wsub { margin-top: 12px; font-size: 13px; color: var(--muted); }
     .win-card .btn-row { display: grid; gap: 10px; margin-top: 22px; }
 
+    /* ---------- Upload Excel ---------- */
+    .up-btn {
+      display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px;
+      border-radius: 14px; border: 0; cursor: pointer; font-weight: 800; font-size: 14px; color: #2f1f00;
+      background: linear-gradient(180deg, #ffe08a, #f2c75c 45%, #d39a2e);
+      box-shadow: 0 8px 20px -10px rgba(242, 199, 92, .8), inset 0 1px 0 rgba(255,255,255,.6);
+    }
+    .up-btn:disabled { opacity: .45; cursor: not-allowed; }
+    .up-btn svg { width: 18px; height: 18px; }
+    @media (max-width: 520px) { .up-btn { min-height: 40px; padding: 0 11px; font-size: 13px; gap: 6px; } .up-btn .lg { display: none; } }
+    .up {
+      position: fixed; inset: 0; z-index: 55; display: none; align-items: flex-start; justify-content: center;
+      padding: max(16px, env(safe-area-inset-top)) 16px 16px; overflow-y: auto;
+      background: rgba(2, 6, 14, .78); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    }
+    .up.show { display: flex; animation: masuk .2s ease-out; }
+    .up-box {
+      position: relative; width: 100%; max-width: 620px; margin: auto 0; padding: 24px 20px 20px; border-radius: 24px;
+      background: linear-gradient(170deg, #17223a, #0b1220); border: 1px solid rgba(242, 199, 92, .35);
+      box-shadow: 0 40px 100px -20px rgba(0, 0, 0, .8); color: var(--ink);
+    }
+    .up-box h2 { margin: 0 40px 4px 0; font-size: 22px; font-weight: 800; }
+    .up-sub { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+    .up-x {
+      position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; display: grid; place-items: center;
+      border: 0; border-radius: 50%; cursor: pointer; background: rgba(255,255,255,.1); color: #fff; font-size: 18px;
+    }
+    .up-x:hover { background: rgba(255,255,255,.2); }
+    .up-drop {
+      display: grid; place-items: center; gap: 4px; text-align: center; padding: 26px 14px; border-radius: 18px; cursor: pointer;
+      border: 2px dashed rgba(242, 199, 92, .45); background: rgba(242, 199, 92, .06); transition: background .15s, border-color .15s;
+    }
+    .up-drop span { font-size: 32px; }
+    .up-drop b { font-size: 17px; color: var(--gold-2); }
+    .up-drop small { color: var(--muted); font-size: 13px; }
+    .up-drop.over, .up-drop:hover { background: rgba(242, 199, 92, .13); border-color: var(--gold-2); }
+    .up-format { margin-top: 12px; font-size: 13px; color: var(--muted); }
+    .up-format summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+    .up-format table { margin: 8px 0; border-collapse: collapse; }
+    .up-format th, .up-format td { border: 1px solid var(--line); padding: 4px 8px; text-align: left; }
+    .up-format ul { margin: 6px 0 0; padding-left: 18px; }
+    .up-sec { margin-top: 16px; }
+    .up-fail { padding: 10px 12px; margin-bottom: 8px; border-radius: 12px; background: rgba(0,0,0,.25); font-size: 13px; color: var(--muted); }
+    .up-fail b { color: var(--ink); }
+    .up-fail .ok { color: #4ade80; font-weight: 700; }
+    .up-fail .warn, .up-warn { color: #fca5a5; font-weight: 700; }
+    .up-fail .eg { display: block; margin-top: 4px; }
+    .up-fail .eg em { font-style: normal; color: #fff6d8; font-weight: 700; }
+    .up-semak { padding: 12px; border-radius: 12px; background: rgba(220, 38, 38, .14); border: 1px solid rgba(248, 113, 113, .35); }
+    .up-semak-list { display: grid; gap: 6px; max-height: 220px; overflow-y: auto; margin-top: 8px; }
+    .up-semak-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; font-size: 14px; }
+    .up-semak-row small { color: var(--muted); }
+    .up-sel, .up-input {
+      min-height: 40px; border-radius: 10px; border: 1px solid var(--line); background: rgba(0,0,0,.35); color: var(--ink); padding: 0 10px; font-size: 16px;
+    }
+    .up-input { width: 100%; min-height: 48px; padding: 0 14px; }
+    .up-input:focus { outline: none; border-color: var(--gold-2); }
+    .up-t { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .up-t th, .up-t td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+    .up-t th { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .up-t .n { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+    .up-t tr:last-child td { border-bottom: 0; font-weight: 800; }
+    .up-scroll { max-height: 240px; overflow-y: auto; border-radius: 12px; background: rgba(0,0,0,.2); }
+    .up-check { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .up-check input { width: 20px; height: 20px; margin: 1px 0 0; flex: none; accent-color: #f2c75c; }
+    .up-check small { display: block; color: var(--muted); font-weight: 500; }
+    .up-label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 700; }
+    .up-hint { margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+    .up-btns { display: grid; gap: 10px; margin-top: 18px; }
+    .up-ghost { background: rgba(255,255,255,.08); color: var(--ink); border: 1px solid var(--line); }
+    .up-msg { margin-top: 10px; min-height: 1.4em; font-size: 14px; font-weight: 700; text-align: center; }
+    .up-msg.err { color: #fca5a5; } .up-msg.ok { color: #4ade80; }
+
     .toast {
       position: fixed; left: 50%; bottom: 24px; z-index: 70; transform: translateX(-50%) translateY(140px); opacity: 0; pointer-events: none;
       padding: 12px 18px; border-radius: 12px; background: #fff; color: #17251f; font-weight: 700; font-size: 14px;
@@ -313,6 +388,10 @@
         </div>
       </div>
       <div class="bar-btns">
+        <button class="up-btn" id="bukaUpload" title="Upload fail Excel nama">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+          <span>Upload<span class="lg"> Excel</span></span>
+        </button>
         <button class="icon-btn" id="bunyi" aria-label="Matikan bunyi" title="Bunyi">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path id="gelombang" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
         </button>
@@ -420,11 +499,70 @@
     </div>
   </div>
 
+  <!-- Upload Excel -->
+  <div class="up" id="up" role="dialog" aria-modal="true" aria-labelledby="upTajuk">
+    <div class="up-box">
+      <button class="up-x" id="upTutup" aria-label="Tutup">✕</button>
+      <h2 id="upTajuk">📥 Upload Excel</h2>
+      <p class="up-sub">Sistem baca nama dalam fail dan papar di roda <b>tanpa BIN / BINTI</b>, diasingkan ikut lelaki, perempuan dan kelas.</p>
+
+      <label class="up-drop" id="upDrop">
+        <input type="file" id="upFail" accept=".xlsx,.xls,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple hidden>
+        <span>📄</span>
+        <b>Tekan untuk pilih fail Excel</b>
+        <small>.xlsx / .xls / .csv · boleh pilih banyak fail sekali gus</small>
+      </label>
+      <details class="up-format">
+        <summary>Susunan lajur Excel yang disyorkan</summary>
+        <table>
+          <tr><th>BIL</th><th>NAMA</th><th>JANTINA</th><th>KELAS</th></tr>
+          <tr><td>1</td><td>AHMAD FAIZ BIN ROSLAN</td><td>L</td><td>5 AMANAH</td></tr>
+          <tr><td>2</td><td>NUR AISYAH BINTI KAMAL</td><td>P</td><td>5 AMANAH</td></tr>
+        </table>
+        <ul>
+          <li>Tiada lajur JANTINA? Diteka dari BIN / BINTI dalam nama.</li>
+          <li>Tiada lajur KELAS? Nama sheet (atau nama fail) dijadikan kelas.</li>
+          <li>Di roda: AHMAD FAIZ BIN ROSLAN → <b>AHMAD FAIZ</b>.</li>
+        </ul>
+      </details>
+
+      <div id="upHasil" hidden>
+        <div class="up-sec" id="upFailList"></div>
+        <div class="up-sec up-semak" id="upSemak" hidden>
+          <b class="up-warn">⚠️ Jantina tidak dapat dikenal pasti — sila pilih:</b>
+          <div class="up-semak-list" id="upSemakList"></div>
+        </div>
+        <div class="up-sec up-scroll">
+          <table class="up-t">
+            <thead><tr><th>Kelas</th><th class="n">👦 Lelaki</th><th class="n">👧 Perempuan</th></tr></thead>
+            <tbody id="upRingkas"></tbody>
+          </table>
+        </div>
+        <div class="up-sec">
+          <label class="up-check"><input type="checkbox" id="upGanti" checked>
+            <span>Ganti semua nama lama dengan fail ini<small>Nyahtanda jika mahu tambah kepada nama yang sudah ada dalam roda.</small></span></label>
+        </div>
+        <div class="up-sec">
+          <label class="up-label" for="upPw" id="upPwLabel">Kata laluan upload</label>
+          <input class="up-input" id="upPw" type="password" autocomplete="current-password">
+          <div class="up-hint" id="upPwHint">Kata laluan yang dicipta semasa upload pertama.</div>
+        </div>
+        <div class="up-btns">
+          <button class="btn btn-gold btn-block" id="upSimpan" style="min-height:54px">💾 Simpan &amp; Papar di Roda</button>
+          <button class="btn btn-block up-ghost" id="upLokal">👁️ Papar sahaja di peranti ini (tanpa simpan)</button>
+        </div>
+        <div class="up-msg" id="upMsg"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="config.js?v=20261025a"></script>
+  <script src="excel.js?v=20261025a"></script>
   <script>
   (function () {
     const C = window.RODA_CONFIG;
@@ -461,14 +599,21 @@
     const chipKelas = (kelas) => `<span class="kchip"><i style="background:${warna(kelas)[1]}"></i>${esc(kelas)}</span>`;
     const sudahMenang = () => new Set(pemenang.map((w) => w.id));
 
-    async function muatNama() {
-      const out = await muatSemuaNama();
-      const kunci = (a) => a.map((m) => m.id + m.nama + m.kelas + m.jantina).join("|");
-      if (kunci(out) === kunci(semua)) return;
-      semua = out;
+    let modLokal = false;    // true: nama dari Excel dipapar di peranti ini sahaja (tidak disimpan)
+
+    function pasangNama(senarai) {
+      semua = senarai;
       const kelasSemua = [...new Set(semua.map((m) => m.kelas))].sort(bandingKelas);
       warnaKelas = new Map(kelasSemua.map((k, i) => [k, i]));
       bina();
+    }
+
+    async function muatNama() {
+      if (modLokal) return;
+      const out = await muatSemuaNama();
+      const kunci = (a) => a.map((m) => m.id + m.nama + m.kelas + m.jantina).join("|");
+      if (kunci(out) === kunci(semua)) return;
+      pasangNama(out);
     }
 
     function namaJantina(j) { return semua.filter((m) => m.jantina === j); }
@@ -495,7 +640,7 @@
       $("cKelas").textContent = kelasAda.size;
 
       const msg = $("wheelMsg");
-      if (!semua.length) { msg.hidden = false; msg.textContent = "Belum ada nama. Import Excel di halaman admin."; }
+      if (!semua.length) { msg.hidden = false; msg.textContent = "Belum ada nama. Tekan Upload Excel di atas."; }
       else if (!senarai.length) { msg.hidden = false; msg.textContent = `Tiada nama ${LABEL_J[jantina].toLowerCase()}`; }
       else if (!roda.length) { msg.hidden = false; msg.textContent = kp ? `Semua nama ${kp} sudah menang` : "Semua nama sudah menang"; }
       else msg.hidden = true;
@@ -843,6 +988,7 @@
       $("hub").disabled = !boleh;
       $("henti").disabled = state !== "laju" || mintaHenti;
       document.querySelectorAll(".gswitch button").forEach((b) => (b.disabled = state !== "idle"));
+      $("bukaUpload").disabled = state !== "idle";
     }
 
     $("mula").onclick = mula;
@@ -850,6 +996,7 @@
     $("henti").onclick = henti;
     document.addEventListener("keydown", (e) => {
       if (e.target.tagName === "INPUT") return;
+      if ($("up").classList.contains("show")) { if (e.key === "Escape") tutupUpload(); return; }
       if ($("reveal").classList.contains("show")) {
         if (e.key === "Enter" || e.code === "Space" || e.key === "Escape") { e.preventDefault(); tutupReveal(); }
         return;
@@ -1005,6 +1152,147 @@
         requestAnimationFrame(loop);
       })(0);
     })();
+
+    // ================= Upload Excel =================
+    const X = window.RodaExcel;
+    let calon = [];            // { nama, jantina, kelas } dari fail Excel
+    let kataLaluan = "";       // diingat sepanjang halaman dibuka
+    let adaKataLaluan = true;
+
+    async function bukaUpload() {
+      if (state !== "idle") return;
+      calon = [];
+      $("upHasil").hidden = true;
+      $("upMsg").textContent = "";
+      $("upPw").value = kataLaluan;
+      $("up").classList.add("show");
+      try {
+        const { data, error } = await sb.rpc("ada_kata_laluan");
+        if (!error) adaKataLaluan = !!data;
+      } catch (_) {}
+      $("upPwLabel").textContent = adaKataLaluan ? "Kata laluan upload" : "Cipta kata laluan upload";
+      $("upPwHint").textContent = adaKataLaluan
+        ? "Kata laluan yang dicipta semasa upload pertama."
+        : "Upload pertama: cipta kata laluan baru (sekurang-kurangnya 4 aksara). Simpan kata laluan ini — ia diperlukan untuk upload seterusnya.";
+    }
+    const tutupUpload = () => $("up").classList.remove("show");
+    $("bukaUpload").onclick = bukaUpload;
+    $("upTutup").onclick = tutupUpload;
+    $("up").addEventListener("click", (e) => { if (e.target === $("up")) tutupUpload(); });
+
+    async function prosesUpload(files) {
+      if (!files || !files.length) return;
+      $("upMsg").className = "up-msg"; $("upMsg").textContent = "Membaca fail…";
+      const { hasil, laporan } = await X.bacaFail([...files]);
+      calon = hasil;
+      $("upMsg").textContent = "";
+      $("upFailList").innerHTML = laporan.map((l) => `
+        <div class="up-fail"><b>📄 ${esc(l.sumber)}</b><br>
+        ${l.ralat ? `<span class="warn">${esc(l.ralat)}</span>` :
+          `<span class="ok">${l.n} nama</span> · ${l.kelas.map(esc).join(", ")}
+           ${l.tiadaJ ? ` · <span class="warn">${l.tiadaJ} tiada jantina</span>` : ""}
+           <span class="eg">Di roda: ${l.contoh.map((r) => `${esc(r.nama)} → <em>${esc(X.namaPendek(r.nama))}</em>`).join(" · ")}</span>`}
+        </div>`).join("") || `<div class="up-fail"><span class="warn">Tiada nama dijumpai dalam fail ini.</span></div>`;
+      renderCalon();
+      $("upHasil").hidden = false;
+    }
+
+    function renderCalon() {
+      const perlu = calon.map((r, i) => [r, i]).filter(([r]) => !r.jantina || r.manual);
+      $("upSemak").hidden = perlu.length === 0;
+      $("upSemakList").innerHTML = perlu.map(([r, i]) => `
+        <div class="up-semak-row"><span>${esc(X.namaPendek(r.nama))} <small>· ${esc(r.kelas)}</small></span>
+        <select class="up-sel" data-i="${i}"><option value="">— pilih —</option>
+          <option value="L" ${r.jantina === "L" ? "selected" : ""}>Lelaki</option>
+          <option value="P" ${r.jantina === "P" ? "selected" : ""}>Perempuan</option></select></div>`).join("");
+      const kira = new Map();
+      calon.forEach((r) => {
+        const k = kira.get(r.kelas) || { L: 0, P: 0 };
+        if (r.jantina) k[r.jantina]++;
+        kira.set(r.kelas, k);
+      });
+      const ks = [...kira.keys()].sort(bandingKelas);
+      let jl = 0, jp = 0;
+      $("upRingkas").innerHTML = ks.map((k) => {
+        const v = kira.get(k); jl += v.L; jp += v.P;
+        return `<tr><td>${chipKelas(k)}</td><td class="n">${v.L}</td><td class="n">${v.P}</td></tr>`;
+      }).join("") + `<tr><td>JUMLAH · ${ks.length} kelas</td><td class="n">${jl}</td><td class="n">${jp}</td></tr>`;
+      const belum = calon.filter((r) => !r.jantina).length;
+      const tiada = calon.length === 0;
+      $("upSimpan").disabled = tiada || belum > 0;
+      $("upLokal").disabled = tiada || belum > 0;
+      $("upSimpan").textContent = belum ? `Pilih jantina untuk ${belum} nama dahulu` : `💾 Simpan & Papar ${calon.length} Nama di Roda`;
+    }
+    $("upSemakList").addEventListener("change", (e) => {
+      const s = e.target.closest("[data-i]");
+      if (!s) return;
+      const r = calon[Number(s.dataset.i)];
+      r.jantina = s.value; r.manual = true;
+      renderCalon();
+    });
+
+    $("upFail").addEventListener("change", (e) => { prosesUpload(e.target.files); e.target.value = ""; });
+    const upDrop = $("upDrop");
+    ["dragenter", "dragover"].forEach((ev) => upDrop.addEventListener(ev, (e) => { e.preventDefault(); upDrop.classList.add("over"); }));
+    ["dragleave", "drop"].forEach((ev) => upDrop.addEventListener(ev, (e) => { e.preventDefault(); upDrop.classList.remove("over"); }));
+    upDrop.addEventListener("drop", (e) => prosesUpload(e.dataTransfer.files));
+
+    const RALAT_UPLOAD = {
+      KATA_LALUAN_SALAH: "Kata laluan salah.",
+      KATA_LALUAN_PENDEK: "Kata laluan mesti sekurang-kurangnya 4 aksara.",
+      DATA_TIDAK_SAH: "Data fail tidak sah.",
+    };
+
+    $("upSimpan").onclick = async () => {
+      const msg = $("upMsg"), btn = $("upSimpan");
+      const pw = $("upPw").value;
+      if (!pw) { msg.className = "up-msg err"; msg.textContent = "Masukkan kata laluan upload."; $("upPw").focus(); return; }
+      const ganti = $("upGanti").checked;
+      btn.disabled = true; $("upLokal").disabled = true;
+      msg.className = "up-msg"; msg.textContent = "Menyimpan…";
+      try {
+        const data = calon.map(({ nama, jantina, kelas }) => ({ nama, jantina, kelas }));
+        let tambah = 0;
+        for (let i = 0; i < data.length; i += 500) {
+          const { data: res, error } = await sb.rpc("upload_nama", {
+            p_kata_laluan: pw, p_senarai: data.slice(i, i + 500), p_ganti: ganti && i === 0,
+          });
+          if (error) throw error;
+          tambah += res[0].ditambah;
+          msg.textContent = `Menyimpan… ${Math.min(i + 500, data.length)}/${data.length}`;
+        }
+        kataLaluan = pw;
+        if (ganti) { pemenang = []; simpanPemenang(); }
+        modLokal = false;
+        semua = [];
+        await muatNama();
+        bina();
+        tutupUpload();
+        toast(`✓ ${tambah} nama disimpan dan dipapar di roda.`);
+      } catch (err) {
+        console.error(err);
+        msg.className = "up-msg err";
+        msg.textContent = RALAT_UPLOAD[err.message] || "Gagal menyimpan: " + err.message;
+        renderCalon();
+      }
+    };
+
+    // Papar terus tanpa simpan ke Supabase (untuk peranti ini sahaja).
+    $("upLokal").onclick = () => {
+      const unik = new Map();
+      calon.forEach((r) => {
+        const k = `${r.jantina}|${r.kelas}|${r.nama.toUpperCase()}`;
+        if (!unik.has(k)) unik.set(k, r);
+      });
+      const senarai = [...unik.values()];
+      const nama = X.namaRoda(senarai);
+      modLokal = true;
+      pemenang = pemenang.filter((w) => w.id > 0);
+      simpanPemenang();
+      pasangNama(senarai.map((r, i) => ({ id: -(i + 1), nama: nama[i], jantina: r.jantina, kelas: r.kelas })));
+      tutupUpload();
+      toast(`${senarai.length} nama dipapar di peranti ini sahaja (tidak disimpan).`);
+    };
 
     let tResize;
     addEventListener("resize", () => { clearTimeout(tResize); tResize = setTimeout(lukis, 120); });

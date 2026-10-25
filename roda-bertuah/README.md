@@ -7,12 +7,30 @@ Data disimpan dalam projek Supabase baharu **Roda Bertuah** (`pieguphzlymuajyzpn
 |---|---|---|
 | `roda-bertuah/index.html` | Sesiapa (tanpa log masuk) | Dua roda: **👦 Lelaki** dan **👧 Perempuan**. Setiap roda mengandungi nama dari **semua kelas**, setiap kelas satu warna dan berkumpul bersebelahan. Boleh pilih **Semua Kelas** atau satu kelas sahaja. |
 | `roda-bertuah/admin.html` | Admin sahaja | Import fail Excel (banyak fail sekali gus), semak sebelum simpan, senarai nama, padam, tambah satu nama, muat turun templat & eksport Excel. |
+| `roda-bertuah/excel.js` | — | Pembaca Excel (.xlsx/.xls/.csv) yang dikongsi oleh roda dan admin. |
 | `roda-bertuah/config.js` | — | URL & kunci publishable projek Roda Bertuah. |
 | `supabase/roda-bertuah-schema.sql` | Rujukan | Skema database (sudah dipasang). |
 
 Link (GitHub Pages):
 - Roda: `https://izzulisyraf011207.github.io/cabutan-bertuah/roda-bertuah/`
 - Admin: `https://izzulisyraf011207.github.io/cabutan-bertuah/roda-bertuah/admin.html`
+
+## Upload Excel terus dari roda (paling mudah)
+
+1. Buka roda, tekan butang **Upload Excel** (kanan atas).
+2. Pilih satu atau banyak fail `.xlsx` / `.xls` / `.csv`.
+3. Sistem terus baca fail dan tunjuk ringkasan: bilangan lelaki & perempuan setiap kelas, dan
+   contoh nama di roda (contoh `AHMAD FAIZ BIN ROSLAN → AHMAD FAIZ`).
+4. Masukkan **kata laluan upload** dan tekan **Simpan & Papar di Roda**. Nama disimpan dalam
+   Supabase dan terus dipapar di roda lelaki & perempuan.
+   - **Upload pertama mencipta kata laluan** (sekurang-kurangnya 4 aksara). Simpan kata laluan ini;
+     ia diperlukan untuk upload seterusnya supaya orang lain yang ada link tidak boleh ubah nama.
+   - **Ganti semua nama lama** (ditanda secara lalai): nama lama dipadam dan diganti dengan fail baru.
+     Nyahtanda untuk menambah kepada nama sedia ada.
+   - **Papar sahaja di peranti ini**: terus papar di roda tanpa simpan (tanpa kata laluan).
+     Hilang bila halaman dimuat semula.
+5. Lupa kata laluan upload? Supabase → **Table Editor → tetapan** → padam baris
+   `kata_laluan_upload`. Upload seterusnya akan mencipta kata laluan baru.
 
 ## Susunan Excel yang disyorkan
 

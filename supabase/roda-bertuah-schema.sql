@@ -120,3 +120,91 @@ language sql stable security definer set search_path = '' as $$
 $$;
 revoke execute on function public.senarai_roda() from public;
 grant execute on function public.senarai_roda() to anon, authenticated;
+
+-- 7. Upload Excel terus dari halaman roda, dilindungi kata laluan (upload pertama mencipta kata laluan).
+create extension if not exists pgcrypto with schema extensions;
+
+create table public.tetapan (
+  kunci text primary key,
+  nilai text not null
+);
+alter table public.tetapan enable row level security;
+revoke all on public.tetapan from anon, authenticated;
+
+-- Logik masuk nama (dikongsi oleh import_murid dan upload_nama). Tidak boleh dipanggil terus.
+create or replace function public.masuk_murid(p_senarai jsonb)
+returns table (ditambah int, diabaikan int)
+language plpgsql volatile security definer set search_path = '' as $$
+declare
+  v_jumlah int;
+  v_tambah int;
+begin
+  select count(*) into v_jumlah from jsonb_array_elements(p_senarai);
+  with baris as (
+    select
+      regexp_replace(btrim(e ->> 'nama'), '\s+', ' ', 'g') as nama,
+      upper(left(btrim(e ->> 'jantina'), 1)) as jantina,
+      regexp_replace(upper(btrim(e ->> 'kelas')), '\s+', ' ', 'g') as kelas
+    from jsonb_array_elements(p_senarai) e
+  ), masuk as (
+    insert into public.murid (nama, jantina, kelas)
+    select distinct on (b.jantina, b.kelas, upper(b.nama)) b.nama, b.jantina, b.kelas
+    from baris b
+    where coalesce(b.nama, '') <> '' and b.jantina in ('L', 'P') and coalesce(b.kelas, '') <> ''
+    on conflict do nothing
+    returning 1
+  )
+  select count(*) into v_tambah from masuk;
+  return query select v_tambah, v_jumlah - v_tambah;
+end;
+$$;
+revoke execute on function public.masuk_murid(jsonb) from public, anon, authenticated;
+
+create or replace function public.import_murid(p_senarai jsonb)
+returns table (ditambah int, diabaikan int)
+language plpgsql volatile security definer set search_path = '' as $$
+begin
+  if not public.is_admin() then
+    raise exception 'BUKAN_ADMIN' using errcode = '42501';
+  end if;
+  return query select * from public.masuk_murid(p_senarai);
+end;
+$$;
+
+create or replace function public.ada_kata_laluan()
+returns boolean language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.tetapan where kunci = 'kata_laluan_upload');
+$$;
+revoke execute on function public.ada_kata_laluan() from public;
+grant execute on function public.ada_kata_laluan() to anon, authenticated;
+
+create or replace function public.upload_nama(p_kata_laluan text, p_senarai jsonb, p_ganti boolean default false)
+returns table (ditambah int, diabaikan int)
+language plpgsql volatile security definer set search_path = '' as $$
+declare
+  v_hash text;
+begin
+  select nilai into v_hash from public.tetapan where kunci = 'kata_laluan_upload';
+  if v_hash is null then
+    if char_length(coalesce(p_kata_laluan, '')) < 4 then
+      raise exception 'KATA_LALUAN_PENDEK' using errcode = 'P0001';
+    end if;
+    insert into public.tetapan (kunci, nilai)
+    values ('kata_laluan_upload', extensions.crypt(p_kata_laluan, extensions.gen_salt('bf', 8)))
+    on conflict (kunci) do nothing;
+    select nilai into v_hash from public.tetapan where kunci = 'kata_laluan_upload';
+  end if;
+  if v_hash is distinct from extensions.crypt(coalesce(p_kata_laluan, ''), v_hash) then
+    raise exception 'KATA_LALUAN_SALAH' using errcode = 'P0001';
+  end if;
+  if jsonb_typeof(p_senarai) is distinct from 'array' or jsonb_array_length(p_senarai) > 5000 then
+    raise exception 'DATA_TIDAK_SAH' using errcode = 'P0001';
+  end if;
+  if p_ganti then
+    delete from public.murid where true;
+  end if;
+  return query select * from public.masuk_murid(p_senarai);
+end;
+$$;
+revoke execute on function public.upload_nama(text, jsonb, boolean) from public;
+grant execute on function public.upload_nama(text, jsonb, boolean) to anon, authenticated;
