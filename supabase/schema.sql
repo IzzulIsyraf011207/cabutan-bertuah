@@ -180,3 +180,7 @@ grant delete on public.peserta to authenticated;
 create policy "Admin boleh padam peserta"
   on public.peserta for delete to authenticated
   using ((select public.is_admin()));
+
+-- 8. Alamat tidak lagi diminta dalam borang (alamat lama kekal).
+--    daftar_peserta kini menerima p_alamat sebagai pilihan (default null).
+alter table public.peserta alter column alamat drop not null;

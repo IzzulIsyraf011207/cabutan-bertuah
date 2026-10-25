@@ -49,13 +49,6 @@
         <div class="err">Sila isi no. telefon yang sah.</div>
       </div>
 
-      <div class="field" data-field="alamat">
-        <label for="alamat">Alamat <span class="req">*</span></label>
-        <textarea class="input" id="alamat" name="alamat" autocomplete="street-address"
-                  maxlength="500" placeholder="No. rumah, jalan, poskod, bandar, negeri" required></textarea>
-        <div class="err">Sila isi alamat lengkap.</div>
-      </div>
-
       <div class="field" data-field="setuju">
         <label class="check" for="setuju">
           <input type="checkbox" id="setuju">
@@ -81,6 +74,9 @@
   <!-- Pop up nombor bertuah -->
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalLabel">
     <div class="modal-box">
+      <button class="modal-x" type="button" id="pangkah" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
       <div class="ticket-top">
         <div class="ok-icon">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
@@ -96,13 +92,14 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
           <span>Sila screenshot atau simpan nombor ini untuk cabutan bertuah.</span>
         </div>
-        <div class="modal-actions">
-          <button class="btn btn-gold btn-block" type="button" id="simpanGambar">
+        <div class="modal-actions duo">
+          <button class="btn btn-gold" type="button" id="simpanGambar">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
-            Simpan Gambar Nombor
+            <span id="simpanTeks">Simpan Nombor</span>
           </button>
-          <button class="btn btn-ghost btn-block" type="button" id="tutup">Tutup</button>
+          <button class="btn btn-ghost" type="button" id="tutup">Tutup</button>
         </div>
+        <p class="save-hint" id="simpanInfo" hidden></p>
       </div>
     </div>
   </div>
@@ -133,7 +130,6 @@
       nama: () => $("nama").value.trim().replace(/\s+/g, " ").length >= 2,
       ic: () => $("ic").value.replace(/\D/g, "").length === 12,
       telefon: () => /^\+?\d{9,14}$/.test($("telefon").value.replace(/[^\d+]/g, "")),
-      alamat: () => $("alamat").value.trim().length >= 5,
       setuju: () => $("setuju").checked,
     };
     const setInvalid = (name, bad) =>
@@ -154,7 +150,6 @@
       IC_TIDAK_SAH: "No. IC tidak sah. Sila semak semula (12 digit).",
       TELEFON_TIDAK_SAH: "No. telefon tidak sah.",
       NAMA_TIDAK_SAH: "Sila isi nama penuh.",
-      ALAMAT_TIDAK_SAH: "Sila isi alamat lengkap.",
     };
 
     function showAlert(msg) {
@@ -196,7 +191,6 @@
           p_nama: $("nama").value,
           p_no_ic: $("ic").value,
           p_no_telefon: $("telefon").value,
-          p_alamat: $("alamat").value,
         });
         if (error) throw error;
         const row = Array.isArray(data) ? data[0] : data;
@@ -231,6 +225,9 @@
       $("masaDaftar").textContent = "Didaftarkan " + formatMasa(row.created_at);
       $("modal").classList.add("show");
       document.body.style.overflow = "hidden";
+      $("simpanTeks").textContent = "Simpan Nombor";
+      $("simpanInfo").hidden = true;
+      sediaGambar(row);
       if (raikan && window.confetti) {
         const opts = { zIndex: 60, colors: ["#e7b84f", "#c8932a", "#26b386", "#ffffff"] };
         confetti({ ...opts, particleCount: 120, spread: 80, origin: { y: 0.35 } });
@@ -245,6 +242,7 @@
       document.body.style.overflow = "";
     }
     $("tutup").addEventListener("click", tutupModal);
+    $("pangkah").addEventListener("click", tutupModal);
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") tutupModal(); });
 
     function showMine() {
@@ -317,25 +315,68 @@
       return c;
     }
 
-    $("simpanGambar").addEventListener("click", async () => {
-      if (!semasa) return;
-      const canvas = janaGambar(semasa);
-      const blob = await new Promise((res) => canvas.toBlob(res, "image/png"));
-      const fail = `nombor-bertuah-${semasa.nombor_bertuah}.png`;
-      const file = new File([blob], fail, { type: "image/png" });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({ files: [file], title: "Nombor Bertuah " + semasa.nombor_bertuah });
-          return;
-        } catch (err) {
-          if (err && err.name === "AbortError") return;
-        }
-      }
-      const url = URL.createObjectURL(blob);
+    // Gambar disediakan sebaik pop up dibuka supaya butang Simpan terus berfungsi
+    // (iPhone hanya benarkan kongsi/simpan serta-merta selepas butang ditekan).
+    let gambar = null;   // { nombor, file, blob }
+    let sedia = null;
+    function sediaGambar(row) {
+      if (gambar && gambar.nombor === row.nombor_bertuah) return sedia;
+      gambar = null;
+      sedia = new Promise((res) => janaGambar(row).toBlob(res, "image/png")).then((blob) => {
+        const fail = `nombor-bertuah-${row.nombor_bertuah}.png`;
+        gambar = { nombor: row.nombor_bertuah, blob, file: new File([blob], fail, { type: "image/png" }) };
+        return gambar;
+      });
+      return sedia;
+    }
+
+    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    function muatTurun(g) {
+      const url = URL.createObjectURL(g.blob);
       const a = document.createElement("a");
-      a.href = url; a.download = fail;
+      a.href = url; a.download = g.file.name;
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 4000);
+    }
+
+    function siap(teks) {
+      $("simpanTeks").textContent = "✓ Disimpan";
+      $("simpanInfo").textContent = teks;
+      $("simpanInfo").hidden = false;
+    }
+
+    $("simpanGambar").addEventListener("click", async () => {
+      if (!semasa) return;
+      const g = (gambar && gambar.nombor === semasa.nombor_bertuah) ? gambar : await sediaGambar(semasa);
+      if (iOS) {
+        // iPhone/iPad: Safari tidak benarkan laman web simpan terus ke Photos.
+        // Menu kongsi dibuka dengan pilihan "Simpan Imej" ke galeri.
+        if (navigator.canShare && navigator.canShare({ files: [g.file] })) {
+          try {
+            await navigator.share({ files: [g.file] });
+            siap("Gambar nombor disimpan ke galeri (Photos).");
+          } catch (err) {
+            if (err && err.name !== "AbortError") {
+              window.open(URL.createObjectURL(g.blob), "_blank");
+              siap("Tekan lama pada gambar, kemudian pilih \"Simpan ke Foto\".");
+            } else {
+              $("simpanInfo").textContent = "Pilih \"Simpan Imej\" untuk masukkan ke galeri.";
+              $("simpanInfo").hidden = false;
+            }
+          }
+        } else {
+          window.open(URL.createObjectURL(g.blob), "_blank");
+          siap("Tekan lama pada gambar, kemudian pilih \"Simpan ke Foto\".");
+        }
+        return;
+      }
+      // Android & komputer: terus dimuat turun; di Android gambar terus muncul dalam Galeri (album Download).
+      muatTurun(g);
+      siap(/Android/i.test(navigator.userAgent)
+        ? "Gambar nombor disimpan ke galeri (album Download)."
+        : "Gambar nombor disimpan ke folder Muat Turun.");
     });
   })();
   </script>

@@ -292,6 +292,21 @@ textarea.input { min-height: 104px; resize: vertical; }
 }
 .note svg { flex: none; color: var(--gold); margin-top: 1px; }
 .modal-actions { display: grid; gap: 10px; margin-top: 16px; }
+.modal-actions.duo { grid-template-columns: 1.6fr 1fr; }
+.modal-actions.duo .btn { padding: 0 12px; gap: 8px; white-space: nowrap; }
+.modal-box { position: relative; }
+.modal-x {
+  position: absolute; top: 12px; right: 12px; z-index: 2;
+  width: 40px; height: 40px; display: grid; place-items: center;
+  border: 0; border-radius: 50%; cursor: pointer;
+  background: rgba(255, 255, 255, .16); color: #fff;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .15s, transform .08s;
+}
+.modal-x:hover { background: rgba(255, 255, 255, .28); }
+.modal-x:active { transform: scale(.92); }
+.modal-x svg { width: 20px; height: 20px; }
+.save-hint { margin: 12px 0 0; text-align: center; font-size: 13px; font-weight: 600; color: var(--ok); }
 
 /* ---------- Misc ---------- */
 .footer { padding: 28px 16px 40px; text-align: center; color: var(--muted); font-size: 13px; }

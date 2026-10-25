@@ -399,7 +399,7 @@
           <td data-l="Nama"><b>${esc(p.nama)}</b></td>
           <td class="nowrap ic" data-l="IC">${esc(formatIC(p.no_ic))}</td>
           <td class="nowrap" data-l="Tel"><a href="tel:${esc(p.no_telefon)}">${esc(p.no_telefon)}</a></td>
-          <td class="alamat" data-l="Alamat">${esc(p.alamat)}</td>
+          <td class="alamat" data-l="Alamat">${esc(p.alamat || "-")}</td>
           <td class="nowrap" data-l="Daftar">${tarikh(p.created_at)}</td>
         </tr>`).join("");
 
@@ -486,7 +486,7 @@
       const head = ["Bil", "Nombor Bertuah", "Nama", "No. IC", "No. Telefon", "Alamat", "Tarikh Daftar"];
       const lines = [head.map(sel).join(",")].concat(rows.map((p, i) => [
         i + 1, p.nombor_bertuah, p.nama, formatIC(p.no_ic), p.no_telefon,
-        p.alamat.replace(/\s*\n\s*/g, ", "), tarikh(p.created_at),
+        (p.alamat || "").replace(/\s*\n\s*/g, ", "), tarikh(p.created_at),
       ].map((v, j) => (j === 4 ? teks(v) : sel(v))).join(",")));
       const blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
       const a = document.createElement("a");
