@@ -385,7 +385,7 @@
               BERHENTI
             </button>
           </div>
-          <p class="hint-line" id="hint">Tekan MULA. Roda akan berhenti sendiri.</p>
+          <p class="hint-line" id="hint">Tekan MULA untuk pusing. Tekan BERHENTI untuk hentikan roda.</p>
         </div>
 
         <div class="panel">
@@ -621,7 +621,7 @@
     const MASA_PERLAHAN = 4300;         // ms minimum untuk perlahan & berhenti
     let state = "idle";                 // idle | laju | perlahan
     let sudut = 0, laju = 0, tLepas = 0;
-    let mintaHenti = false, tAutoHenti = 0, berhenti = null, idxLepas = -1;
+    let mintaHenti = false, berhenti = null, idxLepas = -1;
 
     function rawak() {
       const a = new Uint32Array(1);
@@ -669,7 +669,7 @@
         laju = Math.min(V_MAX, laju + V_MAX * dt / 700);
         sudut += laju * dt;
         const sedia = laju >= V_MAX * 0.999;
-        if (sedia && (mintaHenti || t >= tAutoHenti)) mulaPerlahan(t);
+        if (sedia && mintaHenti) mulaPerlahan(t);   // roda hanya berhenti bila butang BERHENTI ditekan
       } else if (state === "perlahan") {
         const u = Math.min(1, (t - berhenti.t0) / berhenti.T);
         const e = 1 - Math.pow(1 - u, 3);
@@ -693,11 +693,10 @@
       kunciSkrin();
       state = "laju"; laju = 0; mintaHenti = false;
       tLepas = performance.now();
-      tAutoHenti = tLepas + 700 + 1600 + rawak() * 1400;
       document.body.classList.add("berpusing");
       document.body.classList.remove("menang");
       $("tickerK").textContent = "Sedang berpusing…";
-      $("hint").textContent = "Roda akan berhenti sendiri, atau tekan BERHENTI.";
+      $("hint").textContent = "Roda terus berpusing. Tekan BERHENTI untuk hentikan.";
       kemasButang();
       requestAnimationFrame(frame);
     }

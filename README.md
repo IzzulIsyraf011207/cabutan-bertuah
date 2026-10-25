@@ -7,7 +7,7 @@ Supabase (projek **Cabutan Bertuah**, `scxpyfvdhcjalsedasel`, region Singapura).
 |---|---|---|
 | `index.html` | Orang awam | Borang (nama, IC, telefon, alamat). Lepas **Simpan**, pop up keluar nombor bertuah + nota "Sila screenshot atau simpan nombor ini untuk cabutan bertuah." Ada butang simpan gambar nombor. |
 | `admin.html` | Admin sahaja | Log masuk, senarai semua peserta, cari, **cetak senarai penuh**, **cetak nombor sahaja**, muat turun Excel (CSV), **padam peserta** (pilih satu-satu atau padam semua). |
-| `cabutan.html` | Sesiapa (tanpa log masuk) | Roda cabutan bertuah. Tekan **MULA**, roda berhenti sendiri (atau tekan **BERHENTI**). Ada bunyi tik semasa berpusing. Pemenang dipilih rawak dan tidak berulang. |
+| `cabutan.html` | Sesiapa (tanpa log masuk) | Roda cabutan bertuah. Tekan **MULA** untuk pusing, tekan **BERHENTI** untuk hentikan (tiada berhenti automatik). Ada bunyi tik semasa berpusing. Pemenang dipilih rawak dan tidak berulang. |
 | `supabase/schema.sql` | Rujukan | Skema database (sudah dipasang di Supabase). |
 
 ## 1. Cipta akaun admin (sekali sahaja)
@@ -52,7 +52,7 @@ Boleh juga guna Vercel, Cloudflare Pages atau mana-mana hosting fail statik.
 - Hari cabutan: buka `cabutan.html` terus, tiada log masuk.
   Tekan ⛶ untuk skrin penuh (sesuai untuk projektor/TV).
   1. Tekan **MULA** (atau butang tengah roda). Roda berpusing dengan bunyi tik.
-  2. Roda **berhenti sendiri** dalam beberapa saat. Nak hentikan lebih awal? Tekan **BERHENTI**.
+  2. Roda terus berpusing selagi tidak dihentikan. Tekan **BERHENTI** untuk hentikan roda.
   3. Nombor dan nama pemenang dipaparkan. Tekan **Teruskan Cabutan** untuk pusingan seterusnya.
 - Pemenang dipilih secara rawak (kriptografi) dan **dikeluarkan dari roda**, jadi
   nombor yang sama tidak akan menang dua kali.
