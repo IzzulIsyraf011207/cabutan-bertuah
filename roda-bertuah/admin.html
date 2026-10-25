@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="robots" content="noindex">
+  <title>Admin Roda Bertuah</title>
+  <meta name="description" content="Import nama dari Excel ke roda bertuah lelaki dan perempuan.">
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css?v=20261025c">
+  <style>
+    .topbar { position: sticky; top: 0; z-index: 10; background: linear-gradient(160deg, #1e3a8a, #6d28d9 60%, #9d174d); color: #fff; box-shadow: 0 6px 20px -10px rgba(0,0,0,.4); }
+    .topbar .wrap-wide { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; }
+    .brand small { display: block; font-weight: 500; font-size: 12px; opacity: .75; }
+    .topbar .btn-ghost { color: #fff; border-color: rgba(255,255,255,.3); }
+    .topbar .btn-ghost:hover { background: rgba(255,255,255,.1); }
+
+    .login { max-width: 420px; margin: 48px auto; }
+    .pw-wrap { position: relative; }
+    .pw-wrap .input { padding-right: 56px; }
+    .mata { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 10px; background: none; color: var(--muted); cursor: pointer; }
+    .mata:hover { color: var(--ink); background: var(--line); }
+    .mata svg { width: 22px; height: 22px; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
+    .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+    .stat .k { font-size: 13px; color: var(--muted); font-weight: 600; }
+    .stat .v { font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.2; }
+    .stat.l .v { color: #2563eb; }
+    .stat.p .v { color: #db2777; }
+    @media (max-width: 640px) { .stats { grid-template-columns: 1fr 1fr; } }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+    @media (max-width: 720px) {
+      .actions { display: grid; grid-template-columns: 1fr 1fr; }
+      .actions .btn { width: 100%; min-height: 48px; padding: 0 10px; font-size: 14px; }
+      .actions .btn:first-child { grid-column: span 2; min-height: 54px; font-size: 16px; }
+      .brand { font-size: 16px; }
+    }
+    .section { margin-bottom: 20px; }
+    .section h2 { display: flex; align-items: center; gap: 8px; }
+
+    /* Import */
+    .drop {
+      display: grid; place-items: center; gap: 6px; text-align: center;
+      padding: 28px 16px; border-radius: 16px; cursor: pointer;
+      border: 2px dashed var(--line); background: var(--surface-2); color: var(--muted);
+      transition: border-color .15s, background .15s;
+    }
+    .drop b { color: var(--ink); font-size: 16px; }
+    .drop.over { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 8%, var(--surface-2)); }
+    .format { margin: 14px 0 0; padding: 14px; border-radius: 14px; background: var(--gold-soft); font-size: 14px; }
+    .format table { margin: 8px 0; border-collapse: collapse; font-size: 13px; background: var(--surface); }
+    .format th, .format td { border: 1px solid var(--line); padding: 4px 10px; text-align: left; }
+    .format ul { margin: 6px 0 0; padding-left: 18px; }
+    .format li { margin: 2px 0; }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .check-inline { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .check-inline input { width: 20px; height: 20px; accent-color: var(--danger); }
+
+    .preview { margin-top: 18px; }
+    .fail-list { display: grid; gap: 8px; margin-bottom: 14px; }
+    .fail-item { padding: 10px 12px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line); font-size: 13px; }
+    .fail-item b { font-size: 14px; }
+    .fail-item .ok { color: var(--ok); font-weight: 700; }
+    .fail-item .warn { color: var(--danger); font-weight: 700; }
+
+    table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
+    table.t th, table.t td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); }
+    table.t th { background: var(--surface-2); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); white-space: nowrap; position: sticky; top: 0; }
+    table.t td.n { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+    table.t th.n { text-align: right; }
+    .lc { color: #2563eb; } .pc { color: #db2777; }
+    .scroll { max-height: 420px; overflow: auto; border: 1px solid var(--line); border-radius: 12px; }
+    .semak { margin: 14px 0; padding: 12px; border-radius: 12px; background: var(--danger-soft); }
+    .semak h3 { margin: 0 0 8px; font-size: 15px; color: var(--danger); }
+    .semak select, .sel { min-height: 36px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); padding: 0 8px; }
+
+    /* Senarai nama */
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+    .toolbar .input { min-height: 44px; }
+    .toolbar .search { flex: 1 1 240px; }
+    .toolbar select.input { flex: 0 1 180px; padding: 8px 12px; }
+    .delbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+    .delbar .info { font-size: 14px; color: var(--muted); font-weight: 600; }
+    .btn-danger-solid { background: var(--danger); color: #fff; }
+    .cb { width: 20px; height: 20px; margin: 0; accent-color: var(--danger); cursor: pointer; vertical-align: middle; }
+    tr.dipilih td { background: var(--danger-soft); }
+    .badge-j { display: inline-block; min-width: 26px; text-align: center; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 800; color: #fff; }
+    .badge-j.L { background: #2563eb; } .badge-j.P { background: #db2777; }
+    .tambah { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; margin-top: 14px; }
+    .tambah .input { min-height: 46px; padding: 10px 12px; }
+    @media (max-width: 720px) { .tambah { grid-template-columns: 1fr 1fr; } .tambah .input:first-child { grid-column: span 2; } }
+    .empty { padding: 32px 16px; text-align: center; color: var(--muted); }
+    .msg { margin-top: 10px; font-size: 14px; font-weight: 600; min-height: 1.4em; }
+    .msg.ok { color: var(--ok); } .msg.err { color: var(--danger); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap-wide">
+      <div class="brand"><img src="../assets/logo.svg" alt="" width="40" height="40" style="border-radius:10px;display:block"> <div>Admin Roda Bertuah<small id="namaAcara"></small></div></div>
+      <button class="btn btn-ghost btn-sm" id="logKeluar" hidden>Log Keluar</button>
+    </div>
+  </header>
+
+  <!-- Log masuk -->
+  <section class="wrap" id="viewLogin" hidden>
+    <form class="card login" id="borangLogin">
+      <h2>Log Masuk Admin</h2>
+      <p class="sub">Hanya admin boleh import dan padam nama.</p>
+      <div class="alert" id="loginAlert" role="alert"></div>
+      <div class="field">
+        <label for="email">Emel</label>
+        <input class="input" id="email" type="email" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="kataLaluan">Kata Laluan</label>
+        <div class="pw-wrap">
+          <input class="input" id="kataLaluan" type="password" autocomplete="current-password" required>
+          <button class="mata" type="button" id="lihatPw" aria-label="Lihat kata laluan" aria-pressed="false" title="Lihat kata laluan">
+            <svg id="ikonBuka" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg id="ikonTutup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.4 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"/><path d="m2 2 20 20"/></svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" id="btnLogin" type="submit">Log Masuk</button>
+    </form>
+  </section>
+
+  <section class="wrap" id="viewBukanAdmin" hidden>
+    <div class="card login">
+      <h2>Akses Ditolak</h2>
+      <p class="sub" id="bukanAdminMsg"></p>
+      <button class="btn btn-ghost btn-block" id="logKeluar2">Log Keluar</button>
+    </div>
+  </section>
+
+  <!-- Dashboard -->
+  <main class="wrap-wide" id="viewAdmin" hidden>
+    <div class="stats">
+      <div class="stat"><div class="k">Jumlah Nama</div><div class="v" id="sJumlah">0</div></div>
+      <div class="stat l"><div class="k">👦 Lelaki</div><div class="v" id="sL">0</div></div>
+      <div class="stat p"><div class="k">👧 Perempuan</div><div class="v" id="sP">0</div></div>
+      <div class="stat"><div class="k">Bilangan Kelas</div><div class="v" id="sKelas">0</div></div>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-gold" href="./" target="_blank" rel="noopener">🎡 Buka Roda Bertuah</a>
+      <button class="btn btn-ghost" id="templat">⬇️ Muat Turun Templat Excel</button>
+      <button class="btn btn-ghost" id="eksport">⬇️ Eksport Semua Nama (Excel)</button>
+      <button class="btn btn-ghost" id="muatSemula">↻ Muat Semula</button>
+    </div>
+
+    <!-- 1. Import Excel -->
+    <div class="card section">
+      <h2>📥 Import Nama dari Excel</h2>
+      <p class="sub">Boleh pilih banyak fail sekali gus (.xlsx, .xls atau .csv).</p>
+      <label class="drop" id="drop">
+        <input type="file" id="fail" accept=".xlsx,.xls,.csv" multiple hidden>
+        <span style="font-size:30px">📄</span>
+        <b>Tekan untuk pilih fail Excel</b>
+        <span>atau seret (drag) fail ke sini</span>
+      </label>
+      <div class="format">
+        <b>Susunan lajur yang disyorkan (baris pertama = tajuk):</b>
+        <table>
+          <tr><th>BIL</th><th>NAMA</th><th>JANTINA</th><th>KELAS</th></tr>
+          <tr><td>1</td><td>AHMAD FAIZ BIN ROSLAN</td><td>L</td><td>5 AMANAH</td></tr>
+          <tr><td>2</td><td>NUR AISYAH BINTI KAMAL</td><td>P</td><td>5 AMANAH</td></tr>
+        </table>
+        <ul>
+          <li><b>JANTINA</b>: <code>L</code> / <code>P</code> (atau LELAKI / PEREMPUAN). Jika tiada lajur ini, sistem teka dari nama (BIN / A/L = lelaki, BINTI / BT / A/P = perempuan).</li>
+          <li><b>KELAS</b>: jika tiada lajur ini, nama <b>sheet</b> digunakan sebagai kelas (contoh satu sheet = satu kelas). Jika nama sheet "Sheet1", nama <b>fail</b> digunakan.</li>
+          <li>Format lain yang juga diterima: dua lajur bertajuk <b>LELAKI</b> dan <b>PEREMPUAN</b> berisi nama.</li>
+          <li>Lajur BIL dan lajur lain diabaikan. Nama yang sama dalam kelas yang sama tidak akan dimasukkan dua kali.</li>
+        </ul>
+      </div>
+
+      <div class="preview" id="preview" hidden>
+        <h2>🔎 Semak sebelum simpan</h2>
+        <div class="fail-list" id="failList"></div>
+        <div class="semak" id="semak" hidden>
+          <h3>⚠️ Jantina tidak dapat dikenal pasti — sila pilih</h3>
+          <div class="scroll" style="max-height:300px">
+            <table class="t"><thead><tr><th>Nama</th><th>Kelas</th><th>Jantina</th></tr></thead><tbody id="semakBody"></tbody></table>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <button class="btn btn-ghost btn-sm" type="button" id="semuaL">Tetapkan semua: Lelaki</button>
+            <button class="btn btn-ghost btn-sm" type="button" id="semuaP">Tetapkan semua: Perempuan</button>
+          </div>
+        </div>
+        <div class="scroll">
+          <table class="t">
+            <thead><tr><th>Kelas</th><th class="n">👦 Lelaki</th><th class="n">👧 Perempuan</th><th class="n">Jumlah</th></tr></thead>
+            <tbody id="ringkasBody"></tbody>
+          </table>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <label class="check-inline"><input type="checkbox" id="ganti"> Padam semua nama lama dahulu (ganti senarai)</label>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <button class="btn btn-primary" id="simpanImport">💾 Simpan ke Roda</button>
+          <button class="btn btn-ghost" id="batalImport">Batal</button>
+        </div>
+        <div class="msg" id="importMsg"></div>
+      </div>
+    </div>
+
+    <!-- 2. Senarai nama -->
+    <div class="card section">
+      <h2>👥 Senarai Nama dalam Roda</h2>
+      <div class="toolbar">
+        <input class="input search" id="cari" type="search" placeholder="Cari nama…">
+        <select class="input" id="tapisJ">
+          <option value="">Semua jantina</option><option value="L">Lelaki</option><option value="P">Perempuan</option>
+        </select>
+        <select class="input" id="tapisK"><option value="">Semua kelas</option></select>
+      </div>
+      <div class="delbar">
+        <span class="info" id="infoPilih">Tandakan nama untuk dipadam.</span>
+        <div class="row">
+          <button class="btn btn-danger btn-sm" id="padamPilih" disabled>🗑️ Padam Dipilih</button>
+          <button class="btn btn-danger-solid btn-sm" id="padamSemua">🗑️ Padam Semua Nama</button>
+        </div>
+      </div>
+      <div class="scroll" style="max-height:560px">
+        <table class="t">
+          <thead><tr><th style="width:40px"><input type="checkbox" class="cb" id="pilihSemua" aria-label="Pilih semua"></th><th>Bil</th><th>Nama</th><th>Jantina</th><th>Kelas</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="empty" id="kosong" hidden>Tiada nama lagi. Import fail Excel di atas.</div>
+      </div>
+      <form class="tambah" id="borangTambah">
+        <input class="input" id="tNama" placeholder="Tambah satu nama…" required maxlength="160">
+        <select class="input" id="tJ" required><option value="">Jantina</option><option value="L">Lelaki</option><option value="P">Perempuan</option></select>
+        <input class="input" id="tKelas" placeholder="Kelas" required maxlength="60" list="senaraiKelasData">
+        <button class="btn btn-primary" type="submit">+ Tambah</button>
+        <datalist id="senaraiKelasData"></datalist>
+      </form>
+      <div class="msg" id="tambahMsg"></div>
+    </div>
+  </main>
+
+  <footer class="footer">Data dari Supabase · projek Roda Bertuah</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="config.js?v=20261025a"></script>
+  <script>
+  (function () {
+    const C = window.RODA_CONFIG;
+    const $ = (id) => document.getElementById(id);
+    const esc = window.escapeHTML;
+    $("namaAcara").textContent = C.NAMA_ACARA;
+
+    let semua = [];               // { id, nama, jantina, kelas }
+    const dipilih = new Set();
+    let calon = [];               // baris dari Excel: { nama, jantina, kelas }
+
+    function papar(view) {
+      ["viewLogin", "viewAdmin", "viewBukanAdmin"].forEach((v) => ($(v).hidden = v !== view));
+      $("logKeluar").hidden = view === "viewLogin";
+    }
+
+    async function semak() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) return papar("viewLogin");
+      const { data: admin, error } = await sb.rpc("is_admin");
+      if (error || !admin) {
+        $("bukanAdminMsg").textContent = `Akaun ${session.user.email} bukan admin. Tambah emel ini ke jadual "admin" di Supabase.`;
+        return papar("viewBukanAdmin");
+      }
+      papar("viewAdmin");
+      muat();
+    }
+
+    $("lihatPw").addEventListener("click", () => {
+      const pw = $("kataLaluan");
+      const tunjuk = pw.type === "password";
+      pw.type = tunjuk ? "text" : "password";
+      $("ikonBuka").toggleAttribute("hidden", tunjuk);
+      $("ikonTutup").toggleAttribute("hidden", !tunjuk);
+      $("lihatPw").setAttribute("aria-pressed", String(tunjuk));
+      $("lihatPw").setAttribute("aria-label", tunjuk ? "Sembunyikan kata laluan" : "Lihat kata laluan");
+      pw.focus();
+    });
+
+    $("borangLogin").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      $("loginAlert").classList.remove("show");
+      $("btnLogin").disabled = true;
+      const { error } = await sb.auth.signInWithPassword({ email: $("email").value.trim(), password: $("kataLaluan").value });
+      $("btnLogin").disabled = false;
+      if (error) {
+        $("loginAlert").textContent = "Emel atau kata laluan salah.";
+        $("loginAlert").classList.add("show");
+        return;
+      }
+      semak();
+    });
+    const logKeluar = async () => { await sb.auth.signOut(); papar("viewLogin"); };
+    $("logKeluar").onclick = logKeluar;
+    $("logKeluar2").onclick = logKeluar;
+
+    // ================= Senarai nama =================
+    async function muat() {
+      $("muatSemula").disabled = true;
+      try {
+        const out = [];
+        for (let dari = 0; ; dari += 1000) {
+          const { data, error } = await sb.from("murid").select("id,nama,jantina,kelas").order("id").range(dari, dari + 999);
+          if (error) throw error;
+          out.push(...data);
+          if (data.length < 1000) break;
+        }
+        semua = out.sort((a, b) => bandingKelas(a.kelas, b.kelas) || a.jantina.localeCompare(b.jantina) || a.nama.localeCompare(b.nama, "ms"));
+        render();
+      } catch (err) {
+        console.error(err);
+        alert("Gagal memuatkan data: " + err.message);
+      } finally {
+        $("muatSemula").disabled = false;
+      }
+    }
+
+    const senaraiKelas = () => [...new Set(semua.map((m) => m.kelas))].sort(bandingKelas);
+
+    function tapis() {
+      const q = $("cari").value.trim().toLowerCase();
+      const j = $("tapisJ").value, k = $("tapisK").value;
+      return semua.filter((m) => (!j || m.jantina === j) && (!k || m.kelas === k) && (!q || m.nama.toLowerCase().includes(q)));
+    }
+
+    function render() {
+      const ada = new Set(semua.map((m) => m.id));
+      [...dipilih].forEach((id) => { if (!ada.has(id)) dipilih.delete(id); });
+
+      const kelas = senaraiKelas();
+      $("sJumlah").textContent = semua.length.toLocaleString("ms-MY");
+      $("sL").textContent = semua.filter((m) => m.jantina === "L").length.toLocaleString("ms-MY");
+      $("sP").textContent = semua.filter((m) => m.jantina === "P").length.toLocaleString("ms-MY");
+      $("sKelas").textContent = kelas.length;
+
+      const kSemasa = $("tapisK").value;
+      $("tapisK").innerHTML = `<option value="">Semua kelas</option>` +
+        kelas.map((k) => `<option ${k === kSemasa ? "selected" : ""}>${esc(k)}</option>`).join("");
+      $("senaraiKelasData").innerHTML = kelas.map((k) => `<option value="${esc(k)}">`).join("");
+
+      const rows = tapis();
+      $("kosong").hidden = rows.length > 0;
+      $("kosong").textContent = semua.length ? "Tiada padanan." : "Tiada nama lagi. Import fail Excel di atas.";
+      $("tbody").innerHTML = rows.slice(0, 2000).map((m, i) => `
+        <tr class="${dipilih.has(m.id) ? "dipilih" : ""}">
+          <td><input type="checkbox" class="cb" data-id="${m.id}" ${dipilih.has(m.id) ? "checked" : ""}></td>
+          <td>${i + 1}</td><td>${esc(m.nama)}</td>
+          <td><span class="badge-j ${m.jantina}">${m.jantina}</span></td><td>${esc(m.kelas)}</td>
+        </tr>`).join("") +
+        (rows.length > 2000 ? `<tr><td colspan="5" class="empty">+${(rows.length - 2000).toLocaleString("ms-MY")} lagi. Guna carian atau tapis kelas.</td></tr>` : "");
+      kemasPilihan();
+    }
+
+    function kemasPilihan() {
+      const rows = tapis();
+      const n = dipilih.size;
+      $("padamPilih").disabled = n === 0;
+      $("padamPilih").textContent = n ? `🗑️ Padam Dipilih (${n})` : "🗑️ Padam Dipilih";
+      $("padamSemua").disabled = semua.length === 0;
+      $("infoPilih").textContent = n ? `${n} nama dipilih` : "Tandakan nama untuk dipadam.";
+      const semuaDipilih = rows.length > 0 && rows.every((m) => dipilih.has(m.id));
+      $("pilihSemua").checked = semuaDipilih;
+      $("pilihSemua").indeterminate = !semuaDipilih && rows.some((m) => dipilih.has(m.id));
+    }
+
+    ["cari", "tapisJ", "tapisK"].forEach((id) => $(id).addEventListener("input", render));
+    $("tbody").addEventListener("change", (e) => {
+      const cb = e.target.closest("[data-id]");
+      if (!cb) return;
+      const id = Number(cb.dataset.id);
+      cb.checked ? dipilih.add(id) : dipilih.delete(id);
+      cb.closest("tr").classList.toggle("dipilih", cb.checked);
+      kemasPilihan();
+    });
+    $("pilihSemua").addEventListener("change", (e) => {
+      tapis().forEach((m) => (e.target.checked ? dipilih.add(m.id) : dipilih.delete(m.id)));
+      render();
+    });
+    $("muatSemula").onclick = muat;
+
+    async function padamId(ids) {
+      for (let i = 0; i < ids.length; i += 200) {
+        const { error } = await sb.from("murid").delete().in("id", ids.slice(i, i + 200));
+        if (error) throw error;
+      }
+    }
+    $("padamPilih").onclick = async () => {
+      const ids = [...dipilih];
+      if (!ids.length || !confirm(`Padam ${ids.length} nama yang dipilih?`)) return;
+      try { await padamId(ids); dipilih.clear(); await muat(); }
+      catch (err) { alert("Gagal memadam: " + err.message); }
+    };
+    $("padamSemua").onclick = async () => {
+      if (!confirm(`Padam SEMUA ${semua.length} nama dalam roda lelaki dan perempuan?`)) return;
+      try {
+        const { error } = await sb.from("murid").delete().gt("id", 0);
+        if (error) throw error;
+        dipilih.clear(); await muat();
+      } catch (err) { alert("Gagal memadam: " + err.message); }
+    };
+
+    $("borangTambah").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const m = { nama: bersih($("tNama").value), jantina: $("tJ").value, kelas: bersihKelas($("tKelas").value) };
+      const msg = $("tambahMsg");
+      const { data, error } = await sb.rpc("import_murid", { p_senarai: [m] });
+      if (error) { msg.className = "msg err"; msg.textContent = "Gagal: " + error.message; return; }
+      msg.className = "msg ok";
+      msg.textContent = data[0].ditambah ? `✓ ${m.nama} (${m.kelas}) ditambah.` : "Nama ini sudah ada dalam kelas tersebut.";
+      $("tNama").value = ""; $("tNama").focus();
+      muat();
+    });
+
+    // ================= Baca Excel =================
+    const bersih = (s) => String(s ?? "").replace(/\s+/g, " ").trim();
+    const bersihKelas = (s) => bersih(s).toUpperCase();
+    const TAJUK_NAMA = /^(nama|name|nama murid|nama pelajar|nama penuh|nama calon|nama peserta|student name|full name)\b/i;
+    const BUKAN_NAMA = /^nama\s+(kelas|sekolah|guru|bapa|ibu|penjaga|waris)/i;
+    const TAJUK_J = /^(jantina|gender|sex|j\/k|l\/p|jenis kelamin)\b/i;
+    const TAJUK_K = /^(kelas|class|tingkatan|darjah|ting\.?|tahun)\b/i;
+
+    function jantinaDari(v) {
+      const t = bersih(v).toUpperCase();
+      if (!t) return "";
+      if (/^(L|LELAKI|LAKI|M|MALE|BOY|LELAKI\b.*)$/.test(t)) return "L";
+      if (/^(P|PEREMPUAN|F|FEMALE|GIRL|W|WANITA|PEREMPUAN\b.*)$/.test(t)) return "P";
+      return "";
+    }
+    function jantinaDariNama(nama) {
+      const t = ` ${nama.toUpperCase().replace(/[.,]/g, " ")} `;
+      if (/\s(BINTI|BINTE|BTE|BT|A\/P)\s/.test(t)) return "P";
+      if (/\s(BIN|B|A\/L)\s/.test(t)) return "L";
+      return "";
+    }
+    const namaSah = (s) => s.length >= 2 && /[A-Za-zÀ-ɏ؀-ۿ一-鿿]/.test(s) && !TAJUK_NAMA.test(s);
+
+    function bacaSheet(aoa, kelasLalai, sumber) {
+      const out = [];
+      // Cari baris tajuk dalam 20 baris pertama.
+      let h = -1, cN = -1, cJ = -1, cK = -1, cL = -1, cP = -1;
+      for (let i = 0; i < Math.min(aoa.length, 20) && h < 0; i++) {
+        const row = (aoa[i] || []).map((x) => bersih(x));
+        row.forEach((v, j) => {
+          if (cN < 0 && TAJUK_NAMA.test(v) && !BUKAN_NAMA.test(v)) cN = j;
+          else if (cJ < 0 && TAJUK_J.test(v)) cJ = j;
+          else if (cK < 0 && TAJUK_K.test(v)) cK = j;
+          if (/^(lelaki|murid lelaki|boys?)$/i.test(v)) cL = j;
+          if (/^(perempuan|murid perempuan|girls?)$/i.test(v)) cP = j;
+        });
+        if (cN >= 0 || (cL >= 0 && cP >= 0)) h = i;
+        else { cJ = cK = cL = cP = -1; }
+      }
+
+      // Format dua lajur: LELAKI | PEREMPUAN
+      if (h >= 0 && cN < 0) {
+        for (let i = h + 1; i < aoa.length; i++) {
+          const row = aoa[i] || [];
+          const kelas = cK >= 0 && bersih(row[cK]) ? bersihKelas(row[cK]) : kelasLalai;
+          [[cL, "L"], [cP, "P"]].forEach(([c, j]) => {
+            const nama = bersih(row[c]);
+            if (namaSah(nama)) out.push({ nama, jantina: j, kelas, sumber });
+          });
+        }
+        return out;
+      }
+
+      // Tiada tajuk: pilih lajur yang paling banyak teks panjang sebagai nama.
+      if (h < 0) {
+        const skor = {};
+        aoa.slice(0, 60).forEach((row) => (row || []).forEach((v, j) => {
+          const s = bersih(v);
+          if (namaSah(s) && s.includes(" ")) skor[j] = (skor[j] || 0) + 1;
+        }));
+        const terbaik = Object.entries(skor).sort((a, b) => b[1] - a[1])[0];
+        if (!terbaik) return out;
+        cN = Number(terbaik[0]);
+        // Lajur jantina tanpa tajuk: lajur yang kebanyakannya L/P.
+        const sj = {};
+        aoa.slice(0, 60).forEach((row) => (row || []).forEach((v, j) => { if (j !== cN && /^(L|P)$/i.test(bersih(v))) sj[j] = (sj[j] || 0) + 1; }));
+        const jb = Object.entries(sj).sort((a, b) => b[1] - a[1])[0];
+        if (jb) cJ = Number(jb[0]);
+      }
+
+      for (let i = h + 1; i < aoa.length; i++) {
+        const row = aoa[i] || [];
+        const nama = bersih(row[cN]);
+        if (!namaSah(nama)) continue;
+        const kelas = cK >= 0 && bersih(row[cK]) ? bersihKelas(row[cK]) : kelasLalai;
+        const jantina = (cJ >= 0 && jantinaDari(row[cJ])) || jantinaDariNama(nama);
+        out.push({ nama, jantina, kelas, sumber });
+      }
+      return out;
+    }
+
+    async function bacaFail(files) {
+      const hasil = [];
+      const laporan = [];
+      for (const f of files) {
+        try {
+          const wb = XLSX.read(await f.arrayBuffer(), { type: "array" });
+          const namaFail = f.name.replace(/\.[^.]+$/, "");
+          for (const sn of wb.SheetNames) {
+            const aoa = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header: 1, raw: false, defval: "" });
+            const lalai = /^(sheet|helaian|lembaran)\s*\d*$/i.test(sn.trim()) || wb.SheetNames.length === 1 && /^(senarai|nama|data)/i.test(sn.trim())
+              ? bersihKelas(namaFail) : bersihKelas(sn);
+            const rows = bacaSheet(aoa, lalai, `${f.name} › ${sn}`);
+            if (!rows.length) continue;
+            hasil.push(...rows);
+            laporan.push({ sumber: `${f.name} › ${sn}`, n: rows.length, tiadaJ: rows.filter((r) => !r.jantina).length,
+              kelas: [...new Set(rows.map((r) => r.kelas))] });
+          }
+        } catch (err) {
+          console.error(err);
+          laporan.push({ sumber: f.name, ralat: "Fail tidak dapat dibaca." });
+        }
+      }
+      return { hasil, laporan };
+    }
+
+    async function prosesFail(files) {
+      if (!files.length) return;
+      $("importMsg").textContent = "";
+      const { hasil, laporan } = await bacaFail([...files]);
+      calon = hasil;
+      $("failList").innerHTML = laporan.map((l) => `
+        <div class="fail-item"><b>📄 ${esc(l.sumber)}</b><br>
+        ${l.ralat ? `<span class="warn">${esc(l.ralat)}</span>` :
+          `<span class="ok">${l.n} nama</span> · Kelas: ${l.kelas.map(esc).join(", ")}
+           ${l.tiadaJ ? ` · <span class="warn">${l.tiadaJ} tiada jantina</span>` : ""}`}
+        </div>`).join("") || `<div class="fail-item"><span class="warn">Tiada nama dijumpai dalam fail.</span></div>`;
+      renderCalon();
+      $("preview").hidden = false;
+      $("preview").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderCalon() {
+      const tiada = calon.map((r, i) => [r, i]).filter(([r]) => !r.jantina || r.manual);
+      $("semak").hidden = tiada.length === 0;
+      $("semakBody").innerHTML = tiada.map(([r, i]) => `
+        <tr><td>${esc(r.nama)}</td><td>${esc(r.kelas)}</td>
+        <td><select class="sel" data-i="${i}"><option value="">— pilih —</option>
+          <option value="L" ${r.jantina === "L" ? "selected" : ""}>Lelaki</option>
+          <option value="P" ${r.jantina === "P" ? "selected" : ""}>Perempuan</option></select></td></tr>`).join("");
+      const kira = new Map();
+      calon.forEach((r) => {
+        const k = kira.get(r.kelas) || { L: 0, P: 0, X: 0 };
+        k[r.jantina || "X"]++; kira.set(r.kelas, k);
+      });
+      const ks = [...kira.keys()].sort(bandingKelas);
+      const jum = { L: 0, P: 0, X: 0 };
+      $("ringkasBody").innerHTML = ks.map((k) => {
+        const v = kira.get(k); jum.L += v.L; jum.P += v.P; jum.X += v.X;
+        return `<tr><td><b>${esc(k)}</b></td><td class="n lc">${v.L}</td><td class="n pc">${v.P}</td><td class="n">${v.L + v.P + v.X}${v.X ? ` <small class="warn" style="color:var(--danger)">(${v.X} belum)</small>` : ""}</td></tr>`;
+      }).join("") + `<tr><td><b>JUMLAH (${ks.length} kelas)</b></td><td class="n lc">${jum.L}</td><td class="n pc">${jum.P}</td><td class="n">${jum.L + jum.P + jum.X}</td></tr>`;
+      const belum = calon.filter((r) => !r.jantina).length;
+      $("simpanImport").disabled = !calon.length || belum > 0;
+      $("simpanImport").textContent = belum ? `Pilih jantina untuk ${belum} nama dahulu` : `💾 Simpan ${calon.length} Nama ke Roda`;
+    }
+    $("semakBody").addEventListener("change", (e) => {
+      const s = e.target.closest("[data-i]");
+      if (!s) return;
+      const r = calon[Number(s.dataset.i)];
+      r.jantina = s.value; r.manual = true;
+      renderCalon();
+    });
+    ["L", "P"].forEach((j) => ($("semua" + j).onclick = () => {
+      calon.forEach((r) => { if (!r.jantina || r.manual) { r.jantina = j; r.manual = true; } });
+      renderCalon();
+    }));
+
+    $("fail").addEventListener("change", (e) => { prosesFail(e.target.files); e.target.value = ""; });
+    const drop = $("drop");
+    ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+    ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+    drop.addEventListener("drop", (e) => prosesFail(e.dataTransfer.files));
+
+    $("batalImport").onclick = () => { calon = []; $("preview").hidden = true; };
+
+    $("simpanImport").onclick = async () => {
+      const msg = $("importMsg");
+      const btn = $("simpanImport");
+      if ($("ganti").checked && !confirm(`Padam ${semua.length} nama lama dan ganti dengan ${calon.length} nama baru?`)) return;
+      btn.disabled = true;
+      msg.className = "msg"; msg.textContent = "Menyimpan…";
+      try {
+        if ($("ganti").checked) {
+          const { error } = await sb.from("murid").delete().gt("id", 0);
+          if (error) throw error;
+        }
+        let tambah = 0, abai = 0;
+        const data = calon.map(({ nama, jantina, kelas }) => ({ nama, jantina, kelas }));
+        for (let i = 0; i < data.length; i += 500) {
+          const { data: res, error } = await sb.rpc("import_murid", { p_senarai: data.slice(i, i + 500) });
+          if (error) throw error;
+          tambah += res[0].ditambah; abai += res[0].diabaikan;
+          msg.textContent = `Menyimpan… ${Math.min(i + 500, data.length)}/${data.length}`;
+        }
+        msg.className = "msg ok";
+        msg.textContent = `✓ ${tambah} nama ditambah ke roda.` + (abai ? ` ${abai} diabaikan (sudah ada / berulang).` : "");
+        calon = [];
+        $("ganti").checked = false;
+        setTimeout(() => { $("preview").hidden = true; }, 2500);
+        await muat();
+      } catch (err) {
+        console.error(err);
+        msg.className = "msg err"; msg.textContent = "Gagal menyimpan: " + err.message;
+        btn.disabled = false;
+      }
+    };
+
+    // ================= Templat & eksport =================
+    function simpanXlsx(aoa, namaFail, lebar) {
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      ws["!cols"] = lebar.map((w) => ({ wch: w }));
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Senarai");
+      XLSX.writeFile(wb, namaFail);
+    }
+    $("templat").onclick = () => simpanXlsx([
+      ["BIL", "NAMA", "JANTINA", "KELAS"],
+      [1, "AHMAD FAIZ BIN ROSLAN", "L", "5 AMANAH"],
+      [2, "NUR AISYAH BINTI KAMAL", "P", "5 AMANAH"],
+      [3, "MUHAMMAD HAZIQ BIN ZAINAL", "L", "5 BESTARI"],
+      [4, "SITI HAJAR BINTI OMAR", "P", "5 BESTARI"],
+    ], "templat-roda-bertuah.xlsx", [6, 40, 10, 16]);
+    $("eksport").onclick = () => simpanXlsx(
+      [["BIL", "NAMA", "JANTINA", "KELAS"], ...semua.map((m, i) => [i + 1, m.nama, m.jantina, m.kelas])],
+      "senarai-roda-bertuah.xlsx", [6, 40, 10, 16]);
+
+    sb.auth.onAuthStateChange((ev) => { if (ev === "SIGNED_OUT") papar("viewLogin"); });
+    semak();
+  })();
+  </script>
+</body>
+</html>
