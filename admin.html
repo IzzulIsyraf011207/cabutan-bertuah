@@ -326,6 +326,12 @@
       });
     }
 
+    let mesej = "", mesejTamat = 0;
+    function maklum(teks) {
+      mesej = teks; mesejTamat = Date.now() + 5000;
+      setTimeout(kemasPilihan, 5100);
+    }
+
     function kemasPilihan() {
       const rows = senaraiTapis();
       const n = dipilih.size;
@@ -334,6 +340,7 @@
       $("padamSemua").disabled = semua.length === 0;
       $("infoPilih").innerHTML = n
         ? `<b>${n}</b> peserta dipilih`
+        : Date.now() < mesejTamat ? `<b style="color:var(--ok)">${esc(mesej)}</b>`
         : "Tandakan peserta untuk dipadam.";
       const semuaDipilih = rows.length > 0 && rows.every((p) => dipilih.has(p.id));
       ["pilihSemua", "pilihSemuaM"].forEach((id) => {
@@ -393,10 +400,6 @@
     $("padamPilih").onclick = async () => {
       const ids = [...dipilih];
       if (!ids.length) return;
-      const nama = semua.filter((p) => dipilih.has(p.id)).slice(0, 5)
-        .map((p) => `• ${p.nombor_bertuah} – ${p.nama}`).join("\n");
-      const lagi = ids.length > 5 ? `\n…dan ${ids.length - 5} lagi` : "";
-      if (!confirm(`Padam ${ids.length} peserta ini?\n\n${nama}${lagi}\n\nData akan dipadam terus dari database dan tidak boleh dikembalikan.`)) return;
       const btn = $("padamPilih");
       btn.disabled = true; btn.textContent = "Memadam…";
       try {
@@ -408,9 +411,9 @@
         const ada = new Set(semua.map((p) => p.id));
         const jumlah = ids.filter((id) => !ada.has(id)).length;
         ids.forEach((id) => dipilih.delete(id));
+        if (!jumlah) alert("Tiada peserta dipadam. Pastikan akaun anda ialah admin.");
+        else maklum(`✓ ${jumlah} peserta telah dipadam.`);
         render();
-        alert(jumlah ? `${jumlah} peserta telah dipadam dari database.`
-          : "Tiada peserta dipadam. Pastikan akaun anda ialah admin.");
       } catch (err) {
         console.error(err);
         alert("Gagal memadam: " + err.message);
@@ -420,9 +423,6 @@
 
     $("padamSemua").onclick = async () => {
       if (!semua.length) return;
-      const jawapan = prompt(`AMARAN: Ini akan memadam SEMUA ${semua.length} peserta dari database dan tidak boleh dikembalikan.\n\nTip: muat turun Excel (CSV) dahulu sebagai simpanan.\n\nTaip PADAM SEMUA untuk sahkan:`);
-      if (jawapan === null) return;
-      if (jawapan.trim().toUpperCase() !== "PADAM SEMUA") { alert("Tidak dipadam. Teks pengesahan tidak sama."); return; }
       const btn = $("padamSemua");
       btn.disabled = true; btn.textContent = "Memadam…";
       try {
@@ -431,9 +431,9 @@
         if (error) throw error;
         dipilih.clear();
         await muat();
-        alert(semua.length === 0
-          ? `Semua ${sebelum} peserta telah dipadam dari database. Senarai kini kosong.`
-          : `Tidak semua dipadam (${semua.length} masih ada). Pastikan akaun anda ialah admin, kemudian cuba lagi.`);
+        if (semua.length) alert(`Tidak semua dipadam (${semua.length} masih ada). Pastikan akaun anda ialah admin, kemudian cuba lagi.`);
+        else maklum(`✓ Semua ${sebelum} peserta telah dipadam.`);
+        render();
       } catch (err) {
         console.error(err);
         alert("Gagal memadam: " + err.message);
