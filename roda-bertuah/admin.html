@@ -181,6 +181,7 @@
           <li><b>KELAS</b>: jika tiada lajur ini, nama <b>sheet</b> digunakan sebagai kelas (contoh satu sheet = satu kelas). Jika nama sheet "Sheet1", nama <b>fail</b> digunakan.</li>
           <li>Format lain yang juga diterima: dua lajur bertajuk <b>LELAKI</b> dan <b>PEREMPUAN</b> berisi nama.</li>
           <li><b>Roda hanya papar nama pendek</b>: "BIN / BINTI / BT / A/L / A/P" dan nama bapa dibuang (contoh AHMAD FAIZ BIN ROSLAN → <b>AHMAD FAIZ</b>). Jika dua murid dalam kelas yang sama ada nama pendek sama, nama bapa ditambah dalam kurungan, contoh <b>AHMAD (ALI)</b>. Nama penuh tetap disimpan untuk rujukan admin.</li>
+          <li>Hanya <b>nama murid</b> diambil. Mata pelajaran (BM, MATEMATIK…), sheet analisis MP, markah, jumlah, purata dan nama guru diabaikan secara automatik.</li>
           <li>Lajur BIL dan lajur lain diabaikan. Nama yang sama dalam kelas yang sama tidak akan dimasukkan dua kali.</li>
         </ul>
       </div>
@@ -255,7 +256,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="config.js?v=20261025a"></script>
-  <script src="excel.js?v=20261025a"></script>
+  <script src="excel.js?v=20261025b"></script>
   <script>
   (function () {
     const C = window.RODA_CONFIG;

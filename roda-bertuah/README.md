@@ -52,6 +52,11 @@ Baris pertama = tajuk lajur. Satu baris = satu murid.
   automatik, contoh `AHMAD FAIZ BIN ROSLAN` → **AHMAD FAIZ**. Jika dua murid dalam kelas & jantina
   yang sama ada nama pendek sama, nama bapa ditambah: **AHMAD (ALI)** dan **AHMAD (ABU)**.
   Nama penuh tetap disimpan (untuk teka jantina dan rujukan admin) tetapi tidak dihantar ke roda awam.
+- **Hanya nama murid diambil.** Sistem analisis setiap sheet dan setiap sel: mata pelajaran
+  (BAHASA MELAYU, MATEMATIK, BM, BI, PJK…), sheet analisis MP, markah, jumlah, purata, tajuk,
+  "Disediakan oleh" dan nama guru (PN., EN., CIKGU, USTAZ…) diabaikan. Sheet tanpa nama murid
+  ditunjuk sebagai "Diabaikan". Fail keputusan peperiksaan (satu baris setiap subjek) pun boleh:
+  nama yang berulang hanya dimasukkan sekali.
 - Nama kelas ditukar ke huruf besar supaya "5 Amanah" dan "5 AMANAH" dikira kelas yang sama.
 - Nama yang sama dalam kelas yang sama tidak dimasukkan dua kali.
 
