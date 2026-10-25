@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0e5a43">
+  <title>Sistem Cabutan Bertuah Digital</title>
+  <meta name="description" content="Peserta isi borang, terus dapat nombor bertuah. Cabutan guna roda digital yang adil dan telus. Cuba demo percuma.">
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cabutan Bertuah">
+  <meta property="og:url" content="https://izzulisyraf011207.github.io/cabutan-bertuah/produk/">
+  <meta property="og:title" content="Sistem Cabutan Bertuah Digital: Cuba Demo Percuma">
+  <meta property="og:description" content="Borang + nombor bertuah automatik + panel admin + roda cabutan. Sesuai untuk masjid, sekolah, syarikat & majlis.">
+  <meta property="og:image" content="https://izzulisyraf011207.github.io/cabutan-bertuah/assets/thumbnail-produk.jpg">
+  <meta property="og:image:secure_url" content="https://izzulisyraf011207.github.io/cabutan-bertuah/assets/thumbnail-produk.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1920">
+  <meta property="og:image:height" content="1080">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://izzulisyraf011207.github.io/cabutan-bertuah/assets/thumbnail-produk.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css?v=20261025d">
+  <style>
+    :root { --ungu: #7c3aed; --magenta: #db2777; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); }
+    .w { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+    section { padding: 64px 0; }
+    @media (max-width: 720px) { section { padding: 48px 0; } }
+
+    /* Nav */
+    .nav { position: sticky; top: 0; z-index: 30; background: rgba(11, 69, 53, .92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+    .nav .w { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; }
+    .jenama { display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 800; font-size: 17px; text-decoration: none; }
+    .jenama img { width: 38px; height: 38px; border-radius: 10px; display: block; }
+    .btn-beli {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 48px; padding: 0 22px; border-radius: 999px; border: 0; cursor: pointer;
+      font: inherit; font-weight: 800; font-size: 16px; color: #fff; text-decoration: none;
+      background: linear-gradient(135deg, var(--ungu), #a21caf 55%, var(--magenta));
+      box-shadow: 0 0 0 2px rgba(255, 213, 107, .7) inset, 0 12px 26px -12px rgba(162, 28, 175, .85);
+      -webkit-tap-highlight-color: transparent; transition: transform .1s, filter .2s;
+    }
+    .btn-beli:hover { filter: brightness(1.08); }
+    .btn-beli:active { transform: scale(.97); }
+    .btn-beli.kecil { min-height: 40px; padding: 0 16px; font-size: 14px; white-space: nowrap; }
+    .jenama { white-space: nowrap; }
+    @media (max-width: 420px) { .jenama { font-size: 15px; } .jenama img { width: 34px; height: 34px; } .btn-beli.kecil { padding: 0 12px; font-size: 13px; } }
+    .btn-demo {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 52px; padding: 0 24px; border-radius: 999px; text-decoration: none;
+      font-weight: 800; font-size: 16px; color: #2f1f00;
+      background: linear-gradient(180deg, #ffe08a, #f2c75c 45%, #d39a2e);
+      box-shadow: 0 12px 28px -12px rgba(242, 199, 92, .9), inset 0 1px 0 rgba(255,255,255,.7);
+      transition: transform .1s, filter .2s;
+    }
+    .btn-demo:hover { filter: brightness(1.05); }
+    .btn-demo:active { transform: scale(.97); }
+
+    /* Hero */
+    .hero2 {
+      position: relative; overflow: hidden; color: #fff; padding: 56px 0 72px;
+      background:
+        radial-gradient(70% 60% at 85% 10%, rgba(242, 199, 92, .30), transparent 60%),
+        radial-gradient(60% 60% at 0% 100%, rgba(38, 179, 134, .30), transparent 60%),
+        linear-gradient(160deg, #0b4535, #0e5a43 55%, #06281f);
+    }
+    .hero2 .w { display: grid; gap: 40px; align-items: center; }
+    @media (min-width: 900px) { .hero2 .w { grid-template-columns: 1.05fr 1fr; } }
+    .pil { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); font-size: 13px; font-weight: 700; letter-spacing: .06em; }
+    .hero2 h1 { margin: 16px 0 12px; font-size: clamp(34px, 6vw, 58px); line-height: 1.05; letter-spacing: -.03em; font-weight: 800; }
+    .hero2 h1 span { background: linear-gradient(180deg, #fff3cf, #f2c75c 55%, #c8902a); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero2 p.lead { margin: 0; font-size: clamp(16px, 2.2vw, 19px); line-height: 1.6; color: #d7ebe2; max-width: 540px; }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+    .tick { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 22px; font-size: 14px; color: #cfe6dc; font-weight: 600; }
+    .tick span::before { content: "✓ "; color: #f2c75c; font-weight: 800; }
+    .hero-img { border-radius: 22px; width: 100%; height: auto; display: block; box-shadow: 0 40px 80px -30px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.12); }
+
+    @media (max-width: 899px) { .hero-img { display: none; } }
+    /* Tajuk seksyen */
+    .kepala { text-align: center; max-width: 680px; margin: 0 auto 34px; }
+    .kepala .kecil { font-size: 13px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+    .kepala h2 { margin: 8px 0 10px; font-size: clamp(26px, 4vw, 38px); letter-spacing: -.02em; line-height: 1.15; }
+    .kepala p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
+
+    /* Demo */
+    .demo-grid { display: grid; gap: 18px; }
+    @media (min-width: 820px) { .demo-grid { grid-template-columns: repeat(3, 1fr); } }
+    .demo-kad { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow); }
+    .demo-kad .gambar { aspect-ratio: 4 / 3; overflow: hidden; background: #0a4535; }
+    .demo-kad .gambar img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s; }
+    .demo-kad:hover .gambar img { transform: scale(1.04); }
+    .demo-kad .isi { padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .demo-kad h3 { margin: 0; font-size: 19px; }
+    .demo-kad p { margin: 0 0 12px; color: var(--muted); font-size: 14.5px; line-height: 1.55; flex: 1; }
+    .demo-kad .btn-demo { min-height: 48px; font-size: 15px; }
+    .nota-demo { margin: 22px auto 0; max-width: 680px; text-align: center; font-size: 14px; color: var(--muted); }
+    .nota-demo b { color: var(--ink); }
+
+    /* Ciri */
+    .ciri { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .ciri-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .c { padding: 20px; border-radius: 18px; background: var(--surface-2); border: 1px solid var(--line); }
+    .c .ik { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 24px; background: var(--gold-soft); margin-bottom: 10px; }
+    .c h3 { margin: 0 0 4px; font-size: 16.5px; }
+    .c p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+
+    /* Langkah */
+    .langkah { display: grid; gap: 16px; counter-reset: l; }
+    @media (min-width: 820px) { .langkah { grid-template-columns: repeat(3, 1fr); } }
+    .l { position: relative; padding: 22px 20px 20px 74px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); }
+    .l::before { counter-increment: l; content: counter(l); position: absolute; left: 20px; top: 20px; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: #fff; background: linear-gradient(160deg, #137456, #0b4535); }
+    .l h3 { margin: 0 0 4px; font-size: 16.5px; }
+    .l p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+
+    .sesuai { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .sesuai span { padding: 10px 16px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-weight: 700; font-size: 14.5px; }
+
+    /* Beli */
+    .beli { color: #fff; background: radial-gradient(70% 70% at 100% 0%, rgba(219, 39, 119, .35), transparent 60%), linear-gradient(150deg, #4c1d95, #6d28d9 50%, #86198f); }
+    .beli .kepala .kecil { color: #ffd56b; }
+    .beli .kepala p { color: #eadcff; }
+    .beli-kad { max-width: 560px; margin: 0 auto; background: #fff; color: var(--ink); border-radius: 26px; padding: 26px; box-shadow: 0 40px 80px -30px rgba(0,0,0,.6); }
+    @media (prefers-color-scheme: dark) { .beli-kad { background: var(--surface); } }
+    .beli-kad h3 { margin: 0 0 4px; font-size: 21px; }
+    .beli-kad .sub { margin: 0 0 18px; color: var(--muted); font-size: 14.5px; }
+    .dua { display: grid; gap: 0 14px; }
+    @media (min-width: 560px) { .dua { grid-template-columns: 1fr 1fr; } }
+    .berjaya { display: none; text-align: center; padding: 10px 0; }
+    .berjaya .bulat { width: 72px; height: 72px; margin: 0 auto 12px; border-radius: 50%; display: grid; place-items: center; font-size: 36px; background: #dcfce7; }
+    .berjaya h3 { margin: 0 0 6px; }
+    .berjaya p { margin: 0; color: var(--muted); }
+    .beli-kad.siap form { display: none; }
+    .beli-kad.siap .berjaya { display: block; }
+    .selamat { margin-top: 12px; text-align: center; font-size: 12.5px; color: var(--muted); }
+
+    /* Soalan */
+    .soalan { max-width: 760px; margin: 0 auto; display: grid; gap: 10px; }
+    details { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; }
+    summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 10px; }
+    summary::after { content: "+"; font-size: 20px; color: var(--gold); line-height: 1; }
+    details[open] summary::after { content: "–"; }
+    details p { margin: 10px 0 0; color: var(--muted); line-height: 1.6; font-size: 14.5px; }
+
+    .kaki { padding: 30px 0 40px; text-align: center; color: var(--muted); font-size: 13px; }
+    .lekat { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; padding: 10px 16px max(10px, env(safe-area-inset-bottom)); background: rgba(255,255,255,.94); border-top: 1px solid var(--line); display: none; }
+    .lekat .btn-beli { width: 100%; }
+    @media (max-width: 720px) { .lekat.tunjuk { display: block; } body { padding-bottom: 76px; } }
+    @media (prefers-color-scheme: dark) { .lekat { background: rgba(21, 32, 27, .94); } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="w">
+      <a class="jenama" href="#"><img src="../assets/logo.svg" alt="" width="38" height="38">Cabutan Bertuah</a>
+      <a class="btn-beli kecil" href="#beli">Dapatkan Sistem</a>
+    </div>
+  </nav>
+
+  <header class="hero2">
+    <div class="w">
+      <div>
+        <span class="pil">🎁 SISTEM CABUTAN BERTUAH DIGITAL</span>
+        <h1>Cabutan bertuah jadi <span>mudah, adil &amp; meriah</span></h1>
+        <p class="lead">Peserta imbas QR, isi borang, terus dapat nombor bertuah. Hari cabutan, tekan
+          <b>MULA</b> dan <b>BERHENTI</b>: roda digital pilih pemenang secara rawak di depan semua orang.</p>
+        <div class="cta-row">
+          <a class="btn-demo" href="#demo">▶ Cuba Demo Percuma</a>
+          <a class="btn-beli" href="#beli">Dapatkan Sistem Saya</a>
+        </div>
+        <div class="tick"><span>Tiada had peserta</span><span>Mesra telefon</span><span>Tak perlu install app</span></div>
+      </div>
+      <img class="hero-img" src="../assets/thumbnail.jpg" alt="Contoh borang cabutan bertuah" width="1920" height="1080">
+    </div>
+  </header>
+
+  <section id="demo">
+    <div class="w">
+      <div class="kepala">
+        <div class="kecil">Cuba Demo Percuma</div>
+        <h2>Rasa sendiri sebelum beli</h2>
+        <p>Tiga bahagian sistem yang anda akan dapat. Demo guna data contoh, jadi cuba sepuas hati.</p>
+      </div>
+      <div class="demo-grid">
+        <article class="demo-kad">
+          <div class="gambar"><img src="../assets/thumbnail.jpg" alt="" loading="lazy"></div>
+          <div class="isi">
+            <h3>📝 Borang Peserta</h3>
+            <p>Isi nama, No. IC &amp; telefon, terus keluar nombor bertuah. Boleh simpan gambar nombor ke galeri.</p>
+            <a class="btn-demo" href="../index.html?demo=1">Cuba Borang</a>
+          </div>
+        </article>
+        <article class="demo-kad">
+          <div class="gambar"><img src="../assets/thumbnail-admin.jpg" alt="" loading="lazy"></div>
+          <div class="isi">
+            <h3>🔐 Panel Admin</h3>
+            <p>Lihat semua peserta, cari, cetak senarai, muat turun Excel dan padam peserta.</p>
+            <a class="btn-demo" href="../admin.html?demo=1">Cuba Panel Admin</a>
+          </div>
+        </article>
+        <article class="demo-kad">
+          <div class="gambar"><img src="../assets/thumbnail-roda.jpg" alt="" loading="lazy"></div>
+          <div class="isi">
+            <h3>🎡 Roda Cabutan</h3>
+            <p>Roda berpusing dengan bunyi tik-tik. Tekan BERHENTI, pemenang keluar dengan confetti.</p>
+            <a class="btn-demo" href="../cabutan.html?demo=1">Cuba Roda Cabutan</a>
+          </div>
+        </article>
+      </div>
+      <p class="nota-demo">Akaun admin demo: <b>demo@cabutanbertuah.my</b> / <b>demo1234</b> (sudah diisi automatik).<br>
+        Cuba isi borang demo dahulu, kemudian lihat nama anda muncul dalam admin &amp; roda.</p>
+    </div>
+  </section>
+
+  <section class="ciri">
+    <div class="w">
+      <div class="kepala">
+        <div class="kecil">Apa Anda Dapat</div>
+        <h2>Lengkap dari pendaftaran hingga cabutan</h2>
+      </div>
+      <div class="ciri-grid">
+        <div class="c"><div class="ik">🎟️</div><h3>Nombor bertuah automatik</h3><p>Setiap peserta terus dapat nombor unik. Satu IC, satu penyertaan.</p></div>
+        <div class="c"><div class="ik">♾️</div><h3>Tiada had peserta</h3><p>Puluhan atau puluhan ribu peserta, sistem tetap laju.</p></div>
+        <div class="c"><div class="ik">📲</div><h3>Simpan ke galeri</h3><p>Peserta simpan gambar nombor bertuah terus ke telefon.</p></div>
+        <div class="c"><div class="ik">🖨️</div><h3>Cetak &amp; Excel</h3><p>Admin cetak senarai penuh atau nombor sahaja, dan muat turun Excel.</p></div>
+        <div class="c"><div class="ik">🎡</div><h3>Roda cabutan meriah</h3><p>Lampu berkelip, bunyi tik-tik, confetti dan skrin penuh untuk projektor.</p></div>
+        <div class="c"><div class="ik">⚖️</div><h3>Rawak &amp; adil</h3><p>Pemenang dipilih secara rawak dan tidak boleh menang dua kali.</p></div>
+        <div class="c"><div class="ik">🔒</div><h3>Data selamat</h3><p>IC &amp; telefon hanya boleh dilihat oleh admin yang log masuk.</p></div>
+        <div class="c"><div class="ik">⚡</div><h3>Tak perlu install</h3><p>Semua berjalan dalam pelayar telefon, tablet dan laptop.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="w">
+      <div class="kepala">
+        <div class="kecil">Cara Guna</div>
+        <h2>Tiga langkah sahaja</h2>
+      </div>
+      <div class="langkah">
+        <div class="l"><h3>Kongsi link borang</h3><p>Hantar di WhatsApp, Facebook atau cetak QR code di tempat program.</p></div>
+        <div class="l"><h3>Peserta dapat nombor</h3><p>Isi borang kurang 1 minit, terus keluar nombor bertuah.</p></div>
+        <div class="l"><h3>Buat cabutan</h3><p>Buka roda di skrin besar, tekan MULA &amp; BERHENTI. Siap!</p></div>
+      </div>
+      <div class="kepala" style="margin:44px auto 18px"><h2 style="font-size:22px">Sesuai untuk</h2></div>
+      <div class="sesuai">
+        <span>🕌 Masjid &amp; Surau</span><span>🏫 Sekolah &amp; PIBG</span><span>🏢 Majlis Syarikat</span>
+        <span>💍 Kenduri &amp; Majlis</span><span>🛍️ Kedai &amp; Promosi</span><span>🎪 Event &amp; Karnival</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="beli" id="beli">
+    <div class="w">
+      <div class="kepala">
+        <div class="kecil">✦ Dapatkan Sistem Saya ✦</div>
+        <h2>Sistem cabutan bertuah anda sendiri</h2>
+        <p>Borang, panel admin dan roda cabutan khas untuk program anda. Isi maklumat di bawah, kami akan hubungi anda untuk pengaktifan.</p>
+      </div>
+      <div class="beli-kad" id="beliKad">
+        <form id="borangBeli" novalidate>
+          <h3>Tempah sistem anda</h3>
+          <p class="sub">Kami akan hubungi anda melalui WhatsApp atau emel.</p>
+          <div class="alert" id="beliAlert" role="alert"></div>
+          <div class="field">
+            <label for="bNama">Nama <span class="req">*</span></label>
+            <input class="input" id="bNama" autocomplete="name" maxlength="120" required>
+          </div>
+          <div class="dua">
+            <div class="field">
+              <label for="bTel">No. Telefon (WhatsApp) <span class="req">*</span></label>
+              <input class="input" id="bTel" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="012-345 6789" required>
+            </div>
+            <div class="field">
+              <label for="bEmel">Emel <span class="req">*</span></label>
+              <input class="input" id="bEmel" type="email" autocomplete="email" maxlength="200" placeholder="nama@contoh.com" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="bOrg">Nama organisasi / program</label>
+            <input class="input" id="bOrg" maxlength="160" placeholder="Cth: Masjid Al-Falah, Majlis Makan Malam ABC">
+          </div>
+          <div class="field">
+            <label for="bCatatan">Catatan</label>
+            <textarea class="input" id="bCatatan" maxlength="1000" placeholder="Tarikh program, anggaran bilangan peserta, dll." style="min-height:84px"></textarea>
+          </div>
+          <button class="btn-beli" type="submit" id="bHantar" style="width:100%;min-height:54px">Dapatkan Sistem Saya</button>
+          <p class="selamat">🔒 Maklumat anda hanya digunakan untuk menghubungi anda.</p>
+        </form>
+        <div class="berjaya">
+          <div class="bulat">✅</div>
+          <h3>Terima kasih!</h3>
+          <p>Tempahan anda telah diterima. Kami akan hubungi anda tidak lama lagi.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="w">
+      <div class="kepala"><div class="kecil">Soalan Lazim</div><h2>Ada soalan?</h2></div>
+      <div class="soalan">
+        <details><summary>Perlu install aplikasi?</summary><p>Tidak. Semua berjalan melalui link dalam pelayar (Chrome, Safari dan lain-lain) di telefon, tablet atau laptop.</p></details>
+        <details><summary>Berapa ramai peserta boleh daftar?</summary><p>Tiada had. Nombor bertuah akan bertambah digit secara automatik bila peserta makin ramai.</p></details>
+        <details><summary>Adakah cabutan benar-benar adil?</summary><p>Ya. Pemenang dipilih secara rawak oleh sistem, dan nombor yang sudah menang dikeluarkan dari roda supaya tidak menang dua kali.</p></details>
+        <details><summary>Siapa boleh lihat No. IC peserta?</summary><p>Hanya admin yang log masuk. Roda cabutan hanya memaparkan nombor dan nama.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <footer class="kaki">© Cabutan Bertuah · Sistem cabutan bertuah digital</footer>
+  <div class="lekat" id="lekat"><a class="btn-beli" href="#beli">Dapatkan Sistem Saya</a></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="../assets/config.js?v=20261025d"></script>
+  <script>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+
+    // Butang beli melekat di bawah (telefon) selepas lepas bahagian hero, sembunyi bila di seksyen beli.
+    const lekat = $("lekat"), hero = document.querySelector(".hero2"), beli = $("beli");
+    let lepasHero = false, nampakBeli = false;
+    const kemas = () => lekat.classList.toggle("tunjuk", lepasHero && !nampakBeli);
+    new IntersectionObserver(([e]) => { lepasHero = !e.isIntersecting; kemas(); }).observe(hero);
+    new IntersectionObserver(([e]) => { nampakBeli = e.isIntersecting; kemas(); }, { threshold: 0.15 }).observe(beli);
+
+    const MESEJ = {
+      NAMA_TIDAK_SAH: "Sila isi nama anda.",
+      TELEFON_TIDAK_SAH: "No. telefon tidak sah.",
+      EMEL_TIDAK_SAH: "Emel tidak sah.",
+    };
+    $("borangBeli").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const al = $("beliAlert");
+      al.classList.remove("show");
+      const nama = $("bNama").value.trim(), tel = $("bTel").value, emel = $("bEmel").value.trim();
+      let salah = null;
+      if (nama.length < 2) salah = MESEJ.NAMA_TIDAK_SAH;
+      else if (!/^\+?\d{9,14}$/.test(tel.replace(/[^\d+]/g, ""))) salah = MESEJ.TELEFON_TIDAK_SAH;
+      else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emel)) salah = MESEJ.EMEL_TIDAK_SAH;
+      if (salah) { al.textContent = salah; al.classList.add("show"); return; }
+      const b = $("bHantar");
+      b.disabled = true; b.textContent = "Menghantar…";
+      try {
+        const { error } = await sb.rpc("hantar_tempahan", {
+          p_nama: nama, p_telefon: tel, p_emel: emel,
+          p_organisasi: $("bOrg").value, p_catatan: $("bCatatan").value,
+        });
+        if (error) throw error;
+        $("beliKad").classList.add("siap");
+        if (window.confetti) confetti({ particleCount: 120, spread: 80, origin: { y: .6 } });
+      } catch (err) {
+        console.error(err);
+        al.textContent = MESEJ[err && err.message] || "Maaf, tempahan tidak dapat dihantar. Sila cuba lagi.";
+        al.classList.add("show");
+      } finally {
+        b.disabled = false; b.textContent = "Dapatkan Sistem Saya";
+      }
+    });
+  })();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</body>
+</html>
