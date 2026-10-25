@@ -1,5 +1,6 @@
 // Tetapan Cabutan Bertuah. Kunci "publishable" ini selamat diletak di laman awam:
-// orang awam hanya boleh daftar melalui fungsi daftar_peserta, tidak boleh baca data.
+// orang awam hanya boleh daftar (daftar_peserta) dan lihat nombor + nama untuk roda
+// (senarai_roda). IC, telefon dan alamat hanya boleh dilihat oleh admin.
 window.CABUTAN_CONFIG = {
   SUPABASE_URL: "https://scxpyfvdhcjalsedasel.supabase.co",
   SUPABASE_KEY: "sb_publishable_dOMhL_JnSurmr3nDrvfG9Q_Pgelo6yf",

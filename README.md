@@ -7,7 +7,7 @@ Supabase (projek **Cabutan Bertuah**, `scxpyfvdhcjalsedasel`, region Singapura).
 |---|---|---|
 | `index.html` | Orang awam | Borang (nama, IC, telefon, alamat). Lepas **Simpan**, pop up keluar nombor bertuah + nota "Sila screenshot atau simpan nombor ini untuk cabutan bertuah." Ada butang simpan gambar nombor. |
 | `admin.html` | Admin sahaja | Log masuk, senarai semua peserta, cari, **cetak senarai penuh**, **cetak nombor sahaja**, muat turun Excel (CSV). |
-| `cabutan.html` | Admin sahaja | Roda cabutan bertuah dengan butang **MULA** dan **CABUT**. Pemenang dipaparkan dalam pop up dan disimpan ke database. |
+| `cabutan.html` | Sesiapa (tanpa log masuk) | Roda cabutan bertuah. Tekan **MULA**, roda berhenti sendiri (atau tekan **BERHENTI**). Ada bunyi tik semasa berpusing. Pemenang dipilih rawak dan tidak berulang. |
 | `supabase/schema.sql` | Rujukan | Skema database (sudah dipasang di Supabase). |
 
 ## 1. Cipta akaun admin (sekali sahaja)
@@ -48,15 +48,17 @@ Boleh juga guna Vercel, Cloudflare Pages atau mana-mana hosting fail statik.
 - Kongsi link borang (atau buat QR code) kepada orang ramai.
 - Setiap No. IC hanya boleh daftar **sekali**. Nombor bertuah dijana secara rawak
   di server (4 digit, unik).
-- Hari cabutan: buka `admin.html` → log masuk → **Buka Paparan Cabutan**.
+- Hari cabutan: buka `cabutan.html` terus, tiada log masuk.
   Tekan ⛶ untuk skrin penuh (sesuai untuk projektor/TV).
-  1. Tulis nama hadiah (pilihan).
-  2. Tekan **MULA** → roda berpusing.
-  3. Tekan **CABUT** → roda perlahan dan berhenti pada nombor pemenang.
-  4. Tekan **Sahkan & Simpan Pemenang** (atau **Cabut Semula** jika pemenang tiada di tempat).
-- Pemenang yang disahkan dikeluarkan dari bulatan untuk cabutan seterusnya
-  (boleh matikan "Kecualikan pemenang terdahulu").
-- Papan kekunci: `Space` = mula/cabut.
+  1. Tekan **MULA** (atau butang tengah roda). Roda berpusing dengan bunyi tik.
+  2. Roda **berhenti sendiri** dalam beberapa saat. Nak hentikan lebih awal? Tekan **BERHENTI**.
+  3. Nombor dan nama pemenang dipaparkan. Tekan **Teruskan Cabutan** untuk pusingan seterusnya.
+- Pemenang dipilih secara rawak (kriptografi) dan **dikeluarkan dari roda**, jadi
+  nombor yang sama tidak akan menang dua kali.
+- Senarai pemenang disimpan dalam pelayar peranti yang membuat cabutan (kekal walaupun
+  halaman dimuat semula). **Set semula** mengosongkannya.
+- Peserta baru yang daftar semasa acara akan masuk ke roda secara automatik (setiap 15 saat).
+- Papan kekunci: `Space` = mula/berhenti.
 
 ## Cetak dari Supabase terus
 
@@ -66,10 +68,9 @@ dalam Excel dan cetak.
 
 ## Keselamatan
 
-- Orang awam **tidak boleh** membaca senarai peserta. Mereka hanya boleh mendaftar
-  melalui fungsi `daftar_peserta`.
-- Hanya akaun yang emelnya ada dalam jadual `admin` boleh melihat, mencetak dan
-  membuat cabutan.
+- Orang awam hanya boleh mendaftar (`daftar_peserta`) dan melihat **nombor + nama** untuk roda
+  (`senarai_roda`). IC, telefon dan alamat hanya boleh dilihat oleh admin.
+- Hanya akaun yang emelnya ada dalam jadual `admin` boleh melihat senarai penuh dan mencetak.
 - Kunci dalam `assets/config.js` ialah kunci *publishable* dan selamat diletak di laman awam.
   **Jangan sekali-kali** letak kunci `service_role` / secret dalam fail ini.
 

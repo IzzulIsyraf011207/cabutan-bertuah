@@ -62,10 +62,7 @@
     td.no { font-weight: 800; font-size: 16px; color: var(--primary); letter-spacing: .04em; font-variant-numeric: tabular-nums; white-space: nowrap; }
     td.nowrap { white-space: nowrap; }
     td.alamat { min-width: 220px; max-width: 360px; }
-    tr.win td { background: color-mix(in srgb, var(--gold-soft) 70%, transparent); }
-    .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: var(--gold); color: #2a1c00; white-space: nowrap; }
     .empty { padding: 48px 16px; text-align: center; color: var(--muted); }
-    .link-btn { background: none; border: 0; padding: 4px 0; color: var(--danger); font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: underline; }
 
     /* Mobile: jadual jadi kad */
     @media (max-width: 720px) {
@@ -85,7 +82,7 @@
     @media print {
       @page { size: A4; margin: 14mm 12mm; }
       body { background: #fff; color: #000; font-size: 11px; }
-      .topbar, .stats, .toolbar, .actions, .footer, .no-print, .link-btn { display: none !important; }
+      .topbar, .stats, .toolbar, .actions, .footer, .no-print { display: none !important; }
       .wrap-wide { width: auto; max-width: none; padding: 0; }
       .card { box-shadow: none; border: 0; }
       .table-card, .table-scroll { overflow: visible; }
@@ -94,7 +91,6 @@
       td.nowrap { white-space: normal; }
       td.ic { white-space: nowrap; }
       th { white-space: normal; }
-      .pill { background: none !important; padding: 0; font-size: 10px; }
       td a { color: #000; text-decoration: none; }
       .print-head { display: block; margin-bottom: 10px; }
       .print-head h1 { margin: 0; font-size: 18px; }
@@ -107,7 +103,6 @@
       td.bil { display: table-cell; }
       td.no { color: #000; font-size: 13px; }
       tr { page-break-inside: avoid; }
-      tr.win td { background: #fff3d1 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
       body.print-ringkas .table-card { display: none; }
       body.print-ringkas .print-grid {
@@ -150,11 +145,11 @@
     <div class="stats">
       <div class="stat"><div class="k">Jumlah Peserta</div><div class="v" id="sJumlah">0</div></div>
       <div class="stat"><div class="k">Daftar Hari Ini</div><div class="v" id="sHariIni">0</div></div>
-      <div class="stat gold"><div class="k">Pemenang</div><div class="v" id="sMenang">0</div></div>
+      <div class="stat gold"><div class="k">Nombor Terkini</div><div class="v" id="sTerkini">-</div></div>
     </div>
 
     <div class="actions">
-      <a class="btn btn-gold" href="cabutan.html">🎡 Buka Paparan Cabutan</a>
+      <a class="btn btn-gold" href="cabutan.html" target="_blank" rel="noopener">🎡 Buka Roda Cabutan</a>
       <button class="btn btn-primary" id="cetakPenuh">🖨️ Cetak Senarai Penuh</button>
       <button class="btn btn-ghost" id="cetakRingkas">🖨️ Cetak Nombor Sahaja</button>
       <button class="btn btn-ghost" id="eksport">⬇️ Muat Turun Excel (CSV)</button>
@@ -163,10 +158,6 @@
 
     <div class="toolbar">
       <input class="input search" id="cari" type="search" placeholder="Cari nombor, nama, IC atau telefon…">
-      <div class="seg" role="tablist">
-        <button class="on" data-tapis="semua">Semua</button>
-        <button data-tapis="menang">Pemenang</button>
-      </div>
     </div>
 
     <div class="print-head">
@@ -180,7 +171,7 @@
           <thead>
             <tr>
               <th>Bil</th><th>Nombor</th><th>Nama</th><th>No. IC</th>
-              <th>No. Telefon</th><th>Alamat</th><th>Tarikh Daftar</th><th>Status</th>
+              <th>No. Telefon</th><th>Alamat</th><th>Tarikh Daftar</th>
             </tr>
           </thead>
           <tbody id="tbody"></tbody>
@@ -211,7 +202,6 @@
     $("namaAcara").textContent = C.NAMA_ACARA;
 
     let semua = [];
-    let tapis = "semua";
 
     function papar(view) {
       ["viewLogin", "viewAdmin", "viewBukanAdmin"].forEach((v) => ($(v).hidden = v !== view));
@@ -227,8 +217,6 @@
           `Akaun ${session.user.email} bukan admin. Tambah emel ini ke jadual "admin" di Supabase.`;
         return papar("viewBukanAdmin");
       }
-      const ke = new URLSearchParams(location.search).get("ke");
-      if (ke === "cabutan") { location.replace("cabutan.html"); return; }
       papar("viewAdmin");
       muat();
     }
@@ -260,7 +248,7 @@
       for (let dari = 0; ; dari += SAIZ) {
         const { data, error } = await sb
           .from("peserta")
-          .select("id,nombor_bertuah,nama,no_ic,no_telefon,alamat,menang,hadiah,menang_pada,created_at")
+          .select("id,nombor_bertuah,nama,no_ic,no_telefon,alamat,created_at")
           .order("id")
           .range(dari, dari + SAIZ - 1);
         if (error) throw error;
@@ -293,7 +281,6 @@
       const q = $("cari").value.trim().toLowerCase();
       const qd = q.replace(/\D/g, "");
       return semua.filter((p) => {
-        if (tapis === "menang" && !p.menang) return false;
         if (!q) return true;
         return p.nama.toLowerCase().includes(q) ||
           p.nombor_bertuah.includes(q) ||
@@ -305,13 +292,14 @@
       const hariIni = hariKL(Date.now());
       $("sJumlah").textContent = semua.length;
       $("sHariIni").textContent = semua.filter((p) => hariKL(p.created_at) === hariIni).length;
-      $("sMenang").textContent = semua.filter((p) => p.menang).length;
+      const terkini = semua.reduce((a, p) => (!a || p.created_at > a.created_at ? p : a), null);
+      $("sTerkini").textContent = terkini ? terkini.nombor_bertuah : "-";
 
       const rows = senaraiTapis();
       $("kosong").hidden = rows.length > 0;
       $("kosong").textContent = semua.length ? "Tiada padanan." : "Tiada peserta lagi.";
       $("tbody").innerHTML = rows.map((p, i) => `
-        <tr class="${p.menang ? "win" : ""}">
+        <tr>
           <td class="bil">${i + 1}</td>
           <td class="no">${esc(p.nombor_bertuah)}</td>
           <td data-l="Nama"><b>${esc(p.nama)}</b></td>
@@ -319,38 +307,17 @@
           <td class="nowrap" data-l="Tel"><a href="tel:${esc(p.no_telefon)}">${esc(p.no_telefon)}</a></td>
           <td class="alamat" data-l="Alamat">${esc(p.alamat)}</td>
           <td class="nowrap" data-l="Daftar">${tarikh(p.created_at)}</td>
-          <td>${p.menang
-            ? `<span class="pill">🏆 MENANG${p.hadiah ? " · " + esc(p.hadiah) : ""}</span><br>
-               <button class="link-btn" data-batal="${p.id}">Batal status menang</button>`
-            : ""}</td>
         </tr>`).join("");
 
       $("printGrid").innerHTML = rows.map((p) =>
         `<div class="slip"><b>${esc(p.nombor_bertuah)}</b><span>${esc(p.nama)}</span></div>`).join("");
 
       const kini = new Date().toLocaleString("ms-MY", { timeZone: "Asia/Kuala_Lumpur" });
-      $("pTajuk").textContent = (tapis === "menang" ? "Senarai Pemenang " : "Senarai Peserta ") + C.NAMA_ACARA;
+      $("pTajuk").textContent = "Senarai Peserta " + C.NAMA_ACARA;
       $("pInfo").textContent = `Jumlah: ${rows.length} · Dicetak: ${kini}`;
     }
 
-    $("tbody").addEventListener("click", async (e) => {
-      const id = e.target.dataset.batal;
-      if (!id) return;
-      const p = semua.find((x) => String(x.id) === id);
-      if (!confirm(`Batalkan status menang untuk ${p.nombor_bertuah} (${p.nama})?`)) return;
-      const { error } = await sb.from("peserta")
-        .update({ menang: false, hadiah: null, menang_pada: null }).eq("id", p.id);
-      if (error) return alert("Gagal: " + error.message);
-      Object.assign(p, { menang: false, hadiah: null, menang_pada: null });
-      render();
-    });
-
     $("cari").addEventListener("input", render);
-    document.querySelectorAll("[data-tapis]").forEach((b) => b.addEventListener("click", () => {
-      document.querySelectorAll("[data-tapis]").forEach((x) => x.classList.toggle("on", x === b));
-      tapis = b.dataset.tapis;
-      render();
-    }));
     $("muatSemula").onclick = muat;
 
     $("cetakPenuh").onclick = () => { document.body.classList.remove("print-ringkas"); window.print(); };
@@ -362,10 +329,10 @@
       const sel = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
       // ="..." supaya Excel kekalkan sifar di depan no. telefon.
       const teks = (v) => `"=""${String(v ?? "").replace(/"/g, "")}"""`;
-      const head = ["Bil", "Nombor Bertuah", "Nama", "No. IC", "No. Telefon", "Alamat", "Tarikh Daftar", "Status", "Hadiah"];
+      const head = ["Bil", "Nombor Bertuah", "Nama", "No. IC", "No. Telefon", "Alamat", "Tarikh Daftar"];
       const lines = [head.map(sel).join(",")].concat(rows.map((p, i) => [
         i + 1, p.nombor_bertuah, p.nama, formatIC(p.no_ic), p.no_telefon,
-        p.alamat.replace(/\s*\n\s*/g, ", "), tarikh(p.created_at), p.menang ? "MENANG" : "", p.hadiah || "",
+        p.alamat.replace(/\s*\n\s*/g, ", "), tarikh(p.created_at),
       ].map((v, j) => (j === 4 ? teks(v) : sel(v))).join(",")));
       const blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
       const a = document.createElement("a");

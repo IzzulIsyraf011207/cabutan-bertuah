@@ -156,3 +156,20 @@ revoke all on public.senarai_cetak from anon;
 
 -- 5. Admin pertama (tukar kepada emel admin anda, huruf kecil).
 insert into public.admin (email) values ('emel-admin@contoh.com');
+
+-- 6. Senarai untuk roda cabutan (awam, tanpa log masuk): nombor + nama sahaja.
+--    IC, telefon dan alamat TIDAK didedahkan.
+create or replace function public.senarai_roda()
+returns table (nombor_bertuah text, nama text)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select p.nombor_bertuah, p.nama
+  from public.peserta p
+  order by char_length(p.nombor_bertuah), p.nombor_bertuah;
+$$;
+
+revoke execute on function public.senarai_roda() from public;
+grant execute on function public.senarai_roda() to anon, authenticated;
