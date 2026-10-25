@@ -1,0 +1,1421 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071426">
+  <meta name="robots" content="noindex">
+  <title>Roda Bertuah</title>
+  <meta name="description" content="Roda bertuah nama: roda lelaki dan roda perempuan, semua kelas. Tekan MULA, tekan BERHENTI.">
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css?v=20261025c">
+  <style>
+    :root {
+      --night: #071426;
+      --ink: #f3f6fb;
+      --muted: #a9b6cc;
+      --line: rgba(255, 255, 255, .11);
+      --glass: rgba(255, 255, 255, .055);
+      --gold-2: #f2c75c;
+      --acc: #3b82f6;
+      --acc-2: #93c5fd;
+      --acc-soft: rgba(59, 130, 246, .18);
+    }
+    body.g-P {
+      --night: #1d0a1a;
+      --acc: #ec4899;
+      --acc-2: #f9a8d4;
+      --acc-soft: rgba(236, 72, 153, .18);
+    }
+    html, body { background: var(--night); transition: background .4s; }
+    body {
+      color: var(--ink);
+      overflow-x: hidden;
+      background:
+        radial-gradient(55% 45% at 50% 0%, rgba(242, 199, 92, .18), transparent 70%),
+        radial-gradient(60% 60% at 15% 100%, var(--acc-soft), transparent 70%),
+        radial-gradient(50% 50% at 100% 60%, var(--acc-soft), transparent 70%),
+        var(--night);
+    }
+    #bintang { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .page { position: relative; z-index: 1; }
+
+    /* ---------- Header ---------- */
+    .bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      max-width: 1320px; margin: 0 auto;
+      padding: max(14px, env(safe-area-inset-top)) 16px 6px;
+    }
+    .title-wrap { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .bar-logo { width: 48px; height: 48px; border-radius: 13px; flex: none; box-shadow: 0 8px 20px -8px rgba(0,0,0,.6); }
+    .title .eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--gold-2); }
+    .title h1 { margin: 2px 0 0; font-size: clamp(20px, 3.2vw, 30px); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-btns { display: flex; gap: 8px; }
+    .title .eyebrow { white-space: nowrap; }
+    @media (max-width: 440px) { .title .eyebrow { display: none; } }
+    .icon-btn {
+      width: 44px; height: 44px; display: grid; place-items: center;
+      border-radius: 14px; border: 1px solid var(--line);
+      background: var(--glass); color: var(--ink); cursor: pointer; text-decoration: none;
+      transition: background .15s, transform .08s;
+    }
+    .icon-btn:hover { background: rgba(255, 255, 255, .11); }
+    .icon-btn:active { transform: scale(.95); }
+    .icon-btn svg { width: 20px; height: 20px; }
+    @media (max-width: 520px) {
+      .bar-logo { width: 38px; height: 38px; border-radius: 10px; }
+      .title-wrap { gap: 10px; }
+      .title .eyebrow { font-size: 9.5px; letter-spacing: .14em; }
+      .title h1 { font-size: 19px; }
+      .bar-btns { gap: 6px; }
+      .icon-btn { width: 40px; height: 40px; border-radius: 12px; }
+    }
+
+    /* ---------- Pilih roda (jantina) ---------- */
+    .gswitch {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      max-width: 560px; margin: 8px auto 0; padding: 0 16px;
+    }
+    .gswitch button {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 54px; border-radius: 16px; cursor: pointer;
+      border: 1.5px solid var(--line); background: var(--glass); color: var(--muted);
+      font-size: 16px; font-weight: 800; letter-spacing: .08em;
+      transition: background .2s, color .2s, border-color .2s, box-shadow .2s;
+    }
+    .gswitch button .c { padding: 1px 9px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 12px; letter-spacing: 0; }
+    .gswitch button.on[data-g="L"] { color: #fff; border-color: #3b82f6; background: linear-gradient(180deg, #2563eb, #1d4ed8); box-shadow: 0 10px 26px -10px rgba(59,130,246,.9); }
+    .gswitch button.on[data-g="P"] { color: #fff; border-color: #ec4899; background: linear-gradient(180deg, #db2777, #be185d); box-shadow: 0 10px 26px -10px rgba(236,72,153,.9); }
+    .gswitch button:disabled { cursor: not-allowed; opacity: .5; }
+    @media (max-width: 420px) { .gswitch button { gap: 6px; min-height: 48px; font-size: 13.5px; letter-spacing: .03em; } .gswitch button .c { padding: 1px 6px; } }
+
+    /* ---------- Layout ---------- */
+    .stage {
+      display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr);
+      max-width: 1320px; margin: 0 auto; padding: 8px 16px 28px;
+    }
+    @media (min-width: 1000px) {
+      .stage { grid-template-columns: minmax(0, 1fr) 400px; align-items: center; min-height: calc(100dvh - 150px); }
+    }
+    .side { display: grid; gap: 14px; align-content: start; min-width: 0; }
+
+    /* ---------- Roda ---------- */
+    .wheel-col { display: flex; justify-content: center; padding-top: 14px; }
+    .wheel { position: relative; width: min(100%, 540px); aspect-ratio: 1; container-type: inline-size; }
+    @media (min-width: 1000px) { .wheel { width: min(100%, calc(100dvh - 210px), 740px); } }
+    @media (max-width: 999px) { .wheel { width: min(100%, 540px); } }
+    .wheel-halo {
+      position: absolute; inset: -9%; border-radius: 50%;
+      background: radial-gradient(circle, var(--acc-soft) 0%, rgba(242, 199, 92, .10) 45%, transparent 68%);
+      transition: opacity .5s, transform .5s; opacity: .7;
+    }
+    .berpusing .wheel-halo { opacity: 1; transform: scale(1.04); }
+    .rim {
+      position: absolute; inset: 0; border-radius: 50%;
+      background:
+        radial-gradient(circle, transparent 60%, rgba(0,0,0,.25) 61%, transparent 63%),
+        conic-gradient(from 210deg, #fff3cf, #f2c75c 12%, #b37d1e 26%, #f6d27a 40%, #8a5c12 55%, #f2c75c 70%, #fff3cf 82%, #c8902a 92%, #fff3cf);
+      box-shadow: 0 30px 70px -20px rgba(0, 0, 0, .7), 0 0 0 2px rgba(125, 84, 16, .9),
+        inset 0 0 0 2px rgba(255, 243, 207, .6), inset 0 0 18px rgba(0, 0, 0, .45);
+    }
+    .bulb {
+      position: absolute; left: 50%; top: 50%;
+      width: 2.7cqw; height: 2.7cqw; border-radius: 50%;
+      transform: translate(-50%, -50%) rotate(calc(var(--i) * 360deg / var(--n))) translateY(-46.6cqw);
+      background: radial-gradient(circle at 35% 30%, #fff, #ffe7a6 45%, #d79d2c);
+      box-shadow: 0 0 1.2cqw 0.3cqw rgba(255, 226, 140, .85);
+      animation: kerdip 1.4s ease-in-out infinite; animation-delay: calc(var(--p) * .7s);
+    }
+    @keyframes kerdip { 50% { opacity: .35; box-shadow: 0 0 .3cqw rgba(255, 226, 140, .3); } }
+    .berpusing .bulb { animation: kejar .5s linear infinite; animation-delay: calc(var(--i) * -.5s / var(--n) * 4); }
+    @keyframes kejar { 0%, 70% { opacity: .3; box-shadow: none; } 80% { opacity: 1; } }
+    .menang .bulb { animation: kilat .28s steps(2) infinite; animation-delay: 0s; }
+    @keyframes kilat { 50% { opacity: .2; } }
+    #roda {
+      position: absolute; inset: 5.8%; width: 88.4%; height: 88.4%;
+      border-radius: 50%; will-change: transform;
+      box-shadow: 0 0 0 .5cqw rgba(60, 40, 6, .65);
+    }
+    .pointer {
+      position: absolute; left: 50%; top: -3.4cqw; z-index: 4;
+      width: 11cqw; height: 14cqw; transform: translateX(-50%); transform-origin: 50% 26%;
+      filter: drop-shadow(0 1.2cqw 1.2cqw rgba(0, 0, 0, .5));
+    }
+    .pointer.tik { animation: tik .14s ease-out; }
+    @keyframes tik { 35% { transform: translateX(-50%) rotate(-16deg); } }
+    .hub {
+      position: absolute; left: 50%; top: 50%; z-index: 3;
+      width: 23%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%);
+      display: grid; place-items: center; border: 0; padding: 0; cursor: pointer;
+      background: radial-gradient(circle at 35% 28%, rgba(255,255,255,.9), transparent 22%),
+        radial-gradient(circle at 50% 50%, #ffe39a, #e9b545 45%, #a8711a 80%, #6e4a0c);
+      box-shadow: 0 0 0 1.1cqw rgba(7, 20, 38, .92), 0 0 0 1.5cqw rgba(242, 199, 92, .55),
+        0 1.6cqw 3cqw rgba(0, 0, 0, .55), inset 0 -1cqw 2cqw rgba(110, 74, 12, .55);
+      color: #3b2602; transition: transform .15s;
+    }
+    .hub:hover { transform: translate(-50%, -50%) scale(1.03); }
+    .hub:disabled { cursor: default; transform: translate(-50%, -50%); }
+    .hub span { display: block; font-weight: 800; letter-spacing: .1em; font-size: 2.5cqw; line-height: 1.1; text-align: center; }
+    .hub .g { display: block; font-size: 6.5cqw; line-height: 1; margin-bottom: .4cqw; }
+    .wheel-msg {
+      position: absolute; left: 50%; top: 66%; z-index: 5; transform: translateX(-50%);
+      max-width: 90%; padding: 10px 18px; border-radius: 999px; text-align: center;
+      background: rgba(7, 20, 38, .92); border: 1px solid var(--line); font-weight: 700; font-size: 14px;
+    }
+
+    /* ---------- Paparan nama ---------- */
+    .ticker {
+      position: relative; overflow: hidden; padding: 14px 18px 16px; border-radius: 24px; text-align: center;
+      background: linear-gradient(180deg, rgba(0,0,0,.38), rgba(0,0,0,.22));
+      border: 1px solid rgba(242, 199, 92, .28);
+    }
+    .ticker .k { font-size: 11px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+    .ticker .v {
+      margin-top: 4px; min-height: 2.3em;
+      display: flex; align-items: center; justify-content: center;
+      font-size: clamp(20px, 3.4vw, 28px); font-weight: 800; line-height: 1.15; word-break: break-word;
+      color: #fff6d8;
+    }
+    .ticker .kl { margin-top: 8px; min-height: 26px; }
+    .kchip {
+      display: inline-flex; align-items: center; gap: 7px; padding: 3px 12px; border-radius: 999px;
+      font-size: 13px; font-weight: 800; letter-spacing: .04em; color: #fff; background: rgba(255,255,255,.1);
+    }
+    .kchip i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+
+    /* ---------- Butang ---------- */
+    .controls { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; }
+    .ctl {
+      min-height: 66px; border-radius: 20px; border: 0; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      font-size: 19px; font-weight: 800; letter-spacing: .08em;
+      transition: transform .08s, filter .15s, opacity .2s, box-shadow .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .ctl svg { width: 22px; height: 22px; }
+    .ctl:active:not(:disabled) { transform: scale(.97); }
+    .ctl:disabled { opacity: .38; cursor: not-allowed; filter: grayscale(.4); }
+    .ctl-mula {
+      color: #2f1f00; background: linear-gradient(180deg, #ffe08a, #f2c75c 45%, #d39a2e);
+      box-shadow: 0 12px 30px -10px rgba(242, 199, 92, .75), inset 0 1px 0 rgba(255,255,255,.7), inset 0 -3px 0 rgba(125, 84, 16, .45);
+    }
+    .ctl-mula:not(:disabled) { animation: denyut 2s ease-in-out infinite; }
+    @keyframes denyut { 50% { box-shadow: 0 12px 44px -6px rgba(242, 199, 92, .95), inset 0 1px 0 rgba(255,255,255,.7), inset 0 -3px 0 rgba(125, 84, 16, .45); } }
+    .ctl-henti {
+      color: #fff; background: linear-gradient(180deg, #e2534b, #b42318);
+      box-shadow: 0 12px 30px -12px rgba(180, 35, 24, .8), inset 0 1px 0 rgba(255,255,255,.3), inset 0 -3px 0 rgba(0,0,0,.25);
+    }
+    .hint-line { margin: 0; text-align: center; font-size: 13px; color: var(--muted); min-height: 1.3em; }
+    .dock { display: grid; gap: 10px; }
+    @media (max-width: 999px) {
+      .stage { gap: 14px; }
+      .ticker { padding: 10px 14px 12px; border-radius: 20px; }
+      .ticker .v { font-size: clamp(18px, 5.4vw, 26px); }
+      .dock {
+        position: sticky; bottom: 0; z-index: 6;
+        margin: 0 -16px; padding: 10px 16px max(12px, env(safe-area-inset-bottom));
+        background: color-mix(in srgb, var(--night) 94%, transparent); border-top: 1px solid var(--line);
+      }
+      .ctl { min-height: 58px; font-size: 17px; }
+    }
+
+    /* ---------- Panel ---------- */
+    .panel { border-radius: 22px; background: var(--glass); border: 1px solid var(--line); overflow: hidden; }
+    .tabs { display: grid; grid-template-columns: repeat(3, 1fr); padding: 6px; gap: 6px; border-bottom: 1px solid var(--line); }
+    .tabs button { border: 0; border-radius: 14px; padding: 10px 4px; cursor: pointer; background: none; color: var(--muted); font-weight: 700; font-size: 13.5px; }
+    .tabs button.on { background: var(--acc-soft); color: var(--acc-2); }
+    .tabs .c { display: inline-block; min-width: 20px; padding: 1px 6px; margin-left: 2px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 11.5px; }
+    .tab-body { padding: 12px; }
+    .list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-height: 34vh; overflow-y: auto; overscroll-behavior: contain; }
+    @media (max-width: 999px) { .list { max-height: 50vh; } }
+    .list li { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: rgba(0, 0, 0, .22); }
+    .list .nm { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .list .kl { font-size: 11.5px; font-weight: 800; color: var(--muted); white-space: nowrap; }
+    .list .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .list .rank { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(180deg, #ffe08a, #c8902a); color: #2f1f00; font-weight: 800; font-size: 13px; }
+    .list li.won .nm { color: var(--muted); text-decoration: line-through; }
+    .search { width: 100%; min-height: 44px; margin-bottom: 10px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line); background: rgba(0, 0, 0, .25); color: var(--ink); font-size: 16px; }
+    .search::placeholder { color: var(--muted); }
+    .empty { padding: 18px 8px; text-align: center; color: var(--muted); font-size: 14px; }
+    .panel-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 0 12px 12px; font-size: 12px; color: var(--muted); }
+    .text-btn { border: 0; background: none; color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 6px 0; }
+    .text-btn:hover { color: #fff; }
+
+    /* Senarai kelas: legenda warna + pilih kelas untuk dicabut */
+    .kelas-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 34vh; overflow-y: auto; }
+    .kbtn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; cursor: pointer;
+      border: 1.5px solid var(--line); background: rgba(0,0,0,.2); color: var(--ink); font-weight: 700; font-size: 13px;
+    }
+    .kbtn i { width: 11px; height: 11px; border-radius: 50%; flex: none; }
+    .kbtn small { color: var(--muted); font-weight: 700; }
+    .kbtn.on { border-color: var(--acc); background: var(--acc-soft); box-shadow: 0 0 0 2px var(--acc-soft); }
+    .kbtn:disabled { opacity: .5; cursor: not-allowed; }
+    .kelas-note { margin: 10px 2px 0; font-size: 12px; color: var(--muted); }
+
+    /* ---------- Pengumuman pemenang ---------- */
+    .reveal {
+      position: fixed; inset: 0; z-index: 50; display: none; place-items: center; padding: 16px;
+      background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--night) 82%, transparent), rgba(2, 6, 12, .96));
+      -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    }
+    .reveal.show { display: grid; animation: masuk .3s ease-out; }
+    @keyframes masuk { from { opacity: 0; } }
+    .rays {
+      position: absolute; left: 50%; top: 46%; width: 180vmax; height: 180vmax; transform: translate(-50%, -50%);
+      background: repeating-conic-gradient(from 0deg, rgba(242, 199, 92, .13) 0deg 7deg, transparent 7deg 18deg);
+      -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 42%); mask-image: radial-gradient(circle, #000 0%, transparent 42%);
+      animation: putar 30s linear infinite; pointer-events: none;
+    }
+    @keyframes putar { to { transform: translate(-50%, -50%) rotate(360deg); } }
+    .win-card {
+      position: relative; width: 100%; max-width: 560px; text-align: center; padding: 30px 22px 22px; border-radius: 30px;
+      background: linear-gradient(170deg, color-mix(in srgb, var(--acc) 45%, #0b1220), color-mix(in srgb, var(--night) 96%, #000));
+      border: 1px solid rgba(242, 199, 92, .55);
+      box-shadow: 0 40px 100px -20px rgba(0, 0, 0, .8), 0 0 0 6px rgba(242, 199, 92, .08), inset 0 1px 0 rgba(255,255,255,.12);
+      animation: naik .6s cubic-bezier(.2, 1.4, .35, 1);
+    }
+    @keyframes naik { from { transform: translateY(40px) scale(.85); opacity: 0; } }
+    .win-card .trophy { width: 74px; height: 74px; margin: -70px auto 6px; display: grid; place-items: center; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #fff6d8, #f2c75c 50%, #a8711a); box-shadow: 0 10px 30px rgba(0,0,0,.5), 0 0 0 6px var(--night); font-size: 36px; }
+    .win-card .k1 { font-size: 13px; font-weight: 800; letter-spacing: .3em; color: var(--gold-2); text-transform: uppercase; }
+    .win-card .k2 { margin-top: 2px; font-size: 15px; color: var(--muted); font-weight: 600; }
+    .win-card .wnm {
+      margin: 18px 0 12px; font-size: clamp(26px, 6.4vw, 42px); font-weight: 800; word-break: break-word; line-height: 1.15;
+      background: linear-gradient(180deg, #fff6d8, #f2c75c 60%, #e0a93c); -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: naik .7s .15s cubic-bezier(.2, 1.4, .35, 1) both;
+    }
+    .win-card .kchip { font-size: 16px; padding: 6px 16px; }
+    .win-card .wsub { margin-top: 12px; font-size: 13px; color: var(--muted); }
+    .win-card .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
+    .win-card .btn-row .btn { min-height: 58px; font-size: 16px; padding: 0 10px; }
+    @media (max-width: 420px) { .win-card .btn-row { grid-template-columns: 1fr; } }
+    .btn-kekal { color: #fff; background: linear-gradient(180deg, #22c55e, #15803d); box-shadow: 0 10px 24px -10px rgba(34,197,94,.8); }
+    .btn-buang { color: #fff; background: linear-gradient(180deg, #ef4444, #b91c1c); box-shadow: 0 10px 24px -10px rgba(239,68,68,.8); }
+    .btn-kekal:hover, .btn-buang:hover { filter: brightness(1.08); }
+    .list .st { font-size: 11px; font-weight: 800; white-space: nowrap; border: 0; border-radius: 999px; padding: 4px 9px; cursor: pointer; }
+    .list .st.kekal { background: rgba(34,197,94,.18); color: #86efac; }
+    .list .st.buang { background: rgba(239,68,68,.18); color: #fca5a5; }
+    .list li.menang4 { grid-template-columns: auto 1fr auto auto; }
+
+    /* ---------- Upload Excel ---------- */
+    .up-btn {
+      display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px;
+      border-radius: 14px; border: 0; cursor: pointer; font-weight: 800; font-size: 14px; color: #2f1f00;
+      background: linear-gradient(180deg, #ffe08a, #f2c75c 45%, #d39a2e);
+      box-shadow: 0 8px 20px -10px rgba(242, 199, 92, .8), inset 0 1px 0 rgba(255,255,255,.6);
+    }
+    .up-btn:disabled { opacity: .45; cursor: not-allowed; }
+    .up-btn svg { width: 18px; height: 18px; }
+    @media (max-width: 520px) { .up-btn { min-height: 40px; padding: 0 11px; font-size: 13px; gap: 6px; } .up-btn .lg { display: none; } }
+    .up {
+      position: fixed; inset: 0; z-index: 55; display: none; align-items: flex-start; justify-content: center;
+      padding: max(16px, env(safe-area-inset-top)) 16px 16px; overflow-y: auto;
+      background: rgba(2, 6, 14, .78); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    }
+    .up.show { display: flex; animation: masuk .2s ease-out; }
+    .up-box {
+      position: relative; width: 100%; max-width: 620px; margin: auto 0; padding: 24px 20px 20px; border-radius: 24px;
+      background: linear-gradient(170deg, #17223a, #0b1220); border: 1px solid rgba(242, 199, 92, .35);
+      box-shadow: 0 40px 100px -20px rgba(0, 0, 0, .8); color: var(--ink);
+    }
+    .up-box h2 { margin: 0 40px 4px 0; font-size: 22px; font-weight: 800; }
+    .up-sub { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+    .up-x {
+      position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; display: grid; place-items: center;
+      border: 0; border-radius: 50%; cursor: pointer; background: rgba(255,255,255,.1); color: #fff; font-size: 18px;
+    }
+    .up-x:hover { background: rgba(255,255,255,.2); }
+    .up-drop {
+      display: grid; place-items: center; gap: 4px; text-align: center; padding: 26px 14px; border-radius: 18px; cursor: pointer;
+      border: 2px dashed rgba(242, 199, 92, .45); background: rgba(242, 199, 92, .06); transition: background .15s, border-color .15s;
+    }
+    .up-drop span { font-size: 32px; }
+    .up-drop b { font-size: 17px; color: var(--gold-2); }
+    .up-drop small { color: var(--muted); font-size: 13px; }
+    .up-drop.over, .up-drop:hover { background: rgba(242, 199, 92, .13); border-color: var(--gold-2); }
+    .up-format { margin-top: 12px; font-size: 13px; color: var(--muted); }
+    .up-format summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+    .up-format table { margin: 8px 0; border-collapse: collapse; }
+    .up-format th, .up-format td { border: 1px solid var(--line); padding: 4px 8px; text-align: left; }
+    .up-format ul { margin: 6px 0 0; padding-left: 18px; }
+    .up-sec { margin-top: 16px; }
+    .up-fail { padding: 10px 12px; margin-bottom: 8px; border-radius: 12px; background: rgba(0,0,0,.25); font-size: 13px; color: var(--muted); }
+    .up-fail b { color: var(--ink); }
+    .up-fail .ok { color: #4ade80; font-weight: 700; }
+    .up-fail .warn, .up-warn { color: #fca5a5; font-weight: 700; }
+    .up-fail .eg { display: block; margin-top: 4px; }
+    .up-fail .eg em { font-style: normal; color: #fff6d8; font-weight: 700; }
+    .up-semak { padding: 12px; border-radius: 12px; background: rgba(220, 38, 38, .14); border: 1px solid rgba(248, 113, 113, .35); }
+    .up-semak-list { display: grid; gap: 6px; max-height: 220px; overflow-y: auto; margin-top: 8px; }
+    .up-semak-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; font-size: 14px; }
+    .up-semak-row small { color: var(--muted); }
+    .up-sel, .up-input {
+      min-height: 40px; border-radius: 10px; border: 1px solid var(--line); background: rgba(0,0,0,.35); color: var(--ink); padding: 0 10px; font-size: 16px;
+    }
+    .up-input { width: 100%; min-height: 48px; padding: 0 14px; }
+    .up-input:focus { outline: none; border-color: var(--gold-2); }
+    .pw-wrap { position: relative; }
+    .pw-wrap .up-input { padding-right: 56px; }
+    .mata {
+      position: absolute; top: 50%; right: 4px; transform: translateY(-50%);
+      width: 44px; height: 44px; display: grid; place-items: center;
+      border: 0; border-radius: 10px; background: none; color: var(--muted); cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mata:hover { color: #fff; background: rgba(255,255,255,.08); }
+    .mata svg { width: 22px; height: 22px; }
+    .up-t { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .up-t th, .up-t td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+    .up-t th { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .up-t .n { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+    .up-t tr:last-child td { border-bottom: 0; font-weight: 800; }
+    .up-scroll { max-height: 240px; overflow-y: auto; border-radius: 12px; background: rgba(0,0,0,.2); }
+    .up-check { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .up-check input { width: 20px; height: 20px; margin: 1px 0 0; flex: none; accent-color: #f2c75c; }
+    .up-check small { display: block; color: var(--muted); font-weight: 500; }
+    .up-label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 700; }
+    .up-hint { margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+    .up-btns { display: grid; gap: 10px; margin-top: 18px; }
+    .up-ghost { background: rgba(255,255,255,.08); color: var(--ink); border: 1px solid var(--line); }
+    .up-msg { margin-top: 10px; min-height: 1.4em; font-size: 14px; font-weight: 700; text-align: center; }
+    .up-msg.err { color: #fca5a5; } .up-msg.ok { color: #4ade80; }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 24px; z-index: 70; transform: translateX(-50%) translateY(140px); opacity: 0; pointer-events: none;
+      padding: 12px 18px; border-radius: 12px; background: #fff; color: #17251f; font-weight: 700; font-size: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .4); transition: transform .3s, opacity .3s;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    @media (prefers-reduced-motion: reduce) { .bulb, .ctl-mula, .rays { animation: none !important; } }
+  </style>
+</head>
+<body class="g-L">
+  <canvas id="bintang" aria-hidden="true"></canvas>
+  <div class="page">
+    <header class="bar">
+      <div class="title-wrap">
+        <img class="bar-logo" src="../assets/logo.svg" alt="Logo" width="48" height="48">
+        <div class="title">
+          <div class="eyebrow">✦ Roda Nama Bertuah</div>
+          <h1 id="namaAcara">Roda Bertuah</h1>
+        </div>
+      </div>
+      <div class="bar-btns">
+        <button class="up-btn" id="bukaUpload" title="Upload fail Excel nama">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+          <span>Upload<span class="lg"> Excel</span></span>
+        </button>
+        <button class="icon-btn" id="bunyi" aria-label="Matikan bunyi" title="Bunyi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path id="gelombang" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+        </button>
+        <button class="icon-btn" id="skrinPenuh" aria-label="Skrin penuh" title="Skrin penuh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="gswitch" aria-label="Pilih roda">
+      <button data-g="L" class="on">👦 LELAKI <span class="c" id="cL">0</span></button>
+      <button data-g="P">👧 PEREMPUAN <span class="c" id="cP">0</span></button>
+    </nav>
+
+    <main class="stage">
+      <section class="wheel-col">
+        <div class="wheel" id="wheel">
+          <div class="wheel-halo"></div>
+          <div class="rim" id="rim"></div>
+          <canvas id="roda" aria-label="Roda nama bertuah"></canvas>
+          <svg class="pointer" id="pointer" viewBox="0 0 60 76" aria-hidden="true">
+            <defs>
+              <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fff6d8"/><stop offset=".45" stop-color="#f2c75c"/><stop offset="1" stop-color="#8a5c12"/>
+              </linearGradient>
+              <radialGradient id="gem" cx=".35" cy=".3" r=".8">
+                <stop offset="0" stop-color="#ff9b8f"/><stop offset=".5" stop-color="#d92d20"/><stop offset="1" stop-color="#7a1209"/>
+              </radialGradient>
+            </defs>
+            <path d="M30 74 5 24a25 25 0 1 1 50 0Z" fill="url(#pg)" stroke="#6e4a0c" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M30 64 12 25a18 18 0 0 1 36 0Z" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>
+            <circle cx="30" cy="22" r="9.5" fill="url(#gem)" stroke="#6e4a0c" stroke-width="2"/>
+            <circle cx="27" cy="19" r="2.6" fill="#fff" opacity=".8"/>
+          </svg>
+          <button class="hub" id="hub" aria-label="Mula pusing">
+            <div><span class="g" id="hubIkon">👦</span><span id="hubTeks">LELAKI</span></div>
+          </button>
+          <div class="wheel-msg" id="wheelMsg">Memuatkan nama…</div>
+        </div>
+      </section>
+
+      <section class="side">
+        <div class="ticker" aria-live="off">
+          <div class="k" id="tickerK">Nama</div>
+          <div class="v" id="ticker">—</div>
+          <div class="kl" id="tickerKelas"></div>
+        </div>
+
+        <div class="dock">
+          <div class="controls">
+            <button class="ctl ctl-mula" id="mula">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg>
+              MULA
+            </button>
+            <button class="ctl ctl-henti" id="henti" disabled>
+              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2.5"/></svg>
+              BERHENTI
+            </button>
+          </div>
+          <p class="hint-line" id="hint">Tekan MULA untuk pusing. Tekan BERHENTI untuk hentikan roda.</p>
+        </div>
+
+        <div class="panel">
+          <div class="tabs" role="tablist">
+            <button class="on" data-tab="kelas" role="tab">🏫 Kelas <span class="c" id="cKelas">0</span></button>
+            <button data-tab="pemenang" role="tab">🏆 Menang <span class="c" id="cMenang">0</span></button>
+            <button data-tab="nama" role="tab">👥 Nama <span class="c" id="cNama">0</span></button>
+          </div>
+          <div class="tab-body" id="tabKelas">
+            <div class="kelas-grid" id="senaraiKelas"></div>
+            <p class="kelas-note">Setiap warna = satu kelas. Pilih satu kelas untuk cabut dari kelas itu sahaja, atau <b>Semua Kelas</b>.</p>
+          </div>
+          <div class="tab-body" id="tabPemenang" hidden>
+            <ul class="list" id="senaraiMenang"></ul>
+            <div class="empty" id="tiadaMenang">Belum ada pemenang untuk roda ini.</div>
+          </div>
+          <div class="tab-body" id="tabNama" hidden>
+            <input class="search" id="cari" type="search" placeholder="Cari nama atau kelas…">
+            <ul class="list" id="senaraiNama"></ul>
+            <div class="empty" id="tiadaNama" hidden></div>
+            <button class="text-btn" id="tunjukLagi" hidden style="display:block;margin:10px auto 0">Tunjuk lagi</button>
+          </div>
+          <div class="panel-foot">
+            <span>Susunan rawak · pemenang boleh dikekal atau dibuang</span>
+            <button class="text-btn" id="reset">Set semula</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Pengumuman pemenang -->
+  <div class="reveal" id="reveal" role="dialog" aria-modal="true" aria-labelledby="wNama">
+    <div class="rays"></div>
+    <div class="win-card">
+      <div class="trophy">🏆</div>
+      <div class="k1">Tahniah!</div>
+      <div class="k2" id="wKe">Pemenang</div>
+      <div class="wnm" id="wNama"></div>
+      <div id="wKelas"></div>
+      <div class="wsub">Nama ini mahu dikekalkan atau dibuang dari roda?</div>
+      <div class="btn-row">
+        <button class="btn btn-block btn-kekal" id="kekal">✓ Kekalkan dalam roda</button>
+        <button class="btn btn-block btn-buang" id="buang">🗑️ Buang dari roda</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Excel -->
+  <div class="up" id="up" role="dialog" aria-modal="true" aria-labelledby="upTajuk">
+    <div class="up-box">
+      <button class="up-x" id="upTutup" aria-label="Tutup">✕</button>
+      <h2 id="upTajuk">📥 Upload Excel</h2>
+      <p class="up-sub">Sistem baca nama dalam fail dan papar di roda <b>tanpa BIN / BINTI</b>, diasingkan ikut lelaki, perempuan dan kelas.</p>
+
+      <label class="up-drop" id="upDrop">
+        <input type="file" id="upFail" accept=".xlsx,.xls,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple hidden>
+        <span>📄</span>
+        <b>Tekan untuk pilih fail Excel</b>
+        <small>.xlsx / .xls / .csv · boleh pilih banyak fail sekali gus</small>
+      </label>
+      <details class="up-format">
+        <summary>Susunan lajur Excel yang disyorkan</summary>
+        <table>
+          <tr><th>BIL</th><th>NAMA</th><th>JANTINA</th><th>KELAS</th></tr>
+          <tr><td>1</td><td>AHMAD FAIZ BIN ROSLAN</td><td>L</td><td>5 AMANAH</td></tr>
+          <tr><td>2</td><td>NUR AISYAH BINTI KAMAL</td><td>P</td><td>5 AMANAH</td></tr>
+        </table>
+        <ul>
+          <li>Tiada lajur JANTINA? Diteka dari BIN / BINTI dalam nama.</li>
+          <li>Tiada lajur KELAS? Nama sheet (atau nama fail) dijadikan kelas.</li>
+          <li>Di roda: AHMAD FAIZ BIN ROSLAN → <b>AHMAD FAIZ</b>.</li>
+          <li>Hanya <b>nama murid</b> diambil. Mata pelajaran (BM, MATEMATIK…), sheet analisis MP, markah, jumlah, purata dan nama guru diabaikan.</li>
+        </ul>
+      </details>
+
+      <div id="upHasil" hidden>
+        <div class="up-sec" id="upFailList"></div>
+        <div class="up-sec up-semak" id="upSemak" hidden>
+          <b class="up-warn">⚠️ Jantina tidak dapat dikenal pasti — sila pilih:</b>
+          <div class="up-semak-list" id="upSemakList"></div>
+        </div>
+        <div class="up-sec up-scroll">
+          <table class="up-t">
+            <thead><tr><th>Kelas</th><th class="n">👦 Lelaki</th><th class="n">👧 Perempuan</th></tr></thead>
+            <tbody id="upRingkas"></tbody>
+          </table>
+        </div>
+        <div class="up-sec">
+          <label class="up-check"><input type="checkbox" id="upGanti" checked>
+            <span>Ganti semua nama lama dengan fail ini<small>Nyahtanda jika mahu tambah kepada nama yang sudah ada dalam roda.</small></span></label>
+        </div>
+        <div class="up-sec">
+          <label class="up-label" for="upPw" id="upPwLabel">Kata laluan upload</label>
+          <div class="pw-wrap">
+            <input class="up-input" id="upPw" type="password" autocomplete="current-password">
+            <button class="mata" type="button" id="lihatPw" aria-label="Lihat kata laluan" aria-pressed="false" title="Lihat kata laluan">
+              <svg id="ikonBuka" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="ikonTutup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.4 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"/><path d="m2 2 20 20"/></svg>
+            </button>
+          </div>
+          <div class="up-hint" id="upPwHint">Kata laluan yang dicipta semasa upload pertama.</div>
+        </div>
+        <div class="up-btns">
+          <button class="btn btn-gold btn-block" id="upSimpan" style="min-height:54px">💾 Simpan &amp; Papar di Roda</button>
+          <button class="btn btn-block up-ghost" id="upLokal">👁️ Papar sahaja di peranti ini (tanpa simpan)</button>
+        </div>
+        <div class="up-msg" id="upMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="config.js?v=20261025a"></script>
+  <script src="excel.js?v=20261025b"></script>
+  <script>
+  (function () {
+    const C = window.RODA_CONFIG;
+    const $ = (id) => document.getElementById(id);
+    const esc = window.escapeHTML;
+    const TAU = Math.PI * 2;
+    const KUNCI_MENANG = "roda_bertuah_pemenang_v1";
+    const KUNCI_RODA = "roda_bertuah_jantina";
+    const LABEL_J = { L: "LELAKI", P: "PEREMPUAN" };
+    const IKON_J = { L: "👦", P: "👧" };
+    $("namaAcara").textContent = C.NAMA_ACARA;
+
+    // Warna kelas (sama untuk roda lelaki & perempuan). Dua tona setiap kelas supaya nama bersebelahan jelas.
+    const PALET = [
+      ["#1d4ed8", "#2563eb"], ["#b91c1c", "#dc2626"], ["#047857", "#059669"], ["#6d28d9", "#7c3aed"],
+      ["#c2410c", "#ea580c"], ["#0e7490", "#0891b2"], ["#be185d", "#db2777"], ["#4d7c0f", "#65a30d"],
+      ["#a16207", "#ca8a04"], ["#4338ca", "#4f46e5"], ["#0f766e", "#0d9488"], ["#9f1239", "#e11d48"],
+      ["#7e22ce", "#9333ea"], ["#15803d", "#16a34a"], ["#b45309", "#d97706"], ["#1e40af", "#3b82f6"],
+    ];
+
+    // ================= Data =================
+    let semua = [];          // { id, nama, jantina, kelas }
+    let pemenang = [];       // { id, nama, kelas, jantina, masa, buang } – disimpan di peranti ini
+    let roda = [];           // nama dalam roda semasa (ikut jantina & kelas), susunan rawak
+    let warnaKelas = new Map();
+    let jantina = "L";
+    const kelasPilih = { L: null, P: null };   // null = semua kelas
+
+    try { pemenang = JSON.parse(localStorage.getItem(KUNCI_MENANG) || "[]") || []; } catch (_) { pemenang = []; }
+    try { if (localStorage.getItem(KUNCI_RODA) === "P") jantina = "P"; } catch (_) {}
+    const simpanPemenang = () => { try { localStorage.setItem(KUNCI_MENANG, JSON.stringify(pemenang)); } catch (_) {} };
+
+    const warna = (kelas) => PALET[(warnaKelas.get(kelas) ?? 0) % PALET.length];
+    const chipKelas = (kelas) => `<span class="kchip"><i style="background:${warna(kelas)[1]}"></i>${esc(kelas)}</span>`;
+    // Nama yang dibuang dari roda. buang: true = dibuang, false = dikekalkan, null = belum dipilih.
+    // Rekod lama (tiada medan buang) dikira sudah dibuang seperti sebelum ini.
+    const sudahMenang = () => new Set(pemenang.filter((w) => w.buang === true || w.buang === undefined).map((w) => w.id));
+    const pernahMenang = () => new Set(pemenang.map((w) => w.id));
+
+    // ================= Susunan rawak =================
+    // Nama disusun secara rawak dan selang-seli kelas (bukan satu kelas, satu kelas).
+    // Benih rawak tetap sepanjang halaman dibuka supaya roda tidak bertukar susunan setiap kali dilukis.
+    const BENIH = crypto.getRandomValues(new Uint32Array(1))[0];
+    function prng(seed) {
+      let a = seed >>> 0;
+      return () => {
+        a = (a + 0x6D2B79F5) >>> 0;
+        let t = a;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    function kocok(arr, r) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(r() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+    function susunRawak(senarai) {
+      const r = prng(BENIH ^ senarai.length);
+      const kump = new Map();
+      [...senarai].sort((a, b) => a.id - b.id).forEach((m) => {
+        if (!kump.has(m.kelas)) kump.set(m.kelas, []);
+        kump.get(m.kelas).push(m);
+      });
+      kump.forEach((g) => kocok(g, r));
+      const out = [];
+      let lepas = null, baki = senarai.length;
+      while (baki > 0) {
+        const ada = [...kump.entries()].filter(([, g]) => g.length);
+        // Kelas yang terlalu ramai mesti diambil dahulu supaya tidak berkumpul di hujung roda.
+        const wajib = ada.find(([, g]) => g.length > (baki + 1) / 2);
+        let calon = wajib ? [wajib] : ada.filter(([k]) => k !== lepas);
+        if (!calon.length) calon = ada;
+        // Pilih kelas secara rawak, berwajaran ikut baki nama dalam kelas itu.
+        let x = r() * calon.reduce((t, [, g]) => t + g.length, 0), pilih = calon[0];
+        for (const c of calon) { x -= c[1].length; if (x < 0) { pilih = c; break; } }
+        out.push(pilih[1].pop());
+        lepas = pilih[0];
+        baki--;
+      }
+      return out;
+    }
+
+    let modLokal = false;    // true: nama dari Excel dipapar di peranti ini sahaja (tidak disimpan)
+
+    function pasangNama(senarai) {
+      semua = senarai;
+      const kelasSemua = [...new Set(semua.map((m) => m.kelas))].sort(bandingKelas);
+      warnaKelas = new Map(kelasSemua.map((k, i) => [k, i]));
+      bina();
+    }
+
+    async function muatNama() {
+      if (modLokal) return;
+      const out = await muatSemuaNama();
+      const kunci = (a) => a.map((m) => m.id + m.nama + m.kelas + m.jantina).join("|");
+      if (kunci(out) === kunci(semua)) return;
+      pasangNama(out);
+    }
+
+    function namaJantina(j) { return semua.filter((m) => m.jantina === j); }
+
+    function bina() {
+      const won = sudahMenang();
+      const senarai = namaJantina(jantina);
+      const kelasAda = new Set(senarai.map((m) => m.kelas));
+      if (kelasPilih[jantina] && !kelasAda.has(kelasPilih[jantina])) kelasPilih[jantina] = null;
+      const kp = kelasPilih[jantina];
+      roda = susunRawak(senarai.filter((m) => !won.has(m.id) && (!kp || m.kelas === kp)));
+
+      document.body.classList.toggle("g-L", jantina === "L");
+      document.body.classList.toggle("g-P", jantina === "P");
+      document.querySelectorAll(".gswitch button").forEach((b) => b.classList.toggle("on", b.dataset.g === jantina));
+      $("cL").textContent = namaJantina("L").length.toLocaleString("ms-MY");
+      $("cP").textContent = namaJantina("P").length.toLocaleString("ms-MY");
+      $("hubIkon").textContent = IKON_J[jantina];
+      $("hubTeks").textContent = LABEL_J[jantina];
+      $("cNama").textContent = senarai.length.toLocaleString("ms-MY");
+      $("cMenang").textContent = pemenang.filter((w) => w.jantina === jantina).length;
+      $("cKelas").textContent = kelasAda.size;
+
+      const msg = $("wheelMsg");
+      if (!semua.length) { msg.hidden = false; msg.textContent = "Belum ada nama. Tekan Upload Excel di atas."; }
+      else if (!senarai.length) { msg.hidden = false; msg.textContent = `Tiada nama ${LABEL_J[jantina].toLowerCase()}`; }
+      else if (!roda.length) { msg.hidden = false; msg.textContent = kp ? `Semua nama ${kp} sudah dibuang dari roda` : "Semua nama sudah dibuang dari roda"; }
+      else msg.hidden = true;
+
+      kemasButang();
+      lukis();
+      kemasTicker(true);
+      senaraiKelas();
+      senaraiPemenang();
+      senaraiNama();
+    }
+
+    function senaraiKelas() {
+      const won = sudahMenang();
+      const senarai = namaJantina(jantina);
+      const kira = new Map();
+      for (const m of senarai) {
+        const k = kira.get(m.kelas) || { jumlah: 0, baki: 0 };
+        k.jumlah++; if (!won.has(m.id)) k.baki++;
+        kira.set(m.kelas, k);
+      }
+      const kp = kelasPilih[jantina];
+      const bakiSemua = senarai.filter((m) => !won.has(m.id)).length;
+      const kunci = state !== "idle" ? "disabled" : "";
+      $("senaraiKelas").innerHTML =
+        `<button class="kbtn ${kp ? "" : "on"}" data-kelas="" ${kunci}>🎯 Semua Kelas <small>${bakiSemua}</small></button>` +
+        [...kira.keys()].sort(bandingKelas).map((k) => `
+          <button class="kbtn ${kp === k ? "on" : ""}" data-kelas="${esc(k)}" ${kunci}>
+            <i style="background:${warna(k)[1]}"></i>${esc(k)} <small>${kira.get(k).baki}/${kira.get(k).jumlah}</small>
+          </button>`).join("");
+    }
+    $("senaraiKelas").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-kelas]");
+      if (!b || state !== "idle") return;
+      kelasPilih[jantina] = b.dataset.kelas || null;
+      bina();
+    });
+
+    function senaraiPemenang() {
+      const senarai = pemenang.filter((w) => w.jantina === jantina);
+      $("tiadaMenang").hidden = senarai.length > 0;
+      $("senaraiMenang").innerHTML = senarai.map((w, i) => {
+        const dibuang = w.buang !== false;
+        return `
+        <li class="menang4 ${dibuang ? "won" : ""}"><span class="rank">${i + 1}</span><span class="nm">${esc(w.nama)}</span><span class="kl">${esc(w.kelas)}</span>
+          <button class="st ${dibuang ? "buang" : "kekal"}" data-masa="${esc(w.masa)}"
+            title="${dibuang ? "Tekan untuk masukkan semula ke roda" : "Tekan untuk buang dari roda"}">${dibuang ? "🗑️ Dibuang" : "✓ Dalam roda"}</button></li>`;
+      }).reverse().join("");
+    }
+    // Tukar status pemenang kemudian: masukkan semula ke roda atau buang.
+    $("senaraiMenang").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-masa]");
+      if (!b || state !== "idle" || $("reveal").classList.contains("show")) return;
+      const w = pemenang.find((x) => x.masa === b.dataset.masa);
+      if (!w) return;
+      w.buang = w.buang === false;
+      simpanPemenang();
+      bina();
+      toast(w.buang ? `${w.nama} dibuang dari roda.` : `${w.nama} dimasukkan semula ke roda.`);
+    });
+
+    const SAIZ_HALAMAN = 300;
+    let hadPapar = SAIZ_HALAMAN;
+    function senaraiNama() {
+      const q = $("cari").value.trim().toLowerCase();
+      const won = sudahMenang(), menang = pernahMenang();
+      const padan = namaJantina(jantina)
+        .filter((m) => !q || m.nama.toLowerCase().includes(q) || m.kelas.toLowerCase().includes(q))
+        .sort((a, b) => bandingKelas(a.kelas, b.kelas) || a.nama.localeCompare(b.nama, "ms"));
+      $("senaraiNama").innerHTML = padan.slice(0, hadPapar).map((m) => `
+        <li class="${won.has(m.id) ? "won" : ""}"><i class="dot" style="background:${warna(m.kelas)[1]}"></i>
+        <span class="nm">${menang.has(m.id) ? "🏆 " : ""}${esc(m.nama)}</span><span class="kl">${esc(m.kelas)}</span></li>`).join("");
+      const e = $("tiadaNama");
+      e.hidden = padan.length > 0;
+      e.textContent = namaJantina(jantina).length ? "Tiada padanan." : "Belum ada nama.";
+      const baki = padan.length - hadPapar;
+      $("tunjukLagi").hidden = baki <= 0;
+      $("tunjukLagi").textContent = `Tunjuk lagi (${baki.toLocaleString("ms-MY")} lagi)`;
+    }
+    $("tunjukLagi").onclick = () => { hadPapar += SAIZ_HALAMAN; senaraiNama(); };
+    $("cari").addEventListener("input", () => { hadPapar = SAIZ_HALAMAN; senaraiNama(); });
+
+    document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => {
+      document.querySelectorAll("[data-tab]").forEach((x) => x.classList.toggle("on", x === b));
+      $("tabKelas").hidden = b.dataset.tab !== "kelas";
+      $("tabPemenang").hidden = b.dataset.tab !== "pemenang";
+      $("tabNama").hidden = b.dataset.tab !== "nama";
+    }));
+
+    // Tukar roda lelaki / perempuan
+    document.querySelectorAll(".gswitch button").forEach((b) => b.addEventListener("click", () => {
+      if (state !== "idle" || b.dataset.g === jantina) return;
+      jantina = b.dataset.g;
+      try { localStorage.setItem(KUNCI_RODA, jantina); } catch (_) {}
+      sudut = 0; canvas.style.transform = "rotate(0rad)";
+      hadPapar = SAIZ_HALAMAN;
+      bina();
+    }));
+
+    // ================= Lampu bingkai =================
+    (function () {
+      const N = 32, rim = $("rim");
+      for (let i = 0; i < N; i++) {
+        const b = document.createElement("i");
+        b.className = "bulb";
+        b.style.setProperty("--i", i); b.style.setProperty("--n", N); b.style.setProperty("--p", i % 2);
+        rim.appendChild(b);
+      }
+    })();
+
+    // ================= Lukis roda =================
+    const canvas = $("roda");
+    const ctx = canvas.getContext("2d");
+    const LABEL_MAKS = 240;     // lebih daripada ini: nama tidak dilabel, hanya nama kelas
+    const PIN_HIASAN = 48;
+
+    // Kumpulan kelas berturutan dalam roda: [{ kelas, dari, hingga }]
+    function kumpulanKelas() {
+      const out = [];
+      roda.forEach((m, i) => {
+        const g = out[out.length - 1];
+        if (g && g.kelas === m.kelas) g.hingga = i + 1;
+        else out.push({ kelas: m.kelas, dari: i, hingga: i + 1 });
+      });
+      return out;
+    }
+
+    function potong(teks, maks) {
+      if (ctx.measureText(teks).width <= maks) return teks;
+      let lo = 0, hi = teks.length;
+      while (lo < hi) {
+        const mid = (lo + hi + 1) >> 1;
+        if (ctx.measureText(teks.slice(0, mid) + "…").width <= maks) lo = mid; else hi = mid - 1;
+      }
+      return teks.slice(0, lo).trimEnd() + "…";
+    }
+
+    function lukis() {
+      const css = canvas.getBoundingClientRect().width || 300;
+      const dpr = Math.min(window.devicePixelRatio || 1, 3);
+      const S = Math.round(css * dpr);
+      canvas.width = S; canvas.height = S;
+      const c = S / 2, r = S / 2;
+      ctx.clearRect(0, 0, S, S);
+      const n = roda.length;
+
+      if (!n) {
+        const g = ctx.createRadialGradient(c, c, 0, c, c, r);
+        g.addColorStop(0, "#1b2740"); g.addColorStop(1, "#0b1324");
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(c, c, r, 0, TAU); ctx.fill();
+        return;
+      }
+
+      const s = TAU / n;
+      const kump = kumpulanKelas();
+      const banyak = n > 600;   // terlalu banyak: lukis satu lengkok bagi setiap kelas
+
+      for (const g of kump) {
+        const [wa, wb] = warna(g.kelas);
+        if (banyak || n === 1) {
+          const a0 = -Math.PI / 2 + g.dari * s;
+          ctx.beginPath(); ctx.moveTo(c, c); ctx.arc(c, c, r, a0, a0 + (g.hingga - g.dari) * s); ctx.closePath();
+          ctx.fillStyle = wa; ctx.fill();
+          continue;
+        }
+        for (let i = g.dari; i < g.hingga; i++) {
+          const a0 = -Math.PI / 2 + i * s;
+          ctx.beginPath(); ctx.moveTo(c, c); ctx.arc(c, c, r, a0, a0 + s + 0.002); ctx.closePath();
+          ctx.fillStyle = (i - g.dari) % 2 ? wb : wa; ctx.fill();
+        }
+      }
+
+      // Garisan pemisah nama
+      if (!banyak && n > 1 && n <= LABEL_MAKS) {
+        ctx.strokeStyle = "rgba(255, 255, 255, .28)";
+        ctx.lineWidth = Math.max(1, S / 1400);
+        for (let i = 0; i < n; i++) {
+          const a = -Math.PI / 2 + i * s;
+          ctx.beginPath(); ctx.moveTo(c, c); ctx.lineTo(c + Math.cos(a) * r, c + Math.sin(a) * r); ctx.stroke();
+        }
+      }
+
+      // Bayang dalam + kilauan
+      const sh = ctx.createRadialGradient(c, c, 0, c, c, r);
+      sh.addColorStop(0, "rgba(0,0,0,.35)"); sh.addColorStop(.32, "rgba(0,0,0,0)");
+      sh.addColorStop(.86, "rgba(255,255,255,.05)"); sh.addColorStop(1, "rgba(0,0,0,.30)");
+      ctx.fillStyle = sh; ctx.beginPath(); ctx.arc(c, c, r, 0, TAU); ctx.fill();
+
+      // Label nama (jika muat), jika tidak label nama kelas pada lengkok kelas
+      const luar = r * 0.93, dalam = r * 0.31;
+      const fs = Math.min(r * 0.068, s * r * 0.62 * 0.78);
+      ctx.textAlign = "right"; ctx.textBaseline = "middle";
+      ctx.fillStyle = "#fff";
+      ctx.shadowColor = "rgba(0,0,0,.55)"; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+      if (n <= LABEL_MAKS) {   // nama sentiasa dipapar, walaupun roda kecil
+        ctx.font = `700 ${fs}px 'Plus Jakarta Sans', sans-serif`;
+        ctx.shadowBlur = fs * 0.2; ctx.shadowOffsetY = fs * 0.05;
+        for (let i = 0; i < n; i++) {
+          ctx.save();
+          ctx.translate(c, c);
+          ctx.rotate(-Math.PI / 2 + (i + 0.5) * s);
+          ctx.fillText(potong(roda[i].nama, luar - dalam), luar, 0);
+          ctx.restore();
+        }
+      } else {
+        for (const g of kump) {
+          const lebar = (g.hingga - g.dari) * s;
+          const fk = Math.min(r * 0.085, lebar * r * 0.6 * 0.7);
+          if (fk < 8 * dpr) continue;
+          ctx.font = `800 ${fk}px 'Plus Jakarta Sans', sans-serif`;
+          ctx.shadowBlur = fk * 0.2; ctx.shadowOffsetY = fk * 0.05;
+          ctx.save();
+          ctx.translate(c, c);
+          ctx.rotate(-Math.PI / 2 + (g.dari + g.hingga) / 2 * s);
+          ctx.fillText(potong(g.kelas, luar - dalam), luar, 0);
+          ctx.restore();
+        }
+      }
+      ctx.shadowColor = "transparent";
+
+      // Pin emas di tepi roda
+      const nv = n <= 120 ? n : PIN_HIASAN, sv = TAU / nv;
+      if (nv > 1) {
+        const pr = Math.max(2.2 * dpr, Math.min(r * 0.018, sv * r * 0.12));
+        for (let i = 0; i < nv; i++) {
+          const a = -Math.PI / 2 + i * sv;
+          const x = c + Math.cos(a) * r * 0.965, y = c + Math.sin(a) * r * 0.965;
+          const g = ctx.createRadialGradient(x - pr * .3, y - pr * .3, 0, x, y, pr);
+          g.addColorStop(0, "#fff6d8"); g.addColorStop(.6, "#e9b545"); g.addColorStop(1, "#7d5410");
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, pr, 0, TAU); ctx.fill();
+        }
+      }
+    }
+
+    // ================= Putaran =================
+    const V_MAX = TAU * 2.2 / 1000;     // rad/ms (~2.2 pusingan sesaat)
+    const MASA_PERLAHAN = 4600;         // ms minimum untuk perlahan & berhenti
+    let state = "idle";                 // idle | laju | perlahan
+    let sudut = 0, laju = 0, tLepas = 0;
+    let mintaHenti = false, berhenti = null, idxLepas = -1;
+
+    function rawak() {
+      const a = new Uint32Array(1);
+      crypto.getRandomValues(a);
+      return a[0] / 4294967296;
+    }
+    // Indeks rawak tanpa bias (rejection sampling)
+    function rawakIndeks(n) {
+      const had = Math.floor(4294967296 / n) * n;
+      const a = new Uint32Array(1);
+      do crypto.getRandomValues(a); while (a[0] >= had);
+      return a[0] % n;
+    }
+
+    function idxDiPenunjuk(a) {
+      const n = roda.length;
+      if (!n) return -1;
+      const local = ((-a % TAU) + TAU) % TAU;
+      return Math.min(n - 1, Math.floor(local / (TAU / n)));
+    }
+
+    let pinLepas = -1;
+    function kemasTicker(paksa) {
+      const i = idxDiPenunjuk(sudut);
+      const n = roda.length, nv = n <= 120 ? n : PIN_HIASAN;
+      const pin = nv ? Math.floor((((-sudut % TAU) + TAU) % TAU) / (TAU / nv)) : -1;
+      if (pin !== pinLepas && state !== "idle" && pinLepas !== -1) {
+        bunyiTik(laju / V_MAX);
+        const p = $("pointer");
+        p.classList.remove("tik"); void p.offsetWidth; p.classList.add("tik");
+      }
+      pinLepas = pin;
+      if (i === idxLepas && !paksa) return;
+      idxLepas = i;
+      if (i < 0) { $("ticker").textContent = "—"; $("tickerKelas").innerHTML = ""; return; }
+      $("ticker").textContent = roda[i].nama;
+      $("tickerKelas").innerHTML = chipKelas(roda[i].kelas);
+    }
+
+    function frame(t) {
+      const dt = Math.min(48, (t - tLepas) || 16);
+      tLepas = t;
+      if (state === "laju") {
+        laju = Math.min(V_MAX, laju + V_MAX * dt / 700);
+        sudut += laju * dt;
+        if (laju >= V_MAX * 0.999 && mintaHenti) mulaPerlahan(t);   // roda hanya berhenti bila BERHENTI ditekan
+      } else if (state === "perlahan") {
+        const u = Math.min(1, (t - berhenti.t0) / berhenti.T);
+        const e = 1 - Math.pow(1 - u, 3);
+        sudut = berhenti.a0 + berhenti.d * e;
+        laju = (3 * berhenti.d / berhenti.T) * Math.pow(1 - u, 2);
+        if (u >= 1) {
+          canvas.style.transform = `rotate(${sudut}rad)`;
+          kemasTicker(true);
+          tamat(roda[berhenti.idx]);
+          return;
+        }
+      }
+      canvas.style.transform = `rotate(${sudut}rad)`;
+      kemasTicker(false);
+      requestAnimationFrame(frame);
+    }
+
+    function mula() {
+      if (state !== "idle" || !roda.length) return;
+      sediaAudio();
+      kunciSkrin();
+      state = "laju"; laju = 0; mintaHenti = false;
+      tLepas = performance.now();
+      document.body.classList.add("berpusing");
+      document.body.classList.remove("menang");
+      $("tickerK").textContent = "Sedang berpusing…";
+      $("hint").textContent = "Roda terus berpusing. Tekan BERHENTI untuk hentikan.";
+      kemasButang();
+      senaraiKelas();
+      requestAnimationFrame(frame);
+    }
+
+    function henti() {
+      if (state !== "laju") return;
+      mintaHenti = true;
+      $("henti").disabled = true;
+      $("hint").textContent = "Memperlahankan roda…";
+    }
+
+    function mulaPerlahan(t) {
+      const n = roda.length, s = TAU / n;
+      const idx = rawakIndeks(n);                        // pemenang dipilih rawak (kriptografi)
+      const L = idx * s + (0.2 + 0.6 * rawak()) * s;     // titik dalam segmen pemenang
+      const base = sudut + laju * MASA_PERLAHAN / 3;
+      const sasaran = base + ((((-L - base) % TAU) + TAU) % TAU);
+      const d = sasaran - sudut;
+      berhenti = { a0: sudut, d, T: (3 * d) / laju, t0: t, idx };
+      state = "perlahan";
+      $("henti").disabled = true;
+      $("hint").textContent = "Memperlahankan roda…";
+    }
+
+    function tamat(m) {
+      state = "idle"; laju = 0;
+      document.body.classList.remove("berpusing");
+      document.body.classList.add("menang");
+      pemenang.push({ id: m.id, nama: m.nama, kelas: m.kelas, jantina: m.jantina, masa: new Date().toISOString(), buang: null });
+      simpanPemenang();
+      const ke = pemenang.filter((w) => w.jantina === m.jantina).length;
+      setTimeout(() => umumkan(m, ke), 650);
+    }
+
+    function kemasButang() {
+      const boleh = state === "idle" && roda.length > 0 && !$("reveal").classList.contains("show");
+      $("mula").disabled = !boleh;
+      $("hub").disabled = !boleh;
+      $("henti").disabled = state !== "laju" || mintaHenti;
+      document.querySelectorAll(".gswitch button").forEach((b) => (b.disabled = state !== "idle"));
+      $("bukaUpload").disabled = state !== "idle";
+    }
+
+    $("mula").onclick = mula;
+    $("hub").onclick = mula;
+    $("henti").onclick = henti;
+    document.addEventListener("keydown", (e) => {
+      if (e.target.tagName === "INPUT") return;
+      if ($("up").classList.contains("show")) { if (e.key === "Escape") tutupUpload(); return; }
+      if ($("reveal").classList.contains("show")) {
+        if (e.code === "Space" || e.key === "Enter") e.preventDefault();   // mesti pilih Kekalkan atau Buang
+        return;
+      }
+      if (e.code === "Space" || e.key === "Enter") { e.preventDefault(); state === "idle" ? mula() : henti(); }
+    });
+
+    // ================= Pengumuman =================
+    function umumkan(m, ke) {
+      $("wKe").textContent = `Pemenang ${LABEL_J[m.jantina].toLowerCase()} ke-${ke}`;
+      $("wNama").textContent = m.nama;
+      $("wKelas").innerHTML = chipKelas(m.kelas);
+      $("reveal").classList.add("show");
+      kemasButang();
+      bunyiMenang();
+      if (navigator.vibrate) navigator.vibrate([80, 60, 120]);
+      if (window.confetti) {
+        const col = ["#f2c75c", "#fff3cf", m.jantina === "L" ? "#60a5fa" : "#f472b6", "#ffffff", "#e2534b"];
+        const opt = { colors: col, zIndex: 60, disableForReducedMotion: true };
+        confetti({ ...opt, particleCount: 160, spread: 110, startVelocity: 48, origin: { y: .42 } });
+        const end = Date.now() + 2800;
+        (function f() {
+          confetti({ ...opt, particleCount: 5, angle: 60, spread: 65, origin: { x: 0, y: .75 } });
+          confetti({ ...opt, particleCount: 5, angle: 120, spread: 65, origin: { x: 1, y: .75 } });
+          if (Date.now() < end) requestAnimationFrame(f);
+        })();
+      }
+      setTimeout(() => $("kekal").focus(), 300);
+    }
+
+    function tutupReveal(buang) {
+      const w = pemenang[pemenang.length - 1];
+      if (w && w.buang === null) { w.buang = buang; simpanPemenang(); }
+      $("reveal").classList.remove("show");
+      document.body.classList.remove("menang");
+      $("tickerK").textContent = "Nama";
+      $("hint").textContent = "Tekan MULA untuk cabutan seterusnya.";
+      bina();
+      toast(buang ? `${w.nama} dibuang dari roda.` : `${w.nama} dikekalkan dalam roda.`);
+    }
+    $("kekal").onclick = () => tutupReveal(false);
+    $("buang").onclick = () => tutupReveal(true);
+
+    $("reset").onclick = () => {
+      if (state !== "idle") return;
+      const ada = pemenang.filter((w) => w.jantina === jantina).length;
+      if (!ada) return toast("Tiada pemenang untuk diset semula.");
+      if (!confirm(`Set semula pemenang roda ${LABEL_J[jantina].toLowerCase()}? Semua nama yang dibuang akan dimasukkan semula ke dalam roda.`)) return;
+      pemenang = pemenang.filter((w) => w.jantina !== jantina);
+      simpanPemenang();
+      bina();
+      toast("Senarai pemenang telah dikosongkan.");
+    };
+
+    function toast(m) {
+      const t = $("toast");
+      t.textContent = m; t.classList.add("show");
+      clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove("show"), 2600);
+    }
+
+    // ================= Bunyi =================
+    let audio = null, senyap = false, bising = null, tikLepas = 0;
+    function sediaAudio() {
+      if (senyap) return;
+      try {
+        if (!audio) {
+          audio = new (window.AudioContext || window.webkitAudioContext)();
+          const len = Math.floor(audio.sampleRate * 0.03);
+          bising = audio.createBuffer(1, len, audio.sampleRate);
+          const d = bising.getChannelData(0);
+          for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+        }
+        if (audio.state === "suspended") audio.resume();
+      } catch (_) { audio = null; }
+    }
+    // Bunyi "tik" seperti pin roda terkena penunjuk
+    function bunyiTik(kelajuan) {
+      if (!audio || senyap) return;
+      const now = audio.currentTime;
+      if (now - tikLepas < 0.03) return;
+      tikLepas = now;
+      const src = audio.createBufferSource();
+      src.buffer = bising;
+      const bp = audio.createBiquadFilter();
+      bp.type = "bandpass"; bp.Q.value = 6;
+      bp.frequency.value = 1600 + 1400 * Math.min(1, kelajuan) + Math.random() * 200;
+      const g = audio.createGain();
+      g.gain.value = 0.9;
+      src.connect(bp).connect(g).connect(audio.destination);
+      src.start(now);
+      const o = audio.createOscillator(), og = audio.createGain();
+      o.type = "triangle"; o.frequency.setValueAtTime(900, now); o.frequency.exponentialRampToValueAtTime(380, now + 0.035);
+      og.gain.setValueAtTime(0.12, now); og.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
+      o.connect(og).connect(audio.destination);
+      o.start(now); o.stop(now + 0.05);
+    }
+    function bunyiMenang() {
+      if (!audio || senyap) return;
+      const now = audio.currentTime + 0.05;
+      const nota = [[523.25, 0], [659.25, .12], [783.99, .24], [1046.5, .36], [783.99, .54], [1046.5, .66]];
+      nota.forEach(([f, t], i) => {
+        [1, 2].forEach((h) => {
+          const o = audio.createOscillator(), g = audio.createGain();
+          o.type = h === 1 ? "triangle" : "sine"; o.frequency.value = f * h;
+          const mula = now + t, pjg = i === nota.length - 1 ? 1.2 : 0.28;
+          g.gain.setValueAtTime(0.0001, mula);
+          g.gain.exponentialRampToValueAtTime(h === 1 ? 0.22 : 0.06, mula + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, mula + pjg);
+          o.connect(g).connect(audio.destination);
+          o.start(mula); o.stop(mula + pjg + 0.05);
+        });
+      });
+    }
+    $("bunyi").onclick = () => {
+      senyap = !senyap;
+      $("gelombang").style.display = senyap ? "none" : "";
+      $("bunyi").setAttribute("aria-label", senyap ? "Hidupkan bunyi" : "Matikan bunyi");
+      toast(senyap ? "Bunyi dimatikan" : "Bunyi dihidupkan");
+      if (!senyap) sediaAudio();
+    };
+
+    // ================= Skrin =================
+    const fsOk = document.fullscreenEnabled || document.webkitFullscreenEnabled;
+    if (!fsOk) $("skrinPenuh").hidden = true;
+    $("skrinPenuh").onclick = () => {
+      const d = document;
+      if (d.fullscreenElement || d.webkitFullscreenElement) (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+      else { const e = d.documentElement; (e.requestFullscreen || e.webkitRequestFullscreen).call(e); }
+    };
+    let wakeLock = null;
+    async function kunciSkrin() {
+      try { if ("wakeLock" in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request("screen"); wakeLock.onrelease = () => (wakeLock = null); } } catch (_) {}
+    }
+
+    // Bintang berkelip di latar
+    (function () {
+      const cv = $("bintang"), x = cv.getContext("2d");
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      let W, H, titik = [];
+      function saiz() {
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr;
+        titik = Array.from({ length: 46 }, () => ({
+          x: Math.random() * W, y: Math.random() * H, r: (0.6 + Math.random() * 1.6) * dpr,
+          v: (0.05 + Math.random() * 0.18) * dpr, f: Math.random() * TAU,
+        }));
+      }
+      saiz(); addEventListener("resize", saiz);
+      (function loop(t) {
+        x.clearRect(0, 0, W, H);
+        for (const p of titik) {
+          p.y -= p.v; if (p.y < -5) { p.y = H + 5; p.x = Math.random() * W; }
+          const a = 0.25 + 0.35 * Math.sin(t / 900 + p.f);
+          x.fillStyle = `rgba(255, 226, 150, ${a})`;
+          x.beginPath(); x.arc(p.x, p.y, p.r, 0, TAU); x.fill();
+        }
+        requestAnimationFrame(loop);
+      })(0);
+    })();
+
+    // ================= Upload Excel =================
+    const X = window.RodaExcel;
+    let calon = [];            // { nama, jantina, kelas } dari fail Excel
+    let kataLaluan = "";       // diingat sepanjang halaman dibuka
+    let adaKataLaluan = true;
+
+    async function bukaUpload() {
+      if (state !== "idle") return;
+      calon = [];
+      $("upHasil").hidden = true;
+      $("upMsg").textContent = "";
+      $("upPw").value = kataLaluan;
+      tunjukPw(false);
+      $("up").classList.add("show");
+      try {
+        const { data, error } = await sb.rpc("ada_kata_laluan");
+        if (!error) adaKataLaluan = !!data;
+      } catch (_) {}
+      $("upPwLabel").textContent = adaKataLaluan ? "Kata laluan upload" : "Cipta kata laluan upload";
+      $("upPwHint").textContent = adaKataLaluan
+        ? "Kata laluan yang dicipta semasa upload pertama."
+        : "Upload pertama: cipta kata laluan baru (sekurang-kurangnya 4 aksara). Simpan kata laluan ini — ia diperlukan untuk upload seterusnya.";
+    }
+    const tutupUpload = () => $("up").classList.remove("show");
+
+    // Ikon mata: tunjuk / sembunyi kata laluan supaya boleh semak betul atau salah.
+    function tunjukPw(tunjuk) {
+      $("upPw").type = tunjuk ? "text" : "password";
+      $("ikonBuka").toggleAttribute("hidden", tunjuk);
+      $("ikonTutup").toggleAttribute("hidden", !tunjuk);
+      $("lihatPw").setAttribute("aria-pressed", String(tunjuk));
+      $("lihatPw").setAttribute("aria-label", tunjuk ? "Sembunyikan kata laluan" : "Lihat kata laluan");
+      $("lihatPw").title = tunjuk ? "Sembunyikan kata laluan" : "Lihat kata laluan";
+    }
+    $("lihatPw").addEventListener("click", () => {
+      tunjukPw($("upPw").type === "password");
+      $("upPw").focus();
+    });
+    $("bukaUpload").onclick = bukaUpload;
+    $("upTutup").onclick = tutupUpload;
+    $("up").addEventListener("click", (e) => { if (e.target === $("up")) tutupUpload(); });
+
+    async function prosesUpload(files) {
+      if (!files || !files.length) return;
+      $("upMsg").className = "up-msg"; $("upMsg").textContent = "Membaca fail…";
+      const { hasil, laporan } = await X.bacaFail([...files]);
+      calon = hasil;
+      $("upMsg").textContent = "";
+      $("upFailList").innerHTML = laporan.map((l) => `
+        <div class="up-fail"><b>📄 ${esc(l.sumber)}</b><br>
+        ${l.ralat ? `<span class="warn">${esc(l.ralat)}</span>` :
+          `<span class="ok">${l.n} nama</span> · ${l.kelas.map(esc).join(", ")}
+           ${l.tiadaJ ? ` · <span class="warn">${l.tiadaJ} tiada jantina</span>` : ""}
+           <span class="eg">Di roda: ${l.contoh.map((r) => `${esc(r.nama)} → <em>${esc(X.namaPendek(r.nama))}</em>`).join(" · ")}</span>`}
+        </div>`).join("") || `<div class="up-fail"><span class="warn">Tiada nama dijumpai dalam fail ini.</span></div>`;
+      renderCalon();
+      $("upHasil").hidden = false;
+    }
+
+    function renderCalon() {
+      const perlu = calon.map((r, i) => [r, i]).filter(([r]) => !r.jantina || r.manual);
+      $("upSemak").hidden = perlu.length === 0;
+      $("upSemakList").innerHTML = perlu.map(([r, i]) => `
+        <div class="up-semak-row"><span>${esc(X.namaPendek(r.nama))} <small>· ${esc(r.kelas)}</small></span>
+        <select class="up-sel" data-i="${i}"><option value="">— pilih —</option>
+          <option value="L" ${r.jantina === "L" ? "selected" : ""}>Lelaki</option>
+          <option value="P" ${r.jantina === "P" ? "selected" : ""}>Perempuan</option></select></div>`).join("");
+      const kira = new Map();
+      calon.forEach((r) => {
+        const k = kira.get(r.kelas) || { L: 0, P: 0 };
+        if (r.jantina) k[r.jantina]++;
+        kira.set(r.kelas, k);
+      });
+      const ks = [...kira.keys()].sort(bandingKelas);
+      let jl = 0, jp = 0;
+      $("upRingkas").innerHTML = ks.map((k) => {
+        const v = kira.get(k); jl += v.L; jp += v.P;
+        return `<tr><td>${chipKelas(k)}</td><td class="n">${v.L}</td><td class="n">${v.P}</td></tr>`;
+      }).join("") + `<tr><td>JUMLAH · ${ks.length} kelas</td><td class="n">${jl}</td><td class="n">${jp}</td></tr>`;
+      const belum = calon.filter((r) => !r.jantina).length;
+      const tiada = calon.length === 0;
+      $("upSimpan").disabled = tiada || belum > 0;
+      $("upLokal").disabled = tiada || belum > 0;
+      $("upSimpan").textContent = belum ? `Pilih jantina untuk ${belum} nama dahulu` : `💾 Simpan & Papar ${calon.length} Nama di Roda`;
+    }
+    $("upSemakList").addEventListener("change", (e) => {
+      const s = e.target.closest("[data-i]");
+      if (!s) return;
+      const r = calon[Number(s.dataset.i)];
+      r.jantina = s.value; r.manual = true;
+      renderCalon();
+    });
+
+    $("upFail").addEventListener("change", (e) => { prosesUpload(e.target.files); e.target.value = ""; });
+    const upDrop = $("upDrop");
+    ["dragenter", "dragover"].forEach((ev) => upDrop.addEventListener(ev, (e) => { e.preventDefault(); upDrop.classList.add("over"); }));
+    ["dragleave", "drop"].forEach((ev) => upDrop.addEventListener(ev, (e) => { e.preventDefault(); upDrop.classList.remove("over"); }));
+    upDrop.addEventListener("drop", (e) => prosesUpload(e.dataTransfer.files));
+
+    const RALAT_UPLOAD = {
+      KATA_LALUAN_SALAH: "Kata laluan salah.",
+      KATA_LALUAN_PENDEK: "Kata laluan mesti sekurang-kurangnya 4 aksara.",
+      DATA_TIDAK_SAH: "Data fail tidak sah.",
+    };
+
+    $("upSimpan").onclick = async () => {
+      const msg = $("upMsg"), btn = $("upSimpan");
+      const pw = $("upPw").value;
+      if (!pw) { msg.className = "up-msg err"; msg.textContent = "Masukkan kata laluan upload."; $("upPw").focus(); return; }
+      const ganti = $("upGanti").checked;
+      btn.disabled = true; $("upLokal").disabled = true;
+      msg.className = "up-msg"; msg.textContent = "Menyimpan…";
+      try {
+        const data = calon.map(({ nama, jantina, kelas }) => ({ nama, jantina, kelas }));
+        let tambah = 0;
+        for (let i = 0; i < data.length; i += 500) {
+          const { data: res, error } = await sb.rpc("upload_nama", {
+            p_kata_laluan: pw, p_senarai: data.slice(i, i + 500), p_ganti: ganti && i === 0,
+          });
+          if (error) throw error;
+          tambah += res[0].ditambah;
+          msg.textContent = `Menyimpan… ${Math.min(i + 500, data.length)}/${data.length}`;
+        }
+        kataLaluan = pw;
+        if (ganti) { pemenang = []; simpanPemenang(); }
+        modLokal = false;
+        semua = [];
+        await muatNama();
+        bina();
+        tutupUpload();
+        toast(`✓ ${tambah} nama disimpan dan dipapar di roda.`);
+      } catch (err) {
+        console.error(err);
+        msg.className = "up-msg err";
+        msg.textContent = RALAT_UPLOAD[err.message] || "Gagal menyimpan: " + err.message;
+        renderCalon();
+      }
+    };
+
+    // Papar terus tanpa simpan ke Supabase (untuk peranti ini sahaja).
+    $("upLokal").onclick = () => {
+      const unik = new Map();
+      calon.forEach((r) => {
+        const k = `${r.jantina}|${r.kelas}|${r.nama.toUpperCase()}`;
+        if (!unik.has(k)) unik.set(k, r);
+      });
+      const senarai = [...unik.values()];
+      const nama = X.namaRoda(senarai);
+      modLokal = true;
+      pemenang = pemenang.filter((w) => w.id > 0);
+      simpanPemenang();
+      pasangNama(senarai.map((r, i) => ({ id: -(i + 1), nama: nama[i], jantina: r.jantina, kelas: r.kelas })));
+      tutupUpload();
+      toast(`${senarai.length} nama dipapar di peranti ini sahaja (tidak disimpan).`);
+    };
+
+    let tResize;
+    addEventListener("resize", () => { clearTimeout(tResize); tResize = setTimeout(lukis, 120); });
+
+    // Nama baru (import oleh admin) dimasukkan setiap 30 saat (ketika roda tidak berpusing).
+    setInterval(() => {
+      if (state === "idle" && !$("reveal").classList.contains("show") && document.visibilityState === "visible")
+        muatNama().catch(console.error);
+    }, 30000);
+
+    (async () => {
+      bina();
+      $("wheelMsg").hidden = false; $("wheelMsg").textContent = "Memuatkan nama…";
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      try { await muatNama(); bina(); }
+      catch (err) {
+        console.error(err);
+        $("wheelMsg").hidden = false;
+        $("wheelMsg").textContent = "Gagal memuatkan nama. Muat semula halaman.";
+      }
+    })();
+  })();
+  </script>
+</body>
+</html>
