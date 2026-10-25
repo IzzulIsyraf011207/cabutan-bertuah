@@ -108,7 +108,7 @@
     .wheel-col { display: flex; justify-content: center; padding-top: 14px; }
     .wheel { position: relative; width: min(100%, 540px); aspect-ratio: 1; container-type: inline-size; }
     @media (min-width: 1000px) { .wheel { width: min(100%, calc(100dvh - 210px), 740px); } }
-    @media (max-width: 999px) { .wheel { width: min(100%, 540px, max(260px, calc(100dvh - 400px))); } }
+    @media (max-width: 999px) { .wheel { width: min(100%, 540px); } }
     .wheel-halo {
       position: absolute; inset: -9%; border-radius: 50%;
       background: radial-gradient(circle, var(--acc-soft) 0%, rgba(242, 199, 92, .10) 45%, transparent 68%);
@@ -855,7 +855,7 @@
 
     function lukis() {
       const css = canvas.getBoundingClientRect().width || 300;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 3);
       const S = Math.round(css * dpr);
       canvas.width = S; canvas.height = S;
       const c = S / 2, r = S / 2;
@@ -910,7 +910,7 @@
       ctx.textAlign = "right"; ctx.textBaseline = "middle";
       ctx.fillStyle = "#fff";
       ctx.shadowColor = "rgba(0,0,0,.55)"; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
-      if (n <= LABEL_MAKS && fs >= 7 * dpr) {
+      if (n <= LABEL_MAKS) {   // nama sentiasa dipapar, walaupun roda kecil
         ctx.font = `700 ${fs}px 'Plus Jakarta Sans', sans-serif`;
         ctx.shadowBlur = fs * 0.2; ctx.shadowOffsetY = fs * 0.05;
         for (let i = 0; i < n; i++) {
