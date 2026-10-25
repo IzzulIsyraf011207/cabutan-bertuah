@@ -351,6 +351,16 @@
     }
     .up-input { width: 100%; min-height: 48px; padding: 0 14px; }
     .up-input:focus { outline: none; border-color: var(--gold-2); }
+    .pw-wrap { position: relative; }
+    .pw-wrap .up-input { padding-right: 56px; }
+    .mata {
+      position: absolute; top: 50%; right: 4px; transform: translateY(-50%);
+      width: 44px; height: 44px; display: grid; place-items: center;
+      border: 0; border-radius: 10px; background: none; color: var(--muted); cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mata:hover { color: #fff; background: rgba(255,255,255,.08); }
+    .mata svg { width: 22px; height: 22px; }
     .up-t { width: 100%; border-collapse: collapse; font-size: 14px; }
     .up-t th, .up-t td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; }
     .up-t th { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
@@ -545,7 +555,13 @@
         </div>
         <div class="up-sec">
           <label class="up-label" for="upPw" id="upPwLabel">Kata laluan upload</label>
-          <input class="up-input" id="upPw" type="password" autocomplete="current-password">
+          <div class="pw-wrap">
+            <input class="up-input" id="upPw" type="password" autocomplete="current-password">
+            <button class="mata" type="button" id="lihatPw" aria-label="Lihat kata laluan" aria-pressed="false" title="Lihat kata laluan">
+              <svg id="ikonBuka" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="ikonTutup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.4 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"/><path d="m2 2 20 20"/></svg>
+            </button>
+          </div>
           <div class="up-hint" id="upPwHint">Kata laluan yang dicipta semasa upload pertama.</div>
         </div>
         <div class="up-btns">
@@ -1166,6 +1182,7 @@
       $("upHasil").hidden = true;
       $("upMsg").textContent = "";
       $("upPw").value = kataLaluan;
+      tunjukPw(false);
       $("up").classList.add("show");
       try {
         const { data, error } = await sb.rpc("ada_kata_laluan");
@@ -1177,6 +1194,20 @@
         : "Upload pertama: cipta kata laluan baru (sekurang-kurangnya 4 aksara). Simpan kata laluan ini — ia diperlukan untuk upload seterusnya.";
     }
     const tutupUpload = () => $("up").classList.remove("show");
+
+    // Ikon mata: tunjuk / sembunyi kata laluan supaya boleh semak betul atau salah.
+    function tunjukPw(tunjuk) {
+      $("upPw").type = tunjuk ? "text" : "password";
+      $("ikonBuka").toggleAttribute("hidden", tunjuk);
+      $("ikonTutup").toggleAttribute("hidden", !tunjuk);
+      $("lihatPw").setAttribute("aria-pressed", String(tunjuk));
+      $("lihatPw").setAttribute("aria-label", tunjuk ? "Sembunyikan kata laluan" : "Lihat kata laluan");
+      $("lihatPw").title = tunjuk ? "Sembunyikan kata laluan" : "Lihat kata laluan";
+    }
+    $("lihatPw").addEventListener("click", () => {
+      tunjukPw($("upPw").type === "password");
+      $("upPw").focus();
+    });
     $("bukaUpload").onclick = bukaUpload;
     $("upTutup").onclick = tutupUpload;
     $("up").addEventListener("click", (e) => { if (e.target === $("up")) tutupUpload(); });
