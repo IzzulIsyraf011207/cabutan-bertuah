@@ -70,8 +70,13 @@ Baris pertama = tajuk lajur. Satu baris = satu murid.
 
 - Buka roda, pilih **LELAKI** atau **PEREMPUAN**, tekan **MULA**, kemudian **BERHENTI**.
 - Tab **Kelas**: legenda warna kelas + pilih kelas tertentu untuk cabutan dari kelas itu sahaja.
-- Pemenang dipilih rawak (kriptografi) dan dikeluarkan dari roda. Senarai pemenang disimpan dalam
-  pelayar peranti yang membuat cabutan. **Set semula** mengosongkan pemenang roda yang sedang dibuka sahaja.
+- Nama dalam roda disusun **secara rawak dan selang-seli kelas** (bukan berkumpul satu kelas, satu kelas).
+  Warna segmen tetap menunjukkan kelas.
+- Pemenang dipilih rawak (kriptografi). Selepas menang, tekan **✓ Kekalkan dalam roda** atau
+  **🗑️ Buang dari roda** — nama tidak dipadam secara automatik. Status boleh ditukar kemudian di tab
+  **Menang** (tekan "Dibuang" / "Dalam roda").
+- Senarai pemenang disimpan dalam pelayar peranti yang membuat cabutan. **Set semula** mengosongkan
+  pemenang roda yang sedang dibuka sahaja.
 - Nama yang diimport semasa roda dibuka akan masuk secara automatik (setiap 30 saat).
 - Papan kekunci: `Space` = mula/berhenti. ⛶ = skrin penuh.
 

@@ -292,7 +292,16 @@
     }
     .win-card .kchip { font-size: 16px; padding: 6px 16px; }
     .win-card .wsub { margin-top: 12px; font-size: 13px; color: var(--muted); }
-    .win-card .btn-row { display: grid; gap: 10px; margin-top: 22px; }
+    .win-card .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
+    .win-card .btn-row .btn { min-height: 58px; font-size: 16px; padding: 0 10px; }
+    @media (max-width: 420px) { .win-card .btn-row { grid-template-columns: 1fr; } }
+    .btn-kekal { color: #fff; background: linear-gradient(180deg, #22c55e, #15803d); box-shadow: 0 10px 24px -10px rgba(34,197,94,.8); }
+    .btn-buang { color: #fff; background: linear-gradient(180deg, #ef4444, #b91c1c); box-shadow: 0 10px 24px -10px rgba(239,68,68,.8); }
+    .btn-kekal:hover, .btn-buang:hover { filter: brightness(1.08); }
+    .list .st { font-size: 11px; font-weight: 800; white-space: nowrap; border: 0; border-radius: 999px; padding: 4px 9px; cursor: pointer; }
+    .list .st.kekal { background: rgba(34,197,94,.18); color: #86efac; }
+    .list .st.buang { background: rgba(239,68,68,.18); color: #fca5a5; }
+    .list li.menang4 { grid-template-columns: auto 1fr auto auto; }
 
     /* ---------- Upload Excel ---------- */
     .up-btn {
@@ -485,7 +494,7 @@
             <button class="text-btn" id="tunjukLagi" hidden style="display:block;margin:10px auto 0">Tunjuk lagi</button>
           </div>
           <div class="panel-foot">
-            <span>Rawak &amp; adil · setiap nama menang sekali sahaja</span>
+            <span>Susunan rawak · pemenang boleh dikekal atau dibuang</span>
             <button class="text-btn" id="reset">Set semula</button>
           </div>
         </div>
@@ -502,9 +511,10 @@
       <div class="k2" id="wKe">Pemenang</div>
       <div class="wnm" id="wNama"></div>
       <div id="wKelas"></div>
-      <div class="wsub">Nama ini telah dikeluarkan dari roda.</div>
+      <div class="wsub">Nama ini mahu dikekalkan atau dibuang dari roda?</div>
       <div class="btn-row">
-        <button class="btn btn-gold btn-block" id="teruskan" style="min-height:56px;font-size:17px">Teruskan Cabutan</button>
+        <button class="btn btn-block btn-kekal" id="kekal">✓ Kekalkan dalam roda</button>
+        <button class="btn btn-block btn-buang" id="buang">🗑️ Buang dari roda</button>
       </div>
     </div>
   </div>
@@ -602,8 +612,8 @@
 
     // ================= Data =================
     let semua = [];          // { id, nama, jantina, kelas }
-    let pemenang = [];       // { id, nama, kelas, jantina, masa } – disimpan di peranti ini
-    let roda = [];           // nama yang belum menang dalam roda semasa (ikut jantina & kelas)
+    let pemenang = [];       // { id, nama, kelas, jantina, masa, buang } – disimpan di peranti ini
+    let roda = [];           // nama dalam roda semasa (ikut jantina & kelas), susunan rawak
     let warnaKelas = new Map();
     let jantina = "L";
     const kelasPilih = { L: null, P: null };   // null = semua kelas
@@ -614,7 +624,57 @@
 
     const warna = (kelas) => PALET[(warnaKelas.get(kelas) ?? 0) % PALET.length];
     const chipKelas = (kelas) => `<span class="kchip"><i style="background:${warna(kelas)[1]}"></i>${esc(kelas)}</span>`;
-    const sudahMenang = () => new Set(pemenang.map((w) => w.id));
+    // Nama yang dibuang dari roda. buang: true = dibuang, false = dikekalkan, null = belum dipilih.
+    // Rekod lama (tiada medan buang) dikira sudah dibuang seperti sebelum ini.
+    const sudahMenang = () => new Set(pemenang.filter((w) => w.buang === true || w.buang === undefined).map((w) => w.id));
+    const pernahMenang = () => new Set(pemenang.map((w) => w.id));
+
+    // ================= Susunan rawak =================
+    // Nama disusun secara rawak dan selang-seli kelas (bukan satu kelas, satu kelas).
+    // Benih rawak tetap sepanjang halaman dibuka supaya roda tidak bertukar susunan setiap kali dilukis.
+    const BENIH = crypto.getRandomValues(new Uint32Array(1))[0];
+    function prng(seed) {
+      let a = seed >>> 0;
+      return () => {
+        a = (a + 0x6D2B79F5) >>> 0;
+        let t = a;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    function kocok(arr, r) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(r() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+    function susunRawak(senarai) {
+      const r = prng(BENIH ^ senarai.length);
+      const kump = new Map();
+      [...senarai].sort((a, b) => a.id - b.id).forEach((m) => {
+        if (!kump.has(m.kelas)) kump.set(m.kelas, []);
+        kump.get(m.kelas).push(m);
+      });
+      kump.forEach((g) => kocok(g, r));
+      const out = [];
+      let lepas = null, baki = senarai.length;
+      while (baki > 0) {
+        const ada = [...kump.entries()].filter(([, g]) => g.length);
+        // Kelas yang terlalu ramai mesti diambil dahulu supaya tidak berkumpul di hujung roda.
+        const wajib = ada.find(([, g]) => g.length > (baki + 1) / 2);
+        let calon = wajib ? [wajib] : ada.filter(([k]) => k !== lepas);
+        if (!calon.length) calon = ada;
+        // Pilih kelas secara rawak, berwajaran ikut baki nama dalam kelas itu.
+        let x = r() * calon.reduce((t, [, g]) => t + g.length, 0), pilih = calon[0];
+        for (const c of calon) { x -= c[1].length; if (x < 0) { pilih = c; break; } }
+        out.push(pilih[1].pop());
+        lepas = pilih[0];
+        baki--;
+      }
+      return out;
+    }
 
     let modLokal = false;    // true: nama dari Excel dipapar di peranti ini sahaja (tidak disimpan)
 
@@ -641,9 +701,7 @@
       const kelasAda = new Set(senarai.map((m) => m.kelas));
       if (kelasPilih[jantina] && !kelasAda.has(kelasPilih[jantina])) kelasPilih[jantina] = null;
       const kp = kelasPilih[jantina];
-      roda = senarai
-        .filter((m) => !won.has(m.id) && (!kp || m.kelas === kp))
-        .sort((a, b) => bandingKelas(a.kelas, b.kelas) || a.nama.localeCompare(b.nama, "ms"));
+      roda = susunRawak(senarai.filter((m) => !won.has(m.id) && (!kp || m.kelas === kp)));
 
       document.body.classList.toggle("g-L", jantina === "L");
       document.body.classList.toggle("g-P", jantina === "P");
@@ -659,7 +717,7 @@
       const msg = $("wheelMsg");
       if (!semua.length) { msg.hidden = false; msg.textContent = "Belum ada nama. Tekan Upload Excel di atas."; }
       else if (!senarai.length) { msg.hidden = false; msg.textContent = `Tiada nama ${LABEL_J[jantina].toLowerCase()}`; }
-      else if (!roda.length) { msg.hidden = false; msg.textContent = kp ? `Semua nama ${kp} sudah menang` : "Semua nama sudah menang"; }
+      else if (!roda.length) { msg.hidden = false; msg.textContent = kp ? `Semua nama ${kp} sudah dibuang dari roda` : "Semua nama sudah dibuang dari roda"; }
       else msg.hidden = true;
 
       kemasButang();
@@ -699,22 +757,37 @@
     function senaraiPemenang() {
       const senarai = pemenang.filter((w) => w.jantina === jantina);
       $("tiadaMenang").hidden = senarai.length > 0;
-      $("senaraiMenang").innerHTML = senarai.map((w, i) => `
-        <li><span class="rank">${i + 1}</span><span class="nm">${esc(w.nama)}</span><span class="kl">${esc(w.kelas)}</span></li>`
-      ).reverse().join("");
+      $("senaraiMenang").innerHTML = senarai.map((w, i) => {
+        const dibuang = w.buang !== false;
+        return `
+        <li class="menang4 ${dibuang ? "won" : ""}"><span class="rank">${i + 1}</span><span class="nm">${esc(w.nama)}</span><span class="kl">${esc(w.kelas)}</span>
+          <button class="st ${dibuang ? "buang" : "kekal"}" data-masa="${esc(w.masa)}"
+            title="${dibuang ? "Tekan untuk masukkan semula ke roda" : "Tekan untuk buang dari roda"}">${dibuang ? "🗑️ Dibuang" : "✓ Dalam roda"}</button></li>`;
+      }).reverse().join("");
     }
+    // Tukar status pemenang kemudian: masukkan semula ke roda atau buang.
+    $("senaraiMenang").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-masa]");
+      if (!b || state !== "idle" || $("reveal").classList.contains("show")) return;
+      const w = pemenang.find((x) => x.masa === b.dataset.masa);
+      if (!w) return;
+      w.buang = w.buang === false;
+      simpanPemenang();
+      bina();
+      toast(w.buang ? `${w.nama} dibuang dari roda.` : `${w.nama} dimasukkan semula ke roda.`);
+    });
 
     const SAIZ_HALAMAN = 300;
     let hadPapar = SAIZ_HALAMAN;
     function senaraiNama() {
       const q = $("cari").value.trim().toLowerCase();
-      const won = sudahMenang();
+      const won = sudahMenang(), menang = pernahMenang();
       const padan = namaJantina(jantina)
         .filter((m) => !q || m.nama.toLowerCase().includes(q) || m.kelas.toLowerCase().includes(q))
         .sort((a, b) => bandingKelas(a.kelas, b.kelas) || a.nama.localeCompare(b.nama, "ms"));
       $("senaraiNama").innerHTML = padan.slice(0, hadPapar).map((m) => `
         <li class="${won.has(m.id) ? "won" : ""}"><i class="dot" style="background:${warna(m.kelas)[1]}"></i>
-        <span class="nm">${won.has(m.id) ? "🏆 " : ""}${esc(m.nama)}</span><span class="kl">${esc(m.kelas)}</span></li>`).join("");
+        <span class="nm">${menang.has(m.id) ? "🏆 " : ""}${esc(m.nama)}</span><span class="kl">${esc(m.kelas)}</span></li>`).join("");
       const e = $("tiadaNama");
       e.hidden = padan.length > 0;
       e.textContent = namaJantina(jantina).length ? "Tiada padanan." : "Belum ada nama.";
@@ -815,20 +888,12 @@
         }
       }
 
-      // Garisan pemisah nama (halus) dan pemisah kelas (emas tebal)
+      // Garisan pemisah nama
       if (!banyak && n > 1 && n <= LABEL_MAKS) {
-        ctx.strokeStyle = "rgba(255, 255, 255, .18)";
+        ctx.strokeStyle = "rgba(255, 255, 255, .28)";
         ctx.lineWidth = Math.max(1, S / 1400);
         for (let i = 0; i < n; i++) {
           const a = -Math.PI / 2 + i * s;
-          ctx.beginPath(); ctx.moveTo(c, c); ctx.lineTo(c + Math.cos(a) * r, c + Math.sin(a) * r); ctx.stroke();
-        }
-      }
-      if (kump.length > 1) {
-        ctx.strokeStyle = "rgba(242, 199, 92, .95)";
-        ctx.lineWidth = Math.max(2, S / 260);
-        for (const g of kump) {
-          const a = -Math.PI / 2 + g.dari * s;
           ctx.beginPath(); ctx.moveTo(c, c); ctx.lineTo(c + Math.cos(a) * r, c + Math.sin(a) * r); ctx.stroke();
         }
       }
@@ -993,7 +1058,7 @@
       state = "idle"; laju = 0;
       document.body.classList.remove("berpusing");
       document.body.classList.add("menang");
-      pemenang.push({ id: m.id, nama: m.nama, kelas: m.kelas, jantina: m.jantina, masa: new Date().toISOString() });
+      pemenang.push({ id: m.id, nama: m.nama, kelas: m.kelas, jantina: m.jantina, masa: new Date().toISOString(), buang: null });
       simpanPemenang();
       const ke = pemenang.filter((w) => w.jantina === m.jantina).length;
       setTimeout(() => umumkan(m, ke), 650);
@@ -1015,7 +1080,7 @@
       if (e.target.tagName === "INPUT") return;
       if ($("up").classList.contains("show")) { if (e.key === "Escape") tutupUpload(); return; }
       if ($("reveal").classList.contains("show")) {
-        if (e.key === "Enter" || e.code === "Space" || e.key === "Escape") { e.preventDefault(); tutupReveal(); }
+        if (e.code === "Space" || e.key === "Enter") e.preventDefault();   // mesti pilih Kekalkan atau Buang
         return;
       }
       if (e.code === "Space" || e.key === "Enter") { e.preventDefault(); state === "idle" ? mula() : henti(); }
@@ -1041,23 +1106,27 @@
           if (Date.now() < end) requestAnimationFrame(f);
         })();
       }
-      setTimeout(() => $("teruskan").focus(), 300);
+      setTimeout(() => $("kekal").focus(), 300);
     }
 
-    function tutupReveal() {
+    function tutupReveal(buang) {
+      const w = pemenang[pemenang.length - 1];
+      if (w && w.buang === null) { w.buang = buang; simpanPemenang(); }
       $("reveal").classList.remove("show");
       document.body.classList.remove("menang");
       $("tickerK").textContent = "Nama";
       $("hint").textContent = "Tekan MULA untuk cabutan seterusnya.";
       bina();
+      toast(buang ? `${w.nama} dibuang dari roda.` : `${w.nama} dikekalkan dalam roda.`);
     }
-    $("teruskan").onclick = tutupReveal;
+    $("kekal").onclick = () => tutupReveal(false);
+    $("buang").onclick = () => tutupReveal(true);
 
     $("reset").onclick = () => {
       if (state !== "idle") return;
       const ada = pemenang.filter((w) => w.jantina === jantina).length;
       if (!ada) return toast("Tiada pemenang untuk diset semula.");
-      if (!confirm(`Set semula pemenang roda ${LABEL_J[jantina].toLowerCase()}? Semua nama akan dimasukkan semula ke dalam roda.`)) return;
+      if (!confirm(`Set semula pemenang roda ${LABEL_J[jantina].toLowerCase()}? Semua nama yang dibuang akan dimasukkan semula ke dalam roda.`)) return;
       pemenang = pemenang.filter((w) => w.jantina !== jantina);
       simpanPemenang();
       bina();
