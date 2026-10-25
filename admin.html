@@ -27,6 +27,16 @@
     .topbar .btn-ghost:hover { background: rgba(255,255,255,.1); }
 
     .login { max-width: 420px; margin: 48px auto; }
+    .pw-wrap { position: relative; }
+    .pw-wrap .input { padding-right: 56px; }
+    .mata {
+      position: absolute; top: 50%; right: 6px; transform: translateY(-50%);
+      width: 44px; height: 44px; display: grid; place-items: center;
+      border: 0; border-radius: 10px; background: none; color: var(--muted); cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mata:hover { color: var(--ink); background: var(--line); }
+    .mata svg { width: 22px; height: 22px; }
 
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
     .stat {
@@ -160,7 +170,13 @@
       </div>
       <div class="field">
         <label for="kataLaluan">Kata Laluan</label>
-        <input class="input" id="kataLaluan" type="password" autocomplete="current-password" required>
+        <div class="pw-wrap">
+          <input class="input" id="kataLaluan" type="password" autocomplete="current-password" required>
+          <button class="mata" type="button" id="lihatPw" aria-label="Lihat kata laluan" aria-pressed="false" title="Lihat kata laluan">
+            <svg id="ikonBuka" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg id="ikonTutup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.4 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"/><path d="m2 2 20 20"/></svg>
+          </button>
+        </div>
       </div>
       <button class="btn btn-primary btn-block" id="btnLogin" type="submit">Log Masuk</button>
     </form>
@@ -258,6 +274,18 @@
       papar("viewAdmin");
       muat();
     }
+
+    $("lihatPw").addEventListener("click", () => {
+      const pw = $("kataLaluan");
+      const tunjuk = pw.type === "password";
+      pw.type = tunjuk ? "text" : "password";
+      $("ikonBuka").toggleAttribute("hidden", tunjuk);
+      $("ikonTutup").toggleAttribute("hidden", !tunjuk);
+      $("lihatPw").setAttribute("aria-pressed", String(tunjuk));
+      $("lihatPw").setAttribute("aria-label", tunjuk ? "Sembunyikan kata laluan" : "Lihat kata laluan");
+      $("lihatPw").title = tunjuk ? "Sembunyikan kata laluan" : "Lihat kata laluan";
+      pw.focus();
+    });
 
     $("borangLogin").addEventListener("submit", async (e) => {
       e.preventDefault();
