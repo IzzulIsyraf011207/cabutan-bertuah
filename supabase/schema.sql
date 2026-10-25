@@ -80,9 +80,8 @@ declare
   v_nama text := regexp_replace(btrim(coalesce(p_nama, '')), '\s+', ' ', 'g');
   v_alamat text := btrim(coalesce(p_alamat, ''));
   v_jumlah bigint;
-  v_min int;
-  v_max int;
-  v_digit int;
+  v_min bigint := 1000;
+  v_max bigint := 9999;
   v_nombor text;
   v_cubaan int := 0;
 begin
@@ -102,19 +101,17 @@ begin
     raise exception 'IC_SUDAH_DAFTAR' using errcode = 'P0001';
   end if;
 
-  -- 4 digit (1000-9999); naik ke 5/6 digit bila peserta makin ramai.
+  -- Tiada had peserta: mula 4 digit, tambah 1 digit setiap kali julat 60% penuh
+  -- (4 digit ~5,400 peserta, 5 digit ~54,000, 6 digit ~540,000, dan seterusnya).
   select count(*) into v_jumlah from public.peserta;
-  if v_jumlah < 6000 then
-    v_min := 1000; v_max := 9999; v_digit := 4;
-  elsif v_jumlah < 60000 then
-    v_min := 10000; v_max := 99999; v_digit := 5;
-  else
-    v_min := 100000; v_max := 999999; v_digit := 6;
-  end if;
+  while v_jumlah >= (v_max - v_min + 1) * 6 / 10 loop
+    v_min := v_min * 10;
+    v_max := v_max * 10 + 9;
+  end loop;
 
   loop
     v_cubaan := v_cubaan + 1;
-    v_nombor := lpad((v_min + floor(random() * (v_max - v_min + 1)))::int::text, v_digit, '0');
+    v_nombor := (v_min + floor(random() * (v_max - v_min + 1))::bigint)::text;
     begin
       return query
         insert into public.peserta as p (nombor_bertuah, nama, no_ic, no_telefon, alamat)
@@ -127,7 +124,10 @@ begin
         raise exception 'IC_SUDAH_DAFTAR' using errcode = 'P0001';
       end if;
       if v_cubaan >= 50 then
-        raise exception 'GAGAL_JANA_NOMBOR' using errcode = 'P0001';
+        -- Sangat jarang: naik satu digit dan cuba lagi daripada gagal.
+        v_min := v_min * 10;
+        v_max := v_max * 10 + 9;
+        v_cubaan := 0;
       end if;
     end;
   end loop;

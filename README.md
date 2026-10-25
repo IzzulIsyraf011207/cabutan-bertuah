@@ -46,8 +46,9 @@ Boleh juga guna Vercel, Cloudflare Pages atau mana-mana hosting fail statik.
 ## 3. Cara guna semasa acara
 
 - Kongsi link borang (atau buat QR code) kepada orang ramai.
-- Setiap No. IC hanya boleh daftar **sekali**. Nombor bertuah dijana secara rawak
-  di server (4 digit, unik).
+- **Tiada had bilangan peserta.** Setiap No. IC hanya boleh daftar **sekali**. Nombor bertuah
+  dijana secara rawak di server dan unik: bermula 4 digit, dan bertambah digit secara automatik
+  bila peserta makin ramai (5 digit selepas ~5,400 peserta, 6 digit selepas ~54,000, dan seterusnya).
 - Hari cabutan: buka `cabutan.html` terus, tiada log masuk.
   Tekan ⛶ untuk skrin penuh (sesuai untuk projektor/TV).
   1. Tekan **MULA** (atau butang tengah roda). Roda berpusing dengan bunyi tik.

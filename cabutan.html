@@ -401,6 +401,7 @@
             <input class="search" id="cari" type="search" placeholder="Cari nombor atau nama…">
             <ul class="list" id="senaraiPeserta"></ul>
             <div class="empty" id="tiadaPeserta" hidden></div>
+            <button class="text-btn" id="tunjukLagi" hidden style="display:block;margin:10px auto 0">Tunjuk lagi</button>
           </div>
           <div class="panel-foot">
             <span>Rawak &amp; adil · setiap nombor menang sekali sahaja</span>
@@ -465,7 +466,7 @@
     function bina() {
       const sudahMenang = new Set(pemenang.map((w) => w.nombor));
       roda = peserta.filter((p) => !sudahMenang.has(p.nombor_bertuah));
-      $("cPeserta").textContent = peserta.length;
+      $("cPeserta").textContent = peserta.length.toLocaleString("ms-MY");
       $("cMenang").textContent = pemenang.length;
       const msg = $("wheelMsg");
       if (!peserta.length) { msg.hidden = false; msg.textContent = "Belum ada peserta"; }
@@ -485,20 +486,25 @@
       ).reverse().join("");
     }
 
+    // Senarai peserta tanpa had: dipapar berperingkat supaya kekal laju walau beribu-ribu peserta.
+    const SAIZ_HALAMAN = 300;
+    let hadPapar = SAIZ_HALAMAN;
     function senaraiPeserta() {
       const q = $("cari").value.trim().toLowerCase();
       const won = new Set(pemenang.map((w) => w.nombor));
       const padan = peserta.filter((p) => !q || p.nombor_bertuah.includes(q) || p.nama.toLowerCase().includes(q));
-      const tunjuk = padan.slice(0, 400);
-      $("senaraiPeserta").innerHTML = tunjuk.map((p) => `
+      $("senaraiPeserta").innerHTML = padan.slice(0, hadPapar).map((p) => `
         <li class="${won.has(p.nombor_bertuah) ? "won" : ""}"><span class="no">${esc(p.nombor_bertuah)}</span>
         <span class="nm">${esc(p.nama)}</span><span class="tag">${won.has(p.nombor_bertuah) ? "🏆 MENANG" : ""}</span></li>`).join("");
       const e = $("tiadaPeserta");
-      e.hidden = padan.length > 0 && padan.length <= 400;
-      e.textContent = !peserta.length ? "Belum ada peserta." : !padan.length ? "Tiada padanan."
-        : `Memaparkan 400 daripada ${padan.length}. Guna carian untuk nombor lain.`;
+      e.hidden = padan.length > 0;
+      e.textContent = peserta.length ? "Tiada padanan." : "Belum ada peserta.";
+      const baki = padan.length - hadPapar;
+      $("tunjukLagi").hidden = baki <= 0;
+      $("tunjukLagi").textContent = `Tunjuk lagi (${baki.toLocaleString("ms-MY")} lagi)`;
     }
-    $("cari").addEventListener("input", senaraiPeserta);
+    $("tunjukLagi").onclick = () => { hadPapar += SAIZ_HALAMAN; senaraiPeserta(); };
+    $("cari").addEventListener("input", () => { hadPapar = SAIZ_HALAMAN; senaraiPeserta(); });
 
     document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => {
       document.querySelectorAll("[data-tab]").forEach((x) => x.classList.toggle("on", x === b));
@@ -528,6 +534,7 @@
       { a: "#0b3f31", b: "#062a20", t: "#f6dc96" },
       { a: "#fdf0cf", b: "#eed8a0", t: "#3a2700" },
     ];
+    const LABEL_MAKS = 160;
     const warnaKe = (i, n) => (n > 1 && i === n - 1 && i % 4 === 0 ? 2 : i % 4);
 
     function lukis() {
@@ -546,22 +553,27 @@
         return;
       }
 
-      const s = TAU / n;
-      for (let i = 0; i < n; i++) {
-        const w = WARNA[warnaKe(i, n)];
-        const a0 = -Math.PI / 2 + i * s;
+      // Peserta terlalu ramai untuk dilabel satu-satu: roda dilukis 32 warna sebagai hiasan,
+      // tetapi pemilihan tetap merangkumi SEMUA nombor (lihat idxDiPenunjuk / mulaPerlahan).
+      const hiasan = n > LABEL_MAKS;
+      const nv = hiasan ? 32 : n;
+      const sv = TAU / nv;
+      for (let i = 0; i < nv; i++) {
+        const w = WARNA[warnaKe(i, nv)];
+        const a0 = -Math.PI / 2 + i * sv;
         const g = ctx.createRadialGradient(c, c, r * 0.15, c, c, r);
         g.addColorStop(0, w.b); g.addColorStop(0.55, w.a); g.addColorStop(1, w.b);
-        ctx.beginPath(); ctx.moveTo(c, c); ctx.arc(c, c, r, a0, a0 + s); ctx.closePath();
+        ctx.beginPath(); ctx.moveTo(c, c); ctx.arc(c, c, r, a0, a0 + sv); ctx.closePath();
         ctx.fillStyle = g; ctx.fill();
       }
+      const s = TAU / n;
 
       // Garisan emas pemisah
-      if (n > 1 && n <= 240) {
+      if (nv > 1) {
         ctx.strokeStyle = "rgba(242, 199, 92, .75)";
-        ctx.lineWidth = Math.max(1, S / (n > 80 ? 1400 : 700));
-        for (let i = 0; i < n; i++) {
-          const a = -Math.PI / 2 + i * s;
+        ctx.lineWidth = Math.max(1, S / (nv > 80 ? 1400 : 700));
+        for (let i = 0; i < nv; i++) {
+          const a = -Math.PI / 2 + i * sv;
           ctx.beginPath(); ctx.moveTo(c, c); ctx.lineTo(c + Math.cos(a) * r, c + Math.sin(a) * r); ctx.stroke();
         }
       }
@@ -575,7 +587,7 @@
       // Label nombor
       const lengkok = s * r * 0.8;
       const fs = Math.min(r * 0.105, lengkok * 0.66);
-      if (fs >= 8.5 * dpr) {
+      if (!hiasan && fs >= 8.5 * dpr) {
         ctx.font = `800 ${fs}px 'Plus Jakarta Sans', sans-serif`;
         ctx.textAlign = "right"; ctx.textBaseline = "middle";
         for (let i = 0; i < n; i++) {
@@ -592,10 +604,10 @@
       }
 
       // Pin emas di hujung setiap segmen
-      if (n > 1 && n <= 120) {
-        const pr = Math.max(2.2 * dpr, Math.min(r * 0.018, s * r * 0.12));
-        for (let i = 0; i < n; i++) {
-          const a = -Math.PI / 2 + i * s;
+      if (nv > 1 && nv <= 120) {
+        const pr = Math.max(2.2 * dpr, Math.min(r * 0.018, sv * r * 0.12));
+        for (let i = 0; i < nv; i++) {
+          const a = -Math.PI / 2 + i * sv;
           const x = c + Math.cos(a) * r * 0.955, y = c + Math.sin(a) * r * 0.955;
           const g = ctx.createRadialGradient(x - pr * .3, y - pr * .3, 0, x, y, pr);
           g.addColorStop(0, "#fff6d8"); g.addColorStop(.6, "#e9b545"); g.addColorStop(1, "#7d5410");
@@ -631,14 +643,19 @@
       return Math.min(n - 1, Math.floor(local / (TAU / n)));
     }
 
+    let pinLepas = -1;
     function kemasTicker(paksa) {
       const i = idxDiPenunjuk(sudut);
-      if (i === idxLepas && !paksa) return;
-      if (i !== idxLepas && state !== "idle" && idxLepas !== -1) {
+      // Bunyi & goyangan penunjuk ikut pin yang kelihatan pada roda.
+      const n = roda.length, nv = n > LABEL_MAKS ? 32 : n;
+      const pin = nv ? Math.floor((((-sudut % TAU) + TAU) % TAU) / (TAU / nv)) : -1;
+      if (pin !== pinLepas && state !== "idle" && pinLepas !== -1) {
         bunyiTik(laju / V_MAX);
         const p = $("pointer");
         p.classList.remove("tik"); void p.offsetWidth; p.classList.add("tik");
       }
+      pinLepas = pin;
+      if (i === idxLepas && !paksa) return;
       idxLepas = i;
       if (i < 0) { $("ticker").textContent = "----"; $("tickerNama").innerHTML = "&nbsp;"; return; }
       $("ticker").textContent = roda[i].nombor_bertuah;
