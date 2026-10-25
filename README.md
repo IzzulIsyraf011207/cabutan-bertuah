@@ -61,6 +61,20 @@ Boleh juga guna Vercel, Cloudflare Pages atau mana-mana hosting fail statik.
 - Peserta baru yang daftar semasa acara akan masuk ke roda secara automatik (setiap 15 saat).
 - Papan kekunci: `Space` = mula/berhenti.
 
+## Supaya Supabase tidak berhenti (plan percuma)
+
+Supabase menghentikan projek percuma selepas 7 hari tiada aktiviti. Repo ini ada
+GitHub Actions `.github/workflows/supabase-keep-alive.yml` yang ping database setiap
+3 hari secara automatik, jadi projek kekal aktif tanpa perlu dibuka.
+
+- Semak di tab **Actions** repo: setiap larian patut bertanda ✅.
+- GitHub mematikan jadual automatik jika repo tiada sebarang commit selama 60 hari.
+  GitHub akan hantar emel amaran. Tekan **Enable workflow** di tab Actions (atau buat
+  apa-apa commit) untuk sambung semula.
+- Jika projek tetap dihentikan: buka dashboard Supabase → projek **Cabutan Bertuah** →
+  **Restore project**. Data tidak hilang.
+- Cara paling pasti: naik taraf projek ke plan Pro (projek tidak akan dihentikan).
+
 ## Cetak dari Supabase terus
 
 Selain butang cetak di `admin.html`, dalam Supabase buka **Table Editor → senarai_cetak**
