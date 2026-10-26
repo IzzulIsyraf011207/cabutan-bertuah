@@ -1,8 +1,8 @@
 # Analisis Gaya Video AI — @brandlogistics (TikTok)
 
 Tarikh analisis: Isnin, 26 Oktober 2026 (waktu Malaysia)
-Salinan yang sama disimpan dalam 5 repo: MUSIC-VIDEO, Video-Claude, Video-Infografik,
-cabutan-bertuah dan pekayapahang. Tools yang disebut (HyperFrames, `ctc_align.py`) ada dalam MUSIC-VIDEO.
+Salinan yang sama disimpan dalam setiap repo GitHub ustaz. Tools yang disebut
+(HyperFrames, `ctc_align.py`) ada dalam repo MUSIC-VIDEO.
 
 Sumber: 9 video yang ustaz beri, dimuat turun dan dilihat frame demi frame (1 frame/saat),
 serta data dari halaman setiap video (caption, tarikh, tontonan, like, save, share).

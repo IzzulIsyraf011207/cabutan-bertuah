@@ -38,9 +38,12 @@ merancang. Teknik dirujuk dengan kod **T1–T14** dalam dokumen itu. Bahagian 5
 3. **Buat projek HyperFrames** dalam repo semasa, di folder
    `video-ai/<YYYY-MM-DD>-<slug>/`:
    ```
-   npx --yes hyperframes@0.8.205 init hf --video <klip> --resolution portrait --model small --language ms --non-interactive
+   npx --yes hyperframes@0.8.201 init hf --video <klip> --resolution portrait --model small --language ms --non-interactive
    ```
-   (Projek nasyid pergi ke repo MUSIC-VIDEO, ikut struktur projek lagu yang sedia ada.)
+   Guna versi HyperFrames yang sama dengan projek sedia ada dalam MUSIC-VIDEO
+   (sekarang 0.8.201). Jangan naik taraf atau ubah projek, skill dan tools sedia ada
+   kecuali ustaz minta. (Projek nasyid pergi ke repo MUSIC-VIDEO sebagai folder baru,
+   ikut struktur projek lagu yang sedia ada.)
    Selepas init, ikut `hf/CLAUDE.md` dan guna skill HyperFrames yang dipasang:
    `/hyperframes` (kontrak + aliran kerja), `/hyperframes-registry` (cari blok siap
    dulu sebelum bina sendiri), `/media-use` (transkrip, cutout untuk T5, sound effect,
