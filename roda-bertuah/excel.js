@@ -184,7 +184,7 @@ window.RodaExcel = (function () {
   const namaBapa = (n) => (n.match(/\s(?:BINTI|BINTE|BIN|BTE|BT\.?|B\.|B|A\s*\/\s*L|A\s*\/\s*P)\s+(\S+)/i) || [])[1];
   function namaRoda(senarai) {
     const kira = new Map();
-    const kunci = (m) => `${m.jantina}|${m.kelas}|${namaPendek(m.nama).toUpperCase()}`;
+    const kunci = (m) => `${m.kelas}|${namaPendek(m.nama).toUpperCase()}`;
     senarai.forEach((m) => kira.set(kunci(m), (kira.get(kunci(m)) || 0) + 1));
     return senarai.map((m) => {
       const p = namaPendek(m.nama), b = namaBapa(m.nama);

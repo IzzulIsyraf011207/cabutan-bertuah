@@ -93,7 +93,7 @@
     .btn-danger-solid { background: var(--danger); color: #fff; }
     .cb { width: 20px; height: 20px; margin: 0; accent-color: var(--danger); cursor: pointer; vertical-align: middle; }
     tr.dipilih td { background: var(--danger-soft); }
-    .badge-j { display: inline-block; min-width: 26px; text-align: center; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 800; color: #fff; }
+    .badge-j { display: inline-block; min-width: 26px; text-align: center; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 800; color: #fff; background: #94a3b8; }
     .badge-j.L { background: #2563eb; } .badge-j.P { background: #db2777; }
     .tambah { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; margin-top: 14px; }
     .tambah .input { min-height: 46px; padding: 10px 12px; }
@@ -256,7 +256,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="config.js?v=20261025a"></script>
-  <script src="excel.js?v=20261025b"></script>
+  <script src="excel.js?v=20261026a"></script>
   <script>
   (function () {
     const C = window.RODA_CONFIG;
@@ -451,7 +451,7 @@
 
     function renderCalon() {
       const tiada = calon.map((r, i) => [r, i]).filter(([r]) => !r.jantina || r.manual);
-      $("semak").hidden = tiada.length === 0;
+      $("semak").hidden = true;
       $("semakBody").innerHTML = tiada.map(([r, i]) => `
         <tr><td>${esc(r.nama)}</td><td>${esc(r.kelas)}</td>
         <td><select class="sel" data-i="${i}"><option value="">— pilih —</option>
@@ -468,7 +468,7 @@
         const v = kira.get(k); jum.L += v.L; jum.P += v.P; jum.X += v.X;
         return `<tr><td><b>${esc(k)}</b></td><td class="n lc">${v.L}</td><td class="n pc">${v.P}</td><td class="n">${v.L + v.P + v.X}${v.X ? ` <small class="warn" style="color:var(--danger)">(${v.X} belum)</small>` : ""}</td></tr>`;
       }).join("") + `<tr><td><b>JUMLAH (${ks.length} kelas)</b></td><td class="n lc">${jum.L}</td><td class="n pc">${jum.P}</td><td class="n">${jum.L + jum.P + jum.X}</td></tr>`;
-      const belum = calon.filter((r) => !r.jantina).length;
+      const belum = 0;   // satu roda: jantina tidak wajib
       $("simpanImport").disabled = !calon.length || belum > 0;
       $("simpanImport").textContent = belum ? `Pilih jantina untuk ${belum} nama dahulu` : `💾 Simpan ${calon.length} Nama ke Roda`;
     }

@@ -5,7 +5,7 @@ Data disimpan dalam projek Supabase baharu **Roda Bertuah** (`pieguphzlymuajyzpn
 
 | Fail | Untuk siapa | Fungsi |
 |---|---|---|
-| `roda-bertuah/index.html` | Sesiapa (tanpa log masuk) | Dua roda: **👦 Lelaki** dan **👧 Perempuan**. Setiap roda mengandungi nama dari **semua kelas**, setiap kelas satu warna dan berkumpul bersebelahan. Boleh pilih **Semua Kelas** atau satu kelas sahaja. |
+| `roda-bertuah/index.html` | Sesiapa (tanpa log masuk) | **Satu roda**: semua nama (lelaki & perempuan, semua kelas) bercampur dalam **susunan rawak**. Boleh pilih **Semua Kelas** atau satu kelas sahaja. |
 | `roda-bertuah/admin.html` | Admin sahaja | Import fail Excel (banyak fail sekali gus), semak sebelum simpan, senarai nama, padam, tambah satu nama, muat turun templat & eksport Excel. |
 | `roda-bertuah/excel.js` | — | Pembaca Excel (.xlsx/.xls/.csv) yang dikongsi oleh roda dan admin. |
 | `roda-bertuah/config.js` | — | URL & kunci publishable projek Roda Bertuah. |
@@ -75,10 +75,10 @@ ia tidak berubah di projek yang lain.
 
 ## Cara guna semasa acara
 
-- Buka roda, pilih **LELAKI** atau **PEREMPUAN**, tekan **MULA**, kemudian **BERHENTI**.
+- Buka roda, tekan **MULA**, kemudian **BERHENTI**.
 - Tab **Kelas**: legenda warna kelas + pilih kelas tertentu untuk cabutan dari kelas itu sahaja.
-- Nama dalam roda disusun **secara rawak dan selang-seli kelas** (bukan berkumpul satu kelas, satu kelas).
-  Warna segmen tetap menunjukkan kelas.
+- **Satu roda sahaja.** Lelaki dan perempuan dari semua kelas bercampur dalam **susunan rawak**
+  (tidak ikut kelas atau jantina). Jantina dalam Excel tidak lagi diperlukan.
 - Pemenang dipilih rawak (kriptografi). Selepas menang, tekan **✓ Kekalkan dalam roda** atau
   **🗑️ Buang dari roda** — nama tidak dipadam secara automatik. Status boleh ditukar kemudian di tab
   **Menang** (tekan "Dibuang" / "Dalam roda").

@@ -395,7 +395,7 @@
     @media (prefers-reduced-motion: reduce) { .bulb, .ctl-mula, .rays { animation: none !important; } }
   </style>
 </head>
-<body class="g-L">
+<body>
   <canvas id="bintang" aria-hidden="true"></canvas>
   <div class="page">
     <header class="bar">
@@ -420,10 +420,6 @@
       </div>
     </header>
 
-    <nav class="gswitch" aria-label="Pilih roda">
-      <button data-g="L" class="on">👦 LELAKI <span class="c" id="cL">0</span></button>
-      <button data-g="P">👧 PEREMPUAN <span class="c" id="cP">0</span></button>
-    </nav>
 
     <main class="stage">
       <section class="wheel-col">
@@ -446,7 +442,7 @@
             <circle cx="27" cy="19" r="2.6" fill="#fff" opacity=".8"/>
           </svg>
           <button class="hub" id="hub" aria-label="Mula pusing">
-            <div><span class="g" id="hubIkon">👦</span><span id="hubTeks">LELAKI</span></div>
+            <div><span class="g">⭐</span><span>BERTUAH</span></div>
           </button>
           <div class="wheel-msg" id="wheelMsg">Memuatkan nama…</div>
         </div>
@@ -481,7 +477,7 @@
           </div>
           <div class="tab-body" id="tabKelas">
             <div class="kelas-grid" id="senaraiKelas"></div>
-            <p class="kelas-note">Setiap warna = satu kelas. Pilih satu kelas untuk cabut dari kelas itu sahaja, atau <b>Semua Kelas</b>.</p>
+            <p class="kelas-note">Roda mengandungi semua nama (lelaki &amp; perempuan) dalam susunan rawak. Pilih satu kelas jika mahu cabut dari kelas itu sahaja.</p>
           </div>
           <div class="tab-body" id="tabPemenang" hidden>
             <ul class="list" id="senaraiMenang"></ul>
@@ -524,7 +520,7 @@
     <div class="up-box">
       <button class="up-x" id="upTutup" aria-label="Tutup">✕</button>
       <h2 id="upTajuk">📥 Upload Excel</h2>
-      <p class="up-sub">Sistem baca nama dalam fail dan papar di roda <b>tanpa BIN / BINTI</b>, diasingkan ikut lelaki, perempuan dan kelas.</p>
+      <p class="up-sub">Sistem baca nama dalam fail dan papar di roda <b>tanpa BIN / BINTI</b>, lelaki dan perempuan bercampur dalam satu roda, susunan rawak.</p>
 
       <label class="up-drop" id="upDrop">
         <input type="file" id="upFail" accept=".xlsx,.xls,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple hidden>
@@ -555,7 +551,7 @@
         </div>
         <div class="up-sec up-scroll">
           <table class="up-t">
-            <thead><tr><th>Kelas</th><th class="n">👦 Lelaki</th><th class="n">👧 Perempuan</th></tr></thead>
+            <thead><tr><th>Kelas</th><th class="n">Bilangan nama</th></tr></thead>
             <tbody id="upRingkas"></tbody>
           </table>
         </div>
@@ -589,7 +585,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="config.js?v=20261025a"></script>
-  <script src="excel.js?v=20261025b"></script>
+  <script src="excel.js?v=20261026a"></script>
   <script>
   (function () {
     const C = window.RODA_CONFIG;
@@ -615,22 +611,21 @@
     let pemenang = [];       // { id, nama, kelas, jantina, masa, buang } – disimpan di peranti ini
     let roda = [];           // nama dalam roda semasa (ikut jantina & kelas), susunan rawak
     let warnaKelas = new Map();
-    let jantina = "L";
-    const kelasPilih = { L: null, P: null };   // null = semua kelas
+    const jantina = "SEMUA";   // satu roda: lelaki & perempuan bercampur
+    const kelasPilih = { SEMUA: null };   // null = semua kelas
 
     try { pemenang = JSON.parse(localStorage.getItem(KUNCI_MENANG) || "[]") || []; } catch (_) { pemenang = []; }
-    try { if (localStorage.getItem(KUNCI_RODA) === "P") jantina = "P"; } catch (_) {}
     const simpanPemenang = () => { try { localStorage.setItem(KUNCI_MENANG, JSON.stringify(pemenang)); } catch (_) {} };
 
     const warna = (kelas) => PALET[(warnaKelas.get(kelas) ?? 0) % PALET.length];
-    const chipKelas = (kelas) => `<span class="kchip"><i style="background:${warna(kelas)[1]}"></i>${esc(kelas)}</span>`;
+    const chipKelas = (kelas) => `<span class="kchip"><i style="background:var(--gold-2)"></i>${esc(kelas)}</span>`;
     // Nama yang dibuang dari roda. buang: true = dibuang, false = dikekalkan, null = belum dipilih.
     // Rekod lama (tiada medan buang) dikira sudah dibuang seperti sebelum ini.
     const sudahMenang = () => new Set(pemenang.filter((w) => w.buang === true || w.buang === undefined).map((w) => w.id));
     const pernahMenang = () => new Set(pemenang.map((w) => w.id));
 
     // ================= Susunan rawak =================
-    // Nama disusun secara rawak dan selang-seli kelas (bukan satu kelas, satu kelas).
+    // Nama disusun secara rawak sepenuhnya (lelaki & perempuan, semua kelas bercampur).
     // Benih rawak tetap sepanjang halaman dibuka supaya roda tidak bertukar susunan setiap kali dilukis.
     const BENIH = crypto.getRandomValues(new Uint32Array(1))[0];
     function prng(seed) {
@@ -652,28 +647,7 @@
     }
     function susunRawak(senarai) {
       const r = prng(BENIH ^ senarai.length);
-      const kump = new Map();
-      [...senarai].sort((a, b) => a.id - b.id).forEach((m) => {
-        if (!kump.has(m.kelas)) kump.set(m.kelas, []);
-        kump.get(m.kelas).push(m);
-      });
-      kump.forEach((g) => kocok(g, r));
-      const out = [];
-      let lepas = null, baki = senarai.length;
-      while (baki > 0) {
-        const ada = [...kump.entries()].filter(([, g]) => g.length);
-        // Kelas yang terlalu ramai mesti diambil dahulu supaya tidak berkumpul di hujung roda.
-        const wajib = ada.find(([, g]) => g.length > (baki + 1) / 2);
-        let calon = wajib ? [wajib] : ada.filter(([k]) => k !== lepas);
-        if (!calon.length) calon = ada;
-        // Pilih kelas secara rawak, berwajaran ikut baki nama dalam kelas itu.
-        let x = r() * calon.reduce((t, [, g]) => t + g.length, 0), pilih = calon[0];
-        for (const c of calon) { x -= c[1].length; if (x < 0) { pilih = c; break; } }
-        out.push(pilih[1].pop());
-        lepas = pilih[0];
-        baki--;
-      }
-      return out;
+      return kocok([...senarai].sort((a, b) => a.id - b.id), r);
     }
 
     let modLokal = false;    // true: nama dari Excel dipapar di peranti ini sahaja (tidak disimpan)
@@ -693,7 +667,7 @@
       pasangNama(out);
     }
 
-    function namaJantina(j) { return semua.filter((m) => m.jantina === j); }
+    function namaJantina() { return semua; }
 
     function bina() {
       const won = sudahMenang();
@@ -703,20 +677,12 @@
       const kp = kelasPilih[jantina];
       roda = susunRawak(senarai.filter((m) => !won.has(m.id) && (!kp || m.kelas === kp)));
 
-      document.body.classList.toggle("g-L", jantina === "L");
-      document.body.classList.toggle("g-P", jantina === "P");
-      document.querySelectorAll(".gswitch button").forEach((b) => b.classList.toggle("on", b.dataset.g === jantina));
-      $("cL").textContent = namaJantina("L").length.toLocaleString("ms-MY");
-      $("cP").textContent = namaJantina("P").length.toLocaleString("ms-MY");
-      $("hubIkon").textContent = IKON_J[jantina];
-      $("hubTeks").textContent = LABEL_J[jantina];
       $("cNama").textContent = senarai.length.toLocaleString("ms-MY");
-      $("cMenang").textContent = pemenang.filter((w) => w.jantina === jantina).length;
+      $("cMenang").textContent = pemenang.length;
       $("cKelas").textContent = kelasAda.size;
 
       const msg = $("wheelMsg");
       if (!semua.length) { msg.hidden = false; msg.textContent = "Belum ada nama. Tekan Upload Excel di atas."; }
-      else if (!senarai.length) { msg.hidden = false; msg.textContent = `Tiada nama ${LABEL_J[jantina].toLowerCase()}`; }
       else if (!roda.length) { msg.hidden = false; msg.textContent = kp ? `Semua nama ${kp} sudah dibuang dari roda` : "Semua nama sudah dibuang dari roda"; }
       else msg.hidden = true;
 
@@ -744,7 +710,7 @@
         `<button class="kbtn ${kp ? "" : "on"}" data-kelas="" ${kunci}>🎯 Semua Kelas <small>${bakiSemua}</small></button>` +
         [...kira.keys()].sort(bandingKelas).map((k) => `
           <button class="kbtn ${kp === k ? "on" : ""}" data-kelas="${esc(k)}" ${kunci}>
-            <i style="background:${warna(k)[1]}"></i>${esc(k)} <small>${kira.get(k).baki}/${kira.get(k).jumlah}</small>
+            ${esc(k)} <small>${kira.get(k).baki}/${kira.get(k).jumlah}</small>
           </button>`).join("");
     }
     $("senaraiKelas").addEventListener("click", (e) => {
@@ -755,7 +721,7 @@
     });
 
     function senaraiPemenang() {
-      const senarai = pemenang.filter((w) => w.jantina === jantina);
+      const senarai = pemenang;
       $("tiadaMenang").hidden = senarai.length > 0;
       $("senaraiMenang").innerHTML = senarai.map((w, i) => {
         const dibuang = w.buang !== false;
@@ -786,7 +752,7 @@
         .filter((m) => !q || m.nama.toLowerCase().includes(q) || m.kelas.toLowerCase().includes(q))
         .sort((a, b) => bandingKelas(a.kelas, b.kelas) || a.nama.localeCompare(b.nama, "ms"));
       $("senaraiNama").innerHTML = padan.slice(0, hadPapar).map((m) => `
-        <li class="${won.has(m.id) ? "won" : ""}"><i class="dot" style="background:${warna(m.kelas)[1]}"></i>
+        <li class="${won.has(m.id) ? "won" : ""}"><i class="dot" style="background:var(--gold-2)"></i>
         <span class="nm">${menang.has(m.id) ? "🏆 " : ""}${esc(m.nama)}</span><span class="kl">${esc(m.kelas)}</span></li>`).join("");
       const e = $("tiadaNama");
       e.hidden = padan.length > 0;
@@ -870,22 +836,14 @@
       }
 
       const s = TAU / n;
-      const kump = kumpulanKelas();
-      const banyak = n > 600;   // terlalu banyak: lukis satu lengkok bagi setiap kelas
-
-      for (const g of kump) {
-        const [wa, wb] = warna(g.kelas);
-        if (banyak || n === 1) {
-          const a0 = -Math.PI / 2 + g.dari * s;
-          ctx.beginPath(); ctx.moveTo(c, c); ctx.arc(c, c, r, a0, a0 + (g.hingga - g.dari) * s); ctx.closePath();
-          ctx.fillStyle = wa; ctx.fill();
-          continue;
-        }
-        for (let i = g.dari; i < g.hingga; i++) {
-          const a0 = -Math.PI / 2 + i * s;
-          ctx.beginPath(); ctx.moveTo(c, c); ctx.arc(c, c, r, a0, a0 + s + 0.002); ctx.closePath();
-          ctx.fillStyle = (i - g.dari) % 2 ? wb : wa; ctx.fill();
-        }
+      const banyak = n > 600;
+      const k = PALET.length;
+      // Warna berselang-seli ikut kedudukan; segmen terakhir tidak sama warna dengan yang pertama.
+      const warnaKe = (i) => (n > 1 && i === n - 1 && i % k === 0 ? PALET[1] : PALET[i % k]);
+      for (let i = 0; i < n; i++) {
+        const a0 = -Math.PI / 2 + i * s;
+        ctx.beginPath(); ctx.moveTo(c, c); ctx.arc(c, c, r, a0, a0 + s + (n > 1 ? 0.002 : 0)); ctx.closePath();
+        ctx.fillStyle = warnaKe(i)[i % 2]; ctx.fill();
       }
 
       // Garisan pemisah nama
@@ -904,7 +862,7 @@
       sh.addColorStop(.86, "rgba(255,255,255,.05)"); sh.addColorStop(1, "rgba(0,0,0,.30)");
       ctx.fillStyle = sh; ctx.beginPath(); ctx.arc(c, c, r, 0, TAU); ctx.fill();
 
-      // Label nama (jika muat), jika tidak label nama kelas pada lengkok kelas
+      // Label nama
       const luar = r * 0.93, dalam = r * 0.31;
       const fs = Math.min(r * 0.068, s * r * 0.62 * 0.78);
       ctx.textAlign = "right"; ctx.textBaseline = "middle";
@@ -918,19 +876,6 @@
           ctx.translate(c, c);
           ctx.rotate(-Math.PI / 2 + (i + 0.5) * s);
           ctx.fillText(potong(roda[i].nama, luar - dalam), luar, 0);
-          ctx.restore();
-        }
-      } else {
-        for (const g of kump) {
-          const lebar = (g.hingga - g.dari) * s;
-          const fk = Math.min(r * 0.085, lebar * r * 0.6 * 0.7);
-          if (fk < 8 * dpr) continue;
-          ctx.font = `800 ${fk}px 'Plus Jakarta Sans', sans-serif`;
-          ctx.shadowBlur = fk * 0.2; ctx.shadowOffsetY = fk * 0.05;
-          ctx.save();
-          ctx.translate(c, c);
-          ctx.rotate(-Math.PI / 2 + (g.dari + g.hingga) / 2 * s);
-          ctx.fillText(potong(g.kelas, luar - dalam), luar, 0);
           ctx.restore();
         }
       }
@@ -1060,7 +1005,7 @@
       document.body.classList.add("menang");
       pemenang.push({ id: m.id, nama: m.nama, kelas: m.kelas, jantina: m.jantina, masa: new Date().toISOString(), buang: null });
       simpanPemenang();
-      const ke = pemenang.filter((w) => w.jantina === m.jantina).length;
+      const ke = pemenang.length;
       setTimeout(() => umumkan(m, ke), 650);
     }
 
@@ -1088,7 +1033,7 @@
 
     // ================= Pengumuman =================
     function umumkan(m, ke) {
-      $("wKe").textContent = `Pemenang ${LABEL_J[m.jantina].toLowerCase()} ke-${ke}`;
+      $("wKe").textContent = `Pemenang ke-${ke}`;
       $("wNama").textContent = m.nama;
       $("wKelas").innerHTML = chipKelas(m.kelas);
       $("reveal").classList.add("show");
@@ -1096,7 +1041,7 @@
       bunyiMenang();
       if (navigator.vibrate) navigator.vibrate([80, 60, 120]);
       if (window.confetti) {
-        const col = ["#f2c75c", "#fff3cf", m.jantina === "L" ? "#60a5fa" : "#f472b6", "#ffffff", "#e2534b"];
+        const col = ["#f2c75c", "#fff3cf", "#a78bfa", "#ffffff", "#e2534b"];
         const opt = { colors: col, zIndex: 60, disableForReducedMotion: true };
         confetti({ ...opt, particleCount: 160, spread: 110, startVelocity: 48, origin: { y: .42 } });
         const end = Date.now() + 2800;
@@ -1124,10 +1069,10 @@
 
     $("reset").onclick = () => {
       if (state !== "idle") return;
-      const ada = pemenang.filter((w) => w.jantina === jantina).length;
+      const ada = pemenang.length;
       if (!ada) return toast("Tiada pemenang untuk diset semula.");
-      if (!confirm(`Set semula pemenang roda ${LABEL_J[jantina].toLowerCase()}? Semua nama yang dibuang akan dimasukkan semula ke dalam roda.`)) return;
-      pemenang = pemenang.filter((w) => w.jantina !== jantina);
+      if (!confirm(`Set semula senarai pemenang? Semua nama yang dibuang akan dimasukkan semula ke dalam roda.`)) return;
+      pemenang = [];
       simpanPemenang();
       bina();
       toast("Senarai pemenang telah dikosongkan.");
@@ -1291,7 +1236,6 @@
         <div class="up-fail"><b>📄 ${esc(l.sumber)}</b><br>
         ${l.ralat ? `<span class="warn">${esc(l.ralat)}</span>` :
           `<span class="ok">${l.n} nama</span> · ${l.kelas.map(esc).join(", ")}
-           ${l.tiadaJ ? ` · <span class="warn">${l.tiadaJ} tiada jantina</span>` : ""}
            <span class="eg">Di roda: ${l.contoh.map((r) => `${esc(r.nama)} → <em>${esc(X.namaPendek(r.nama))}</em>`).join(" · ")}</span>`}
         </div>`).join("") || `<div class="up-fail"><span class="warn">Tiada nama dijumpai dalam fail ini.</span></div>`;
       renderCalon();
@@ -1299,7 +1243,7 @@
     }
 
     function renderCalon() {
-      const perlu = calon.map((r, i) => [r, i]).filter(([r]) => !r.jantina || r.manual);
+      const perlu = [];   // satu roda: jantina tidak diperlukan
       $("upSemak").hidden = perlu.length === 0;
       $("upSemakList").innerHTML = perlu.map(([r, i]) => `
         <div class="up-semak-row"><span>${esc(X.namaPendek(r.nama))} <small>· ${esc(r.kelas)}</small></span>
@@ -1307,18 +1251,11 @@
           <option value="L" ${r.jantina === "L" ? "selected" : ""}>Lelaki</option>
           <option value="P" ${r.jantina === "P" ? "selected" : ""}>Perempuan</option></select></div>`).join("");
       const kira = new Map();
-      calon.forEach((r) => {
-        const k = kira.get(r.kelas) || { L: 0, P: 0 };
-        if (r.jantina) k[r.jantina]++;
-        kira.set(r.kelas, k);
-      });
+      calon.forEach((r) => kira.set(r.kelas, (kira.get(r.kelas) || 0) + 1));
       const ks = [...kira.keys()].sort(bandingKelas);
-      let jl = 0, jp = 0;
-      $("upRingkas").innerHTML = ks.map((k) => {
-        const v = kira.get(k); jl += v.L; jp += v.P;
-        return `<tr><td>${chipKelas(k)}</td><td class="n">${v.L}</td><td class="n">${v.P}</td></tr>`;
-      }).join("") + `<tr><td>JUMLAH · ${ks.length} kelas</td><td class="n">${jl}</td><td class="n">${jp}</td></tr>`;
-      const belum = calon.filter((r) => !r.jantina).length;
+      $("upRingkas").innerHTML = ks.map((k) => `<tr><td>${chipKelas(k)}</td><td class="n">${kira.get(k)}</td></tr>`).join("") +
+        `<tr><td>JUMLAH · ${ks.length} kelas</td><td class="n">${calon.length}</td></tr>`;
+      const belum = 0;
       const tiada = calon.length === 0;
       $("upSimpan").disabled = tiada || belum > 0;
       $("upLokal").disabled = tiada || belum > 0;
@@ -1382,7 +1319,7 @@
     $("upLokal").onclick = () => {
       const unik = new Map();
       calon.forEach((r) => {
-        const k = `${r.jantina}|${r.kelas}|${r.nama.toUpperCase()}`;
+        const k = `${r.kelas}|${r.nama.toUpperCase()}`;
         if (!unik.has(k)) unik.set(k, r);
       });
       const senarai = [...unik.values()];
@@ -1390,7 +1327,7 @@
       modLokal = true;
       pemenang = pemenang.filter((w) => w.id > 0);
       simpanPemenang();
-      pasangNama(senarai.map((r, i) => ({ id: -(i + 1), nama: nama[i], jantina: r.jantina, kelas: r.kelas })));
+      pasangNama(senarai.map((r, i) => ({ id: -(i + 1), nama: nama[i], jantina: r.jantina || "-", kelas: r.kelas })));
       tutupUpload();
       toast(`${senarai.length} nama dipapar di peranti ini sahaja (tidak disimpan).`);
     };
