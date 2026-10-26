@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=20261025c">
+  <link rel="stylesheet" href="assets/style.css?v=20261025d">
   <style>
     /* Butang Pusingan Bertuah: kecil, warna ungu-magenta supaya mudah dilihat */
     .roda-cta-wrap { display: flex; justify-content: center; margin: 22px 0 4px; }
@@ -185,12 +185,12 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-  <script src="assets/config.js?v=20261025c"></script>
+  <script src="assets/config.js?v=20261025d"></script>
   <script>
   (function () {
     const C = window.CABUTAN_CONFIG;
     const $ = (id) => document.getElementById(id);
-    const STORE_KEY = "cabutan_bertuah_saya";
+    const STORE_KEY = kunciSimpan("cabutan_bertuah_saya");
 
     document.title = "Borang " + C.NAMA_ACARA;
     $("keterangan").textContent = C.KETERANGAN;
@@ -325,7 +325,7 @@
     // ---- Pusingan Bertuah ----
     function bukaRoda() {
       const f = $("rodaFrame");
-      if (!f.src) f.src = "cabutan.html?embed=1";
+      if (!f.src) f.src = "cabutan.html?embed=1" + (window.CABUTAN_DEMO ? "&demo=1" : "");
       $("rodaLayer").hidden = false;
       document.body.style.overflow = "hidden";
       if (!history.state || !history.state.roda) history.pushState({ roda: 1 }, "");
